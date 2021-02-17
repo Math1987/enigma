@@ -1,0 +1,22 @@
+{
+  "name": "enigmajdr",
+  "version": "1.0.0",
+  "description": "enigmajdr backend (with nodejs express) & frontend (with angular)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Math1987/enigma.git"
+  },
+  "keywords": [
+    "enigmajdr"
+  ],
+  "author": "Math17",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Math1987/enigma/issues"
+  },
+  "homepage": "https://github.com/Math1987/enigma#readme"
+}

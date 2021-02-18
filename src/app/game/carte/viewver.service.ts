@@ -68,13 +68,15 @@ export class ViewverService {
       const map = document.getElementById('map') as HTMLDivElement ;
       if ( !this.viewver ){
           this.setViewver();
-          this.viewver.renderOn(map);
-          this.initEmitter.emit(true);
+          if ( this.viewver ){
+            this.viewver.renderOn(map);
+            this.initEmitter.emit(true);
+          }
       }else{
           this.viewver.renderOn(map);
           this.initEmitter.emit(true);
       }
-    },0);
+    },50);
 
   }
 

@@ -8,7 +8,7 @@ export interface BuildingI {
 export interface CapitalI {
 
     position : [number, number];
-    type : "capitale";
+    type : "capital";
     clan : string ;
     mercenaries : number ;
 

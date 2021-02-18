@@ -13,23 +13,23 @@ export class BuildingPattern extends Pattern {
         const capitales : CapitalI[] = [
             {
                 position : [-dist,0],
-                type : "capitale",
+                type : "capital",
                 clan : "clan-1",
                 mercenaries : startMercenary
             },
             {
                 position : [0,-dist],
-                type : "capitale",
+                type : "capital",
                 clan : "clan-2",
                 mercenaries : startMercenary
             },            {
                 position : [dist,0],
-                type : "capitale",
+                type : "capital",
                 clan : "clan-3",
                 mercenaries : startMercenary
             },            {
                 position : [0,dist],
-                type : "capitale",
+                type : "capital",
                 clan : "clan-4",
                 mercenaries : startMercenary
             }
@@ -41,11 +41,11 @@ export class BuildingPattern extends Pattern {
     }
     static getBuildingsOnArray( array : {x : number, y : number}[], callback : (buildings : BuildingI[])=>void ){
 
-        console.log('search buildings')
         findBuildingsOnPositions(array, buildings => {
             console.log(buildings);
+            callback(buildings);
         });
-        callback([]);
+
 
     };
 

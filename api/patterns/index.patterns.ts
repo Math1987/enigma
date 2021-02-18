@@ -14,7 +14,6 @@ import { MonsterPattern } from "./monster.pattern";
 import { WorldPattern } from "./world.pattern";
 import { initMongoDB } from './../data/index.data';
 
-console.log('init patterns') ;
 initMongoDB( res => {
     console.log('mongodb ok');
     PatternHandler.init();

@@ -1,0 +1,14 @@
+{
+    "include": ["api/**/*.ts"],
+    "compilerOptions": {
+        "outDir": "dist",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "module": "commonjs",
+        "target": "ES6",
+        "lib": [
+            "es5", "es6", "dom", "dom.iterable"
+        ],
+        "typeRoots" : ["./src/customTypes"]
+    }
+  }

@@ -1,0 +1,76 @@
+<div class="book">
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Présentation & description</h2>
+            <div class="content">
+
+                <p>
+
+                    Bienvenue dans les mystérieuses contrées d'Enigma JDR.
+                </p><p>
+                    Pour débuter votre aventure, créez ici le personnage que vous incarnerez.
+                    Pour l'alpha-test en cours, donnez lui le même nom que votre pseudo usuel (notamment celui que vous utilisez sur discord) afin de faciliter le déroulement des tests.
+                    Pour le choix du clan, référez-vous à Balthy pour équilibrer les équipes (normalement il vous en a attribué un d'office).
+                    Vous êtes libre de choisir le sexe, la race et la religion. 
+                    Ils auront prochainement des conséquences sur les pouvoirs et compétences de votre personnage en jeu.
+                </p><p>
+                    Bonne aventure, et merci pour votre soutien et participation à cette alpha-test
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Création du personnage</h2>
+            <div class="content">
+                
+                <form class="form" [formGroup]="createFG">
+                    <mat-form-field>
+                        <input matInput formControlName="name" type="text" placeholder="nom du personnage">
+                    </mat-form-field>
+
+                    <p>sexe</p>
+                    <mat-radio-group aria-label="sexe">
+                        <input formControlName="sexe" type="radio" value="masculin">Homme
+                        <input formControlName="sexe" type="radio" value="feminine">Femme
+                    </mat-radio-group>
+
+                    <p>race</p>
+                    <mat-radio-group aria-label="race">
+                        <input formControlName="race" type="radio" value="human">Humain
+                        <input formControlName="race" type="radio" value="elf">Elfe
+                        <input formControlName="race" type="radio" value="dwarf">Nain
+                        <input formControlName="race" type="radio" value="vampire">Vampire
+                    </mat-radio-group>
+    
+
+
+                <p>religion</p>
+                <mat-radio-group aria-label="religion">
+
+                    <input formControlName="religion" type="radio" value="alzure">Alzure
+                    <input formControlName="religion" type="radio" value="ignis">Ignis
+                    <input formControlName="religion" type="radio" value="natura">Natura
+                    <input formControlName="religion" type="radio" value="celestia">Celestia
+
+                </mat-radio-group>
+
+                <p>clan</p>
+                <mat-radio-group class="clan-form" aria-label="clan">
+
+                    <input formControlName="clan" type="radio" value="clan-1">clan 1 <div class="clan clan-1"></div>
+                    <input formControlName="clan" type="radio" value="clan-2">clan 2 <div class="clan clan-2"></div>
+                    <input formControlName="clan" type="radio" value="clan-3">clan 3 <div class="clan clan-3"></div>
+                    <input formControlName="clan" type="radio" value="clan-4">clan 4 <div class="clan clan-4"></div>
+
+                </mat-radio-group>
+
+                <button (click)="create()" mat-raised-button color="primary" [disabled]="!createFG.valid">créer</button>
+                
+            </form>
+
+            </div>
+        </div>
+    </div>
+</div>

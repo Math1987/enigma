@@ -1,0 +1,17 @@
+<div id="map" class="map">
+    <canvas class="map-canvas" #mapCanvas></canvas>
+    <div class="position" *ngIf="user.charaSubject | async; let chara">{{chara.x}}x {{chara.y}}y</div>
+</div>
+
+<div class="book infos">
+    <div class="onglets">
+        <button class="onglet" [routerLink]="'action'">info case</button>
+        <button class="onglet" [routerLink]="'historique'">historique</button>
+    </div>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>
+
+

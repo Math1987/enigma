@@ -1,0 +1,50 @@
+<div class="book">
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Créer un compte</h2>
+
+            <form [formGroup]="createFG" class="content">
+                <mat-form-field>
+                    <input matInput formControlName="name" placeholder="nom">
+                    <mat-error>champ requis</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput formControlName="email" placeholder="email">
+                    <mat-error>champ requis ou email incorrecte</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="password" formControlName="password" placeholder="mot de passe">
+                    <mat-error>mot de passe requis, trop court ou ne match pas</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="password" formControlName="confirm" placeholder="confirmer">
+                    <mat-error>confirmation du mot de passe ne match pas</mat-error>
+                </mat-form-field>
+                <button mat-raised-button  color='primary' [disabled]="!createFG.valid" (click)="create()">créer</button>
+            </form>
+ 
+        </div>
+    </div>
+    <div class="page">
+
+        <div class="article">
+            <h2 class="title">Se connecter</h2>
+
+                <form [formGroup]="loginFG" class="content" >
+                    <mat-form-field>
+                        <input matInput formControlName="email" placeholder="email">
+                        <mat-error>champ requis</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput formControlName="password" placeholder="mot de passe">
+                        <mat-error>champ requis</mat-error>
+                    </mat-form-field>
+                    <button mat-raised-button  color='primary' [disabled]="!loginFG.valid" (click)="login()">se connecter</button>
+
+
+                </form>
+        
+ 
+        </div>
+    </div>
+</div>

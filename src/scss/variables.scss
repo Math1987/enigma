@@ -1,0 +1,43 @@
+:root{
+
+    --baniere-height : calc(100vw*0.1);
+
+    --book-height : calc( min(96vh - var( --baniere-height), 90vw*0.6332 ));
+    --book-width-vw : calc(var(--book-height) * 1.579279848 );
+    --book-page-height-max : calc(var(--book-height) * 0.9)  ;
+    --book-page-container-height-max : calc(var(--book-height)*0.7)  ;
+
+    --book-page-color : #dac8af ;
+    --book-page-border-color : #6b6c6d ;
+    --book-text-color : #383838 ;
+    --book-page-content-background-color : #cebfa7 ;
+
+
+    --text-color-dark : #1c1c1c ;
+
+
+    --stone-light-color : #97c3ff ;
+    --life-color : #89463d ;
+
+    
+    --map-world-background-color : #2a2e36 ;
+    --map-infos-width : 30vw ;
+    --map-infos-height : calc(var(--map-infos-width)*1.2527);
+    --map-infos-content-height : 20vw ;
+    --map-info-background-color : #e8d8c3 ;
+
+
+    --icon-size : 1.75rem ;
+
+}
+
+@media screen and (min-width : 640px ){
+
+    :root{
+        // --book-width-vw : 60vw ;
+        // --book-page-height-max :  27.5vw  ;
+        // --book-page-container-height-max :  23vw  ;
+    }
+
+
+}

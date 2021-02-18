@@ -1,0 +1,121 @@
+.account{
+    position : absolute ;
+    right : 5vw ;
+    top : 0px ;
+    z-index: 2 ;
+    color : black ;
+    text-align: right;
+    color : var(--book-page-border-color);
+    &:hover {
+        color : black ;
+        cursor: pointer;
+        transition : 0.25s ;
+    }
+}
+
+.baniere-img{
+    width : 100% ;
+    height : auto ;
+    top : 0px ;
+    left : 0px ;
+}
+.menu{
+    position : absolute ;
+    left : calc(100vw*0.125);
+    top : calc(100vw*0.0568);
+    min-width : 33vw ;
+    height : 1.75rem ;
+    font-family: Anglorunic ;
+    display : flex ;
+    flex-direction: row nowrap ;
+    justify-content: space-between ;
+
+    .button{
+
+
+        background-image :
+        url('/assets/images/menu-left.png'),
+        url('/assets/images/menu-right.png'),
+        url('/assets/images/menu-midle.png')
+         ;
+         background-repeat: no-repeat, no-repeat, repeat ;
+         background-position: left, right, center ;
+         background-size: contain, contain, contain  ;
+
+
+        padding : 0.2rem 1rem ;
+        color : white ;
+
+        display : flex ;
+        flex-direction: row nowrap ;
+        align-items: center ;
+        justify-content: flex-start;
+
+        cursor: pointer;
+        &:hover{
+            transition: 0.2s;
+            // filter: brightness(2);
+            color : black ;
+        }
+    }
+
+    .button-disabled{
+
+        pointer-events: none ;
+        opacity: 0.5;
+        color : gray ;
+    }
+
+    .active{
+        filter: brightness(1.25);
+        color : black ;// var(--stone-light-color);
+        border : none ;
+    }
+}
+
+.icon-chara{
+
+    width : 1.5rem ;
+    height : 1.5rem ;
+}
+
+
+
+@mixin res{
+    background-image :
+    url('/assets/images/res-border-left.png'),
+    url('/assets/images/res-border-right.png'),
+    url('/assets/images/res-midle.png')
+     ;
+     background-repeat: no-repeat, no-repeat, repeat ;
+     background-position: left, right, center ;
+     background-size: contain, contain, contain  ;
+
+     position: absolute ;
+     display: flex;
+     flex-flow: row nowrap ;
+     align-items: center;
+     padding: 0px 1.5rem ;
+     top : calc(100vw*0.057 - 1rem);
+     height : 3rem ;
+
+     .resource{
+        font-size: 0.75rem ;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center ;
+        align-items: center;
+    }
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5) ;
+
+}
+
+.tokens{
+    @include res ;
+    left : calc(100vw*0.51);
+}
+
+.resources{
+    @include res ;
+    left : calc(100vw*0.65);
+}

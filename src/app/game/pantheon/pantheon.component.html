@@ -1,0 +1,67 @@
+<div class="book">
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Classement Individuel</h2>
+            <div class="content">
+                <div class="classement">
+                    <div class="type">
+                        <h3>Niveau</h3>
+                        <ol>
+                            <li *ngFor="let lvl of (levels | async)" [ngClass]="lvl.clan" class="clan-rank">
+                                {{lvl.name}} ({{lvl.value}}) 
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="type">
+                        <h3>Tueur</h3>
+                        <ol>
+                            <li *ngFor="let kill of (kills | async)" [ngClass]="kill.clan" class="clan-rank">
+                                {{kill.name}} ({{kill.value}}) 
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="type">
+                        <!-- <h3>Trésors trouvés</h3>
+                        <ol>
+                            <li *ngFor="let rank of (rank.kills | async)">
+                                {{rank.name}} ({{rank.value}}) 
+                            </li>
+                        </ol> -->
+                    </div>
+                    <div class="type">
+                        <!-- <h3>distance parcourue</h3>
+                        <ol>
+                            <li *ngFor="let rank of (rank.kills | async)">
+                                {{rank.name}} ({{rank.value}}) 
+                            </li>
+                        </ol> -->
+                    </div>
+                    <div class="type">
+                        <!-- <h3>soins effectués</h3>
+                        <ol>
+                            <li *ngFor="let rank of (rank.kills | async)">
+                                {{rank.name}} ({{rank.value}}) 
+                            </li>
+                        </ol> -->
+                    </div>
+                    <div class="type">
+                        <!-- <h3>Trésors trouvés</h3>
+                        <ol>
+                            <li *ngFor="let rank of (rank.kills | async)">
+                                {{rank.name}} ({{rank.value}}) 
+                            </li>
+                        </ol> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Classement par Factions</h2>
+            <div class="content">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni ipsum commodi culpa, eos possimus nobis dolor amet, odit cupiditate blanditiis quia placeat tenetur! Cupiditate asperiores unde facilis, accusamus vitae doloremque eaque ipsum, similique porro incidunt corrupti commodi, fuga labore consequuntur.
+            </div>
+        </div>
+    </div>
+</div>

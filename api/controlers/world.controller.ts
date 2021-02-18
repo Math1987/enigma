@@ -4,6 +4,7 @@
  * this is the global world api working on all type of values in the world of enigma.
  * 
  */
+import { BuildingPattern } from "../patterns/building.pattern";
 import { Request, Response } from "express"
 import { CharaPattern } from "../patterns/chara.patterns";
 import { MonsterPattern } from "../patterns/monster.pattern";
@@ -27,12 +28,13 @@ export const getWorldReq = ( req : Request, res : Response ) => {
         const array = (req.body as any[]) ;
         WorldPattern.getCases(array, floors => {
             let search = [...array] ;
-            CharaPattern.getWorldCharasOnArray(search, charas => {
-                MonsterPattern.getMonstersOnArray(search, monsters => {
-                    res.status(200).send([...floors, ...charas, ...monsters] );
+            BuildingPattern.getBuildingsOnArray(search, buildings => {
+                CharaPattern.getWorldCharasOnArray(search, charas => {
+                    MonsterPattern.getMonstersOnArray(search, monsters => {
+                        res.status(200).send([...floors, ...buildings, ...charas, ...monsters] );
+                    });
                 });
-            });
-            
+            });            
         });
 
     }else{

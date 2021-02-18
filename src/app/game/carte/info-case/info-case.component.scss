@@ -1,0 +1,216 @@
+:host{
+
+    width : 100% ;
+    width : var(--map-infos-width) ;
+    height : 100% ;
+    // height : var(--map-infos-height) ;
+
+    background-size: contain ;
+    background-position: center;
+
+    display : flex ;
+    flex-flow: column nowrap ;
+    justify-content: flex-start;
+    align-items: center ;
+
+    margin : 0 ;
+    padding: 2rem ;
+    padding-top : 0rem ;
+    box-sizing: border-box;
+
+
+}
+@mixin no-select {
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;   
+}
+
+
+
+
+
+
+.article{
+    margin : 2rem 0rem ;
+    padding: 2rem 0rem ;
+    width: 100% ;
+    display: flex;
+    flex-flow: column nowrap ;
+}
+
+@mixin cont {
+    background-color: var(--book-page-content-background-color);
+    border : 1px solid var(--book-page-border-color) ;
+    display : flex ;
+    flex-flow: column nowrap ;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 0rem ;
+    height: 100% ;
+}
+
+
+
+.last-action{
+    width : 100% ;
+    max-height: 4rem ;
+    @include cont ;
+    .content {
+        width : 90% ;
+        padding: 0rem 1rem 1rem 0rem ;
+        p{
+            padding-left: 1rem ;
+        }
+    }
+    margin : 1rem 0rem 0rem 0rem  ;
+}
+.case {
+    @include cont ;
+    flex : 1 ;
+    width: 100% ;
+    height: 100% ;
+    // max-height: var(--map-infos-content-height);
+}
+.case-content{
+    width : 100% ;
+    margin : 1px ;
+    display: flex ;
+    flex-flow: column nowrap ;
+    justify-content:flex-start ;
+    align-items: center ;
+}
+
+.info{
+
+    width: 90% ;
+    margin : 0.1rem 1rem ;
+    display : flex ;
+    flex-flow: row nowrap ;
+    // background-color: var(--map-info-background-color);
+
+
+    background-image :
+    url('/assets/images/info-left.png'),
+    url('/assets/images/info-right.png'),
+    url('/assets/images/info-midle.png')
+        ;
+        background-repeat: no-repeat, no-repeat, repeat ;
+        background-position: left, right, center ;
+        background-size: contain, contain, contain  ;
+
+
+    .avatar{
+        position: relative ;
+    }
+
+    img{
+        width : 3rem ;
+        height : 3rem  ;
+    
+    }
+    .img-container{
+        position : relative ;
+        display : flex ;
+        flex-flow: column nowrap ;
+        justify-content: center;
+        align-items: center;
+        padding : 0px ;
+        margin : 0.33rem 0.5rem 0.33rem 0.33rem ;
+        p{
+            padding : 0px ;
+            margin : 0px ;
+        }
+
+    }
+
+    .chara-infos {
+
+        width : 100% ;
+        height : 100% ;
+        padding: 0.1rem ;
+        display: flex;
+        flex-flow: column nowrap ;
+        justify-content: center;
+        color : black ;    
+        
+        align-items: flex-start ;
+        
+
+        .life{                
+            width : 100% ;
+            flex : 0 ;
+            display : flex ;
+            flex-flow: row nowrap ;
+            align-items: center ;
+
+            --icon-size : 1rem ;
+            padding : 0px ;
+            margin : 0px ;
+            .icon{
+                padding : 0px ;
+                margin : 0px ;
+                transform: scale(2);
+            }
+
+            &-bar{
+                padding: 0px ;
+                margin : 0px ;
+                background-color: rgba(0,0,0,0.25) ;
+                border-top-left-radius: 2rem;
+                border-radius: 0.33rem ;
+                width : 50% ;
+                height : 0.5rem ;
+                border : 1px solid var(--book-page-border-color) ;
+
+                &-life{
+                    transition: 0.5s;
+                    padding: 0px ;
+                    margin : 0px ;
+                    background-color: var(--life-color)  ;
+                    border-top-left-radius: 2rem;
+                    border-radius: 0.33rem ;
+                    width : 100% ;
+                    height : 0.5rem ;
+                }
+
+            }
+
+        }
+        .actions{
+
+            flex : 0 ;
+            display : flex ;
+            flex-flow: row wrap ;
+            justify-content: flex-start ;
+            align-items: center;
+            
+            .action{
+                cursor: pointer;
+                color : var(--book-text-color);
+                margin : 0rem 1rem 0rem 0rem ;
+                text-decoration: underline;
+                font-size: 0.75rem ;
+                display: flex ;
+                flex-flow: row nowrap ;
+                align-items: center ;
+
+                --icon-size : 1rem ;
+
+                .icon{
+                    transform: scale(2);
+                }
+            }
+        }
+    }
+
+}
+
+#lastMessage{
+    display: flex ;
+    flex-flow: row wrap ;
+    font-size: 0.75rem ;
+    align-items: center;
+}
+

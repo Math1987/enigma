@@ -1,0 +1,43 @@
+<div>
+    <div class="account" *ngIf="!(user.subject | async) ; let user" [routerLink]="'/connection'">se connecter</div>
+    <div class="account" *ngIf="user.subject | async" [matMenuTriggerFor]="menu">mon compte</div>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="user.logOut()">se déconnecter</button>
+    </mat-menu>
+
+    <img src="/assets/images/baniere.png" class="baniere-img">
+    <div class="menu">
+        
+        <div *ngIf="user.charaSubject | async ; let chara"  class="button chara menu-map" [routerLink]="'/jeu/carte'"><div class="icon icon-map"></div>CARTE</div>
+        <div *ngIf="!(user.charaSubject | async) ; let chara" class="button button-disabled menu-map" [routerLink]="'/jeu/carte'"><div class="icon icon-map"></div>CARTE</div>
+        
+        <div *ngIf="user.subject | async ; let u else noUser">
+
+            <div *ngIf="u.chara ; let chara else noChara" class="button menu-chara" [routerLink]="'/jeu/personnage'"><img class="icon icon-chara rnd" [src]="chara.img">PERSONNAGE</div>
+            <ng-template #noChara ><div class="button menu-chara" [routerLink]="'/jeu/creer'">CREER</div></ng-template>
+
+        </div>
+
+        <ng-template #noUser >
+            <div class="button button-disabled menu-chara" [routerLink]="'/jeu/personnage'">PERSONNAGE</div>
+        </ng-template>
+        
+        
+        <div class="button menu-pantheon" [routerLink]="'/jeu/pantheon'"><div class="icon icon-rank"></div>PANTHEON</div>
+        <div class="button button-disabled menu-forum"><div class="icon icon-forum"></div>FORUM</div>
+    </div>
+
+    <div class="tokens"  *ngIf="(user.subject | async) ; let user">
+        <div class="resource"><div class="icon icon-dice"></div><span *ngIf="user.chara">{{user.chara.actions}}</span></div>
+        <div class="resource"><div class="icon icon-chooses"></div><span *ngIf="user.chara">{{user.chara.moves}}</span></div>
+    </div>
+
+    <div class="resources" *ngIf="(user.subject | async) ; let user">
+        <div class="resource"><div class="icon icon-water"></div><span *ngIf="user.chara">{{user.chara.water}}/{{user.chara.waterMax}}</span></div>
+        <div class="resource"><div class="icon icon-food"></div><span *ngIf="user.chara">{{user.chara.food}}/{{user.chara.foodMax}}</span></div>
+        <div class="resource"><div class="icon icon-wood"></div><span *ngIf="user.chara">{{user.chara.wood}}/{{user.chara.woodMax}}</span></div>
+        <div class="resource"><div class="icon icon-faith"></div><span *ngIf="user.chara">{{user.chara.faith}}/{{user.chara.faithMax}}</span></div>
+    </div>
+
+</div>
+<router-outlet></router-outlet>

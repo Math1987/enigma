@@ -1,0 +1,66 @@
+:host{
+    display: flex ;
+    flex-flow: column nowrap ;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.content{
+
+    width : 100% ;
+    display : flex ;
+    flex-flow: row row ;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+
+.avatar{
+    width : 100% ;
+    height: 100% ;
+    display: grid ;
+    grid : 
+    "test skills txt" auto
+    "test update update" auto / 0.34fr 0.33fr 0.33fr ;
+    gap: 0.1rem ;
+}
+.item{
+    display : flex ;
+    flex-flow: column nowrap ;
+    padding : 1rem 0px ;
+    p{
+        margin : 0.1rem 0.25rem ;
+        padding : 0px ;
+        font-size: 0.75rem;
+    }
+    .xp {
+        color : red ;
+    }
+}
+.item:nth-child(1){
+    grid-area : test ;
+    justify-content: flex-start ;
+    align-items: center;
+    img{
+        width : 100% ;
+        height: auto;
+        border-radius: 50%;
+        // border : 1px solid var(--book-page-border-color);
+    }
+
+}
+
+.item:nth-child(2){
+    grid-area : skills ;
+}
+.item:nth-child(3){
+    grid-area : txt ;
+}
+.item:nth-child(4){
+    grid-area : update ;
+}
+.item:nth-child(5){
+    grid-area : e5 ;
+
+}

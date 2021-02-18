@@ -1,0 +1,184 @@
+@mixin no-select {
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;   
+}
+
+
+.article{
+    flex-flow: column nowrap ;
+    align-items: center ;
+    position : relative ;
+    width: 90% ;
+    border : 1px solid var(--book-page-border-color) ;
+    padding: 2rem 1rem 1rem 1rem ;
+    margin-bottom: 2rem ;
+    max-height: var(--book-page-height-max) ;
+    background-color: var(--book-page-content-background-color);
+
+}
+
+
+.book{
+
+    @include no-select ;
+
+    background : no-repeat url('/assets/images/book.png');
+    background-size: contain;
+    width : var(--book-width-vw) ;
+    height : calc(var(--book-height) ) ;
+    display : flex ;
+    flex-flow: row nowrap ;
+    color : var(--book-page-border-color) ;
+    margin : 0px ;
+    padding : 1rem ;
+
+    .page {
+        margin : 0rem 0px 2rem 0px  ;
+        padding: 1rem ;
+        display : flex ;
+        max-height:  calc(var(--book-height) - 2rem ) ;
+        flex-flow: column nowrap ;
+        align-items: center ;
+
+        flex : 0.5 ;
+        overflow : auto ;
+    }
+    .article{
+        flex-flow: column nowrap ;
+        align-items: center ;
+        position : relative ;
+        width: 90% ;
+        border : 1px solid var(--book-page-border-color) ;
+        padding: 2rem 1rem 1rem 1rem ;
+        margin-top: 2rem ;
+        max-height: var(--book-page-height-max) ;
+        background-color: var(--book-page-content-background-color);
+
+    }
+    .title{
+        position : absolute ;
+        top : 0px ;
+        left : 50% ;
+        transform : translate(-50%,-50%);
+        padding: 0px 1rem ;
+        margin : 0px ;
+        font-family: casette ;
+        font-size: 2rem ;
+        font-weight: 100 ;
+        line-height: 1rem ;
+        background : linear-gradient( to bottom, var(--book-page-color) 50% , var(--book-page-content-background-color) 50% );
+        // background-color: var(--book-page-color) ;
+        text-align: center ;
+    }
+    .content{
+        width : 100% ;
+        height : 100% ;
+        top : 0px ;
+        overflow: auto;
+    }
+}
+
+
+.icon{
+    width : var(--icon-size) ;
+    height: var(--icon-size)  ;
+    background: url('/assets/images/icons.png');
+    background-size: calc( var(--icon-size) *4) calc( var(--icon-size) *4) ;
+    margin : 0rem 0.25rem ;
+    padding:  0px ;
+
+    &-map{
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 0) ;
+    }
+    &-chara{
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 1) ;
+    }
+    &-rank{
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 2) ;
+    }
+    &-forum{
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 3) ;
+    }
+
+    &-dice{
+        background-position: calc( var(--icon-size) * -2) calc( var(--icon-size) * -1) ;
+    }
+    &-chooses{
+        background-position: calc( var(--icon-size) * -3) calc( var(--icon-size) * -1) ;
+
+    }
+    &-water{
+        background-position: calc( var(--icon-size) * -1) calc( var(--icon-size) * -2) ;
+
+    }
+    &-food{
+        background-position: calc( var(--icon-size) * -1) calc( var(--icon-size) * -1) ;
+    }
+    &-wood{
+        background-position: calc( var(--icon-size) * -1) calc( var(--icon-size) * -3) ;
+    }
+    &-faith{
+        background-position: calc( var(--icon-size) * -3) calc( var(--icon-size) * -2) ;
+    }
+
+
+    &-life{
+        background-position: calc( var(--icon-size) * -3) 0 ;
+    }
+    &-attack{
+        background-position: calc( var(--icon-size) * -3) calc( var(--icon-size) * -3)  ;
+    }
+    &-defend{
+        background-position: calc( var(--icon-size) * -1) calc( var(--icon-size) * -3)  ;
+    }
+    &-heal{
+        background-position: calc( var(--icon-size) * -2) calc( var(--icon-size) * -2) ;
+    }
+    &-pray{
+        background-position: calc( var(--icon-size) * -3) calc( var(--icon-size) * -2) ;
+    }
+
+
+    &-message{
+
+        --icon-size : 1rem ;
+        margin : 0px ;
+        padding : 0px ;
+        width : 1rem ;
+        height : 1rem ;
+    }
+
+}
+
+
+.clan{
+
+    position : absolute ;
+    left : 0px ;
+    bottom : 0px ;
+    width : 1rem ;
+    height : 1rem ;
+    background-color: gray ;
+    border : 1px solid white ;
+
+    transform: rotate(45deg);
+
+    &-1{
+        color : blue ;
+      background-color: blue ;  
+    }
+    &-2{
+        color : red ;
+        background-color: red ;  
+    }
+    &-3{
+        color : yellow ;
+        background-color: yellow ;  
+    }
+    &-4{
+        color : black ;
+        background-color: black ;  
+    }
+}

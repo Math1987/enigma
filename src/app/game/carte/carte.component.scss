@@ -1,0 +1,122 @@
+:host{
+    display: flex ;
+    flex-flow: row nowrap ;
+    justify-content: space-around;
+    align-items: center;
+}
+@mixin no-select {
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;   
+}
+
+
+.map{
+    position : relative ;
+    margin : 0rem 2rem ;
+    flex : 1 ;
+    background-color : var(--map-world-background-color) ;
+    height : 75vh ;
+
+    .map-canvas{
+        position : absolute ;
+        width : 100% ;
+        height : 100% ;
+        z-index: 5 ;
+    }
+
+    .control{
+        position : absolute ;
+        background-color: gray ;
+        padding: 1rem ;
+        margin : 1rem ;
+        cursor: pointer ;
+    }
+
+    .control:nth-child(1){
+        top : 0 ;
+        right : 50% ;
+        transform: translate(50%,0);
+    }
+    .control:nth-child(2){
+        top : 50% ;
+        right : 0 ;
+        transform: translate(0,-50%);
+    }
+    .control:nth-child(3){
+        bottom : 0 ;
+        right : 50% ;
+        transform: translate(50%,0);
+    }
+    .control:nth-child(4){
+        left : 0 ;
+        top : 50% ;
+        transform: translate(0,-50%);
+
+    }
+}
+.infos{
+
+    position : relative ;
+    width : var(--map-infos-width) ;
+    height : var(--map-infos-height) ;
+    background : url('/assets/images/map-infos.png') no-repeat;
+    background-size: contain ;
+    background-position: center;
+
+    display : flex ;
+    flex-flow: column nowrap ;
+    justify-content: flex-start;
+    align-items: center ;
+
+
+    .content{
+
+        width : var(--map-infos-width) ;
+        height : calc(var(--map-infos-height)*0.8) ;
+
+        margin : 2rem ;
+        padding: 2rem ;
+        padding-top : 0rem ;
+        box-sizing: border-box;
+        display : flex ;
+        flex-flow: column nowrap ;
+        justify-content: flex-start;
+        align-items: center ;
+    }
+}
+
+.onglets{
+    position : absolute ;
+    display : flex ;
+    top : -1rem ;
+    flex-direction: row nowrap ;
+    width : 90% ;
+
+    button{
+
+        background-color: var(--book-page-content-background-color);
+        height : 2rem ;
+        border : none ;
+        margin : 0 0.25rem ;
+
+    }
+
+}
+
+.position {
+    margin : 3rem ;
+    position : absolute ;
+    color : white ;
+    z-index: 10;
+}
+
+#lastMessage{
+    display: flex ;
+    flex-flow: row wrap ;
+    font-size: 0.75rem ;
+    align-items: center;
+
+}
+

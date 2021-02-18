@@ -1,0 +1,65 @@
+<div class="book">
+    <div class="page">
+        <div class="article">
+            <h2 class="title">Charactéristiques</h2>
+     
+            <div class="content" *ngIf="(user.charaSubject | async) ; let chara">
+                
+                <div class="avatar">
+
+                    <div class="item item-img">
+                        <img [src]="chara.img">
+
+                        <!-- <p class="clickable">Modifier l'avatar</p>
+                        <p class="clickable">Nouveau sort</p>
+                        <p class="clickable">Nouveau talent</p> -->
+
+                    </div>
+                
+                
+                    <div class="item" style="position:relative;">
+                        <h2>{{chara.name}}</h2>
+                        <p>niveau {{chara.level}}</p>
+                        <p>Race: {{chara.race}}</p>
+                        <div class="clan" [ngClass]="chara.clan"></div>
+                        <p [ngClass]="chara.clan" style="background-color:transparent">{{chara.clan}}</p>
+    
+                    </div>
+    
+                    <div class="item">
+                        <p>Attaque: {{chara.attack}} <span class="clickable" *ngIf="chara.xp > 0" (click)="user.addSkill('attack')">+1</span></p>
+                        <p>Défense: {{chara.defense}} <span class="clickable" *ngIf="chara.xp > 0" (click)="user.addSkill('defense')" >+1</span></p>
+                        <p>Sourcier: {{chara.dowser}} <span class="clickable" *ngIf="chara.xp > 0" (click)="user.addSkill('dowser')">+1</span></p>
+                        <p>Chasseur: {{chara.hunter}} <span class="clickable" *ngIf="chara.xp > 0" (click)="user.addSkill('hunter')">+1</span></p>
+                        <p>Compétences : <span class="xp" *ngIf="chara.xp > 0">{{chara.xp}} </span> <span *ngIf="chara.xp <= 0">0</span></p>
+                    </div>
+
+                    <div class="item">
+                    </div>
+
+
+
+                </div>
+
+
+                <!-- <p>
+                    {{user | json}}
+                </p> -->
+                
+            </div>
+        </div>
+        <div class="article">
+            <h2 class="title">Trophé et pictos</h2>
+            <div class="content">
+            </div>
+        </div>
+    </div>
+    <div class="page">
+
+        <div class="article">
+            <h2 class="title">Background</h2>
+            <div class="content">
+            </div>
+        </div>
+    </div>
+</div>

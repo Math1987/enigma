@@ -1,0 +1,49 @@
+:host{
+
+    width : var(--map-infos-width) ;
+    height : var(--map-infos-height) ;
+
+    background-size: contain ;
+    background-position: center;
+
+    display : flex ;
+    flex-flow: column nowrap ;
+    justify-content: flex-start;
+    align-items: center ;
+
+    margin : 0 ;
+    padding: 2rem ;
+    padding-top : 0rem ;
+    box-sizing: border-box;
+
+
+}
+
+
+.last-action{
+    width : 100% ;
+    height: 100% ;
+    .content {
+        width : 90% ;
+        height : calc(var(--map-infos-height)*0.6 ) ;
+        padding: 0rem 1rem 1rem 0rem ;
+        p{
+            padding-left: 1rem ;
+        }
+        overflow: auto;
+    }
+    margin : 1rem 0rem 0rem 0rem  ;
+}
+
+.article{
+    margin : 2rem 0rem ;
+    padding: 2rem 0rem ;
+    width: 100% ;
+    display: flex;
+    flex-flow: column nowrap ;
+}
+
+
+.icon{
+    background-color: red ;
+}

@@ -1,0 +1,116 @@
+
+
+<div class="article last-action">
+    <div class="title">Dernière action</div>
+    <div class="content" id="lastMessage">
+    </div>
+</div>
+
+<div class="article case">
+
+    <div class="title">Informations case</div>
+
+    <div class="case-content" >
+
+        <div class="info" *ngIf="targetFloor; let floor">
+            <!-- {{case.floor.img}} -->
+            <div class="img-container">
+                <img class="avatar"[src]="floor.img" >
+                <p>{{floor.getName()}}</p>
+            </div>
+            <div class="chara-infos">
+
+                <div class="actions">
+                    <div class="action" 
+                    *ngFor="let action of floor.interactions"
+                    (click)="user.makeAction(floor, action)"
+                    >
+                        <div class="icon" [ngClass]="{
+                            'icon-water' : action === 'puiser de l\'eau',
+                            'icon-attack' : action === 'chasser',
+                            'icon-wood' : action === 'bûcheronner',
+                            'icon-pray' : action === 'prier'
+                        }"></div>
+                        {{action}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+    </div>
+
+
+    <div class="case-content">
+
+        <div class="info" *ngFor="let chara of targetCharas">
+            <div class="img-container">
+                <div class="avatar">
+                    <img [src]="chara.img" >
+                    <div class="clan" [ngClass]="chara.clan"></div>
+                </div>
+                <p class="name">{{chara.datas.name}}</p>
+            </div>
+
+            <div class="chara-infos">
+
+                <div class="life">
+                    <div class="icon icon-life"></div>
+                    <div class="life-bar">
+                        <div class="life-bar-life" [ngStyle]="{'width.%' : chara.life/chara.lifeMax*100}"></div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <div class="action" 
+                    *ngFor="let action of chara.interactions"
+                    (click)="user.makeAction(chara, action)"
+                    >
+                        <div class="icon" [ngClass]="{
+                            'icon-attack' : action === 'attack',
+                            'icon-heal' : action === 'heal'
+                        }"></div>
+                        {{action}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="case-content">
+
+        <div class="info" *ngFor="let chara of targetMonsters">
+            <div class="img-container">
+                <img class="avatar"[src]="chara.img" >
+                <p class="name">{{chara.datas.name}}</p>
+            </div>
+
+            <div class="chara-infos">
+
+                <div class="life">
+                    <div class="icon icon-life"></div>
+                    <div class="life-bar">
+                        <div class="life-bar-life" [ngStyle]="{'width.%' : chara.life/chara.lifeMax*100}"></div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <div class="action" 
+                    *ngFor="let action of chara.interactions"
+                    (click)="user.makeAction(chara, action)"
+                    >
+                        <div class="icon" [ngClass]="{
+                            'icon-attack' : action === 'attack',
+                            'icon-heal' : action === 'heal'
+                        }"></div>
+                        {{action}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

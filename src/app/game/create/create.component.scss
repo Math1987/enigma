@@ -1,0 +1,36 @@
+:host{
+    display: flex ;
+    flex-flow: column nowrap ;
+    justify-content: center;
+    align-items: center;
+}
+
+.content{
+    display : flex ;
+    flex-flow: column nowrap ;
+    
+}
+.clan-form{
+    position : relative ;
+}
+.form{
+    position : relative ;
+    display: flex ;
+    flex-flow: column nowrap ;
+    button{
+        margin-top: 2rem ;
+    }
+    .clan{
+        position:relative ;
+        margin : 0.25rem ;
+        width : 0.75rem ;
+        height : 0.75rem ;
+    }
+}
+
+.clan-form{
+    position : relative ;
+    display : flex ;
+    flex-direction: row ;
+    align-items: center;
+}

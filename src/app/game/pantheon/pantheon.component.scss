@@ -1,0 +1,71 @@
+:host{
+    display: flex ;
+    flex-flow: column nowrap ;
+    justify-content: center;
+    align-items: center;
+}
+.classement{
+    width : 100% ;
+    height : var(--book-page-container-height-max) ;
+
+    display: grid ;
+    grid : 
+    "grone grtwo grthree" auto
+    "grfour grfive grsix" auto / 33% 33% 33% ;
+    gap : 0.25rem ;
+
+}
+.clan-rank{
+    background-color: transparent;
+}
+
+.type{
+
+    padding: 0rem 0rem 0rem 0rem ;
+    display : flex ;
+    flex-flow: column wrap ;
+    justify-content: flex-start ;
+    align-items: flex-start;
+
+    h3{
+        padding: 0rem ;
+        color : black ;
+        font-size: 0.75rem ;
+        line-height: 0.75rem ;
+        text-decoration: underline ;
+    }
+
+    ol {
+        list-style: none ;
+        padding: 0rem ;
+        margin : 0px ;
+        font-size: 0.7rem ;
+        line-height: 0.7rem;
+    }
+    ol li {
+        counter-increment: my-counter ;
+    }
+    ol li::before {
+        content : counter(my-counter) ". " ;
+        color : black ;
+    }
+
+}
+.type:nth-child(1){
+    grid-area: grone ;
+}
+.type:nth-child(2){
+    grid-area: grtwo ;
+}
+.type:nth-child(3){
+    grid-area: grthree ;
+}
+.type:nth-child(4){
+    grid-area: grfour ;
+}
+.type:nth-child(5){
+    grid-area: grfive ;
+}
+.type:nth-child(6){
+    grid-area: grsix ;
+}

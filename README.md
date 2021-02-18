@@ -26,7 +26,10 @@ Oui, avant tout, enigmajdr est un tas de lignes de code que nous allons explique
 D'abord c'est un projet WEB.
 Le front-end est fait avec **[angular10+](https://angular.io/)** et le backend en **[nodejs](https://nodejs.org/en/)** avec **[express](https://expressjs.com/fr/)**.
 
+<br>
+
 > ### bon j'installe ça comment moi si je veux le tester chez moi ?
+<br>
 
 * C'est très simple. Tu télécharges le [repos](https://github.com/Math1987/enigma.git) et installe les dépendances depuis ton terminal _(à la racine du dossier enigma préalablement téléchargé)
 (bon évidement je ne te fais pas l'offence de te demander d'installer au préalablement [nodejs](https://nodejs.org/en/) et [npm](https://www.npmjs.com/get-npm))_
@@ -119,6 +122,7 @@ C'est là que tous les éléments du jeu (plateau de jeu, nains, elfs, squelette
 N'hésite pas à nous contacter pour toute question ou remarque !
 
 Et hâte de voir quelles audacieuses features tu pourras nous soumettre.
+
 @+, 
 
 Math17

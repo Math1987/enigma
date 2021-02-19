@@ -1,6 +1,8 @@
 import { WorldModel } from "./model.world";
 import * as THREE from "three" ;
 import { WorldRes } from "./resources.world";
+import { WorldChara } from "./chara.world";
+import { CharaI } from "../../interfaces/chara.interface";
 
 export class WorldBuilding extends WorldModel {
 
@@ -98,6 +100,23 @@ export class WorldBuilding extends WorldModel {
     
         }
         return null ;
+
+    }
+
+    updateInfoCaseFromContext( user : CharaI, charas : WorldChara[], interactions : any[] ){
+
+        for ( let chara of charas ){
+            console.log(chara['clan'], this.datas['clan']);
+            if ( chara['clan'] === this.datas['clan'] && chara['clan'] !== user['clan'] ){
+
+                // interactions = [{
+                //     name : `${this.datas['mercenaries']}`,
+                //     icon : ''
+                // }]
+                // interactions.splice(0,1);
+
+            }
+        }
 
     }
 

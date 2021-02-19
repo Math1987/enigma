@@ -42,7 +42,6 @@ export class BuildingPattern extends Pattern {
     static getBuildingsOnArray( array : {x : number, y : number}[], callback : (buildings : BuildingI[])=>void ){
 
         findBuildingsOnPositions(array, buildings => {
-            console.log(buildings);
             callback(buildings);
         });
 

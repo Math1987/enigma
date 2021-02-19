@@ -36,6 +36,7 @@ export interface CharaI {
     woodMax? : number;
     faith? : number;
     faithMax? : number;
+    gold : number ;
     defense? : number;
     attack? : number;
     hunter? : number;

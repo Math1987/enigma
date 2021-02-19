@@ -95,6 +95,10 @@ export class InfoCaseComponent implements OnInit {
           return nobj ;
         }) ;
 
+        if ( this.targetFloor instanceof WorldBuilding ){
+          this.targetFloor.updateInfoCaseFromContext(this.user.chara, this.targetCharas, this.targetFloor['interactions']);
+        }
+
 
       })
     }

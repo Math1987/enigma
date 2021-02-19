@@ -26,7 +26,9 @@ import {
     socketsResurrection,
     updateSocketsValues
 } from "./base.pattern";
+import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
+import { incBuildingValuesData } from "./../queries/building.queries";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -57,6 +59,7 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         woodMax : 40,
         faith : 10,
         faithMax : 40,
+        gold : 0,
         
         defense : 5,
         attack : 5,
@@ -261,6 +264,15 @@ export class CharaPattern extends Pattern{
             case "prier" : 
                 this.pray(target, callback);
             break ;
+            case "addMercenari" :
+                this.addMercenari(target, callback);
+            break ;
+            case "attackMercenari" :
+                this.attackMercenari(target, callback);
+            break ;
+            case "plunder" :
+                this.plunder(target, callback);
+            break ;
         }
 
     }
@@ -298,7 +310,6 @@ export class CharaPattern extends Pattern{
 
                         if ( charaUpdated.ok ){
 
-                            
                             if ( target.obj.type === "chara" ){
 
                                 let message = `${this.obj.name} attack -${attackRes.dammage}`
@@ -331,32 +342,37 @@ export class CharaPattern extends Pattern{
                                 
                                 });
 
-
                             }
                             if ( attackRes.death ){
 
-                                this.addLevel(1/5, charaF=>{
+                                this.incrementValues({gold : 1+Math.floor(Math.random()*20)}, goldrRes => {
 
-                                    if ( charaF.ok ){
+                                    this.addLevel(1/5, charaF=>{
 
-                                        updateSocketsValues({
-                                            x : this.obj.position[0],
-                                            y : this.obj.position[1]},[
-                                                {
-                                                    '_id' : charaF.value._id,
-                                                    'level' : charaF.value.level,
-                                                    'xp' : charaF.value.xp,
-                                                    'actions' : charaF.value.actions,
-                                                    'messages' : charaF.value.messages
-                                                }
-                                            ]
-                                        );
-                                        
-                                    }
-                                        
-                                    callback(attackRes);
+                                        if ( charaF.ok ){
+    
+                                            updateSocketsValues({
+                                                x : this.obj.position[0],
+                                                y : this.obj.position[1]},[
+                                                    {
+                                                        '_id' : charaF.value._id,
+                                                        'level' : charaF.value.level,
+                                                        'xp' : charaF.value.xp,
+                                                        'actions' : charaF.value.actions,
+                                                        'messages' : charaF.value.messages,
+                                                        "gold" : charaF.value.gold
+                                                    }
+                                                ]
+                                            );
+                                            
+                                        }
+                                            
+                                        callback(attackRes);
+    
+                                    });
 
                                 });
+
                                 
                             }else{
 
@@ -737,6 +753,93 @@ export class CharaPattern extends Pattern{
         }else{
             callback({err : 'no actions'});
         }
+    }
+    addMercenari( target : CapitalPattern, callback ){
+        if ( this.obj.gold > 20 && target.obj.mercenaries < 50 ){
+
+            this.incrementValues({ gold : -20}, charaRes => {
+
+                incBuildingValuesData( target.obj._id, { mercenaries : +1} ).then ( capRes => {
+
+                    updateSocketsValues({
+                        x : target.obj.position[0],
+                        y : target.obj.position[1]},[
+                            {
+                                "_id" : charaRes._id,
+                                "gold" : charaRes.gold
+                            },
+                            {
+                                '_id' : capRes.value['_id'],
+                                'mercenaries' : capRes.value['mercenaries']
+                            }
+                        ]
+                        );
+
+                        callback(true);
+
+
+                });
+
+            });
+
+        }
+    }
+    attackMercenari( target : CapitalPattern, callback ){
+
+        if ( this.obj.actions > 0 && target.obj.mercenaries > 0 ){
+            incBuildingValuesData(target.obj._id, { mercenaries : -1}).then( targetRes => {
+
+                if ( this.obj.life <= target.obj.mercenaries ){
+                    this.die( dieRes => {
+                     
+                        updateSocketsValues({
+                            x : target.obj.position[0],
+                            y : target.obj.position[1]},[
+                                {
+                                    '_id' : targetRes.value['_id'],
+                                    'mercenaries' : targetRes.value['mercenaries']
+                                }
+                            ]
+                            );
+
+                            callback(true);
+
+                    });
+
+                }else{
+
+                    this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries }, charaRes => {
+
+                        updateSocketsValues({
+                            x : target.obj.position[0],
+                            y : target.obj.position[1]},[
+                                {
+                                    '_id' : targetRes.value['_id'],
+                                    'mercenaries' : targetRes.value['mercenaries']
+                                },
+                                {
+                                    '_id' : this.obj._id,
+                                    "actions" : charaRes.actions,
+                                    "life" : charaRes.life
+                                }
+                            ]
+                            );
+            
+                        callback(targetRes);
+    
+                    });
+                }
+            });
+
+        }else{
+            callback(null);
+        }
+
+    }
+    plunder(target : CapitalPattern, callback ){
+
+        console.log('plunder');
+
     }
 
     addLevel(number, callback){

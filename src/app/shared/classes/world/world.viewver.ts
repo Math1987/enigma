@@ -275,10 +275,8 @@ export class WorldViewer {
             this.stock.forEach( obj => {
 
                 if ( obj['_id'] && data['_id'] === obj['_id'] ){
-
-                    for ( let key of Object.keys(data) ){
-                        obj[key] = data[key] ;
-                    }
+                    
+                    obj.update(data);
 
                 }
     

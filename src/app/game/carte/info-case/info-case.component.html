@@ -15,7 +15,10 @@
         <div class="info" *ngIf="targetFloor; let floor">
             <!-- {{case.floor.img}} -->
             <div class="img-container">
-                <img class="avatar"[src]="floor.img" >
+                <div class="avatar">
+                    <img [src]="floor.img" >
+                    <div *ngIf="floor['datas'] && floor['datas']['clan']" class="clan" [ngClass]="floor['datas']['clan']"></div>
+                </div>
                 <p>{{floor.getName()}}</p>
             </div>
             <div class="chara-infos">
@@ -23,15 +26,10 @@
                 <div class="actions">
                     <div class="action" 
                     *ngFor="let action of floor.interactions"
-                    (click)="user.makeAction(floor, action)"
+                    (click)="user.makeAction(floor, action.action)"
                     >
-                        <div class="icon" [ngClass]="{
-                            'icon-water' : action === 'puiser de l\'eau',
-                            'icon-attack' : action === 'chasser',
-                            'icon-wood' : action === 'bûcheronner',
-                            'icon-pray' : action === 'prier'
-                        }"></div>
-                        {{action}}
+                        <div class="icon" [ngClass]="action['icon']"></div>
+                        {{action.name}}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
-import { InsertWriteOpResult } from "mongodb";
+import { FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
 import { BuildingI } from "../interfaces/building.interface";
-import { database } from "./../data/index.data";
+import { convertId, database } from "./../data/index.data";
 import { fixObjDatas } from "../patterns/base.pattern";
 
 
@@ -17,11 +17,26 @@ export async function findBuildingOnPosition( position : [number, number] ):Prom
     } );
 }
 
-// export function findBuildingsOnPositions( positions : {x:number,y:number}[], callback : (buildings : BuildingI[])=>{} ) : void {
-//     while ( positions.length > 0 ){
-//     }
-// }
 
+export async function findBuildingFromID(id : any ): Promise<BuildingI>{
+    const collection = database.collection('buildings');
+    return await collection.findOne({
+        _id : convertId(id)
+    });
+}
+
+export async function incBuildingValuesData( _id : string, datas ):Promise<FindAndModifyWriteOpResultObject<BuildingI>>{
+    const cbuilding = database.collection('buildings');
+    const req = {
+        $inc : {}
+    };
+    for ( let key of Object.keys(datas) ){
+        req.$inc[key] = datas[key] ;
+    }
+    return await cbuilding.findOneAndUpdate({
+        _id : convertId(_id)
+    }, req, { returnOriginal : false} ) ;
+}
 
 export const findBuildingsOnPositions = ( positions : {x:number,y:number}[], callback : (buildings : BuildingI[])=>void ): void => {
     

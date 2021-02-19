@@ -13,6 +13,7 @@ import { CharaPattern, convertCharaForFrontend } from "./chara.patterns";
 import { MonsterPattern } from "./monster.pattern";
 import { WorldPattern } from "./world.pattern";
 import { initMongoDB } from './../data/index.data';
+import { CapitalPattern } from "./capital.pattern";
 
 initMongoDB( res => {
     console.log('mongodb ok');
@@ -29,6 +30,7 @@ export class PatternHandler {
         PATTERNS.world = new WorldPattern();
         PATTERNS.chara = new CharaPattern();
         PATTERNS.monster = new MonsterPattern();
+        PATTERNS.capital = new CapitalPattern();
 
         BuildingPattern.init();
         MonsterPattern.init();

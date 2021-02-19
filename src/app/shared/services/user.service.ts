@@ -149,13 +149,9 @@ export class UserService {
       this.resurrectionEmitter.emit(obj);
     });
     this.socketChara.on('updateDatas', ( datas )=> {
-      console.log('update datas from socket', datas);
       datas.forEach(element => {
           if ( element['_id'] && this.chara['_id'] === element['_id'] ){
             this.user.chara = {...this.chara, ...element};
-
-            console.log('new chara', this.user.chara);
-
             this.updateUser(this.user);
           }
       });
@@ -298,11 +294,61 @@ export class UserService {
 
       if ( floor.type === "floor" ){
         return [
-          `puiser de l'eau`,
-          'chasser',
-          'bûcheronner',
-          'prier'
+          {
+            name : `puiser de l'eau`,
+            icon : "icon-water",
+            action : `puiser de l'eau`
+          },
+          {
+            name : "chasser", 
+            icon : "icon-attack",
+            action : `chasser`
+          },
+          {
+            name : "bûcheronner",
+            icon : "icon-wood",
+            action : `bûcheronner`
+          },
+          {
+            name : "prier",
+            icon : "icon-pray",
+            action : "prier"
+          }
         ]
+      }else if ( floor.type === "capital" ){
+
+        console.log('clan', floor['datas'] );
+
+        if ( floor['datas']['clan'] === this.chara.clan ){
+          return [
+            {
+              name : `${floor['datas']['mercenaries']}/50 ajouter mercenaire `,
+              icon : "icon-pray" ,
+              action : "addMercenari"
+            }
+          ]
+        }else{
+          if ( floor['datas']['mercenaries'] > 0 ){
+            return [
+              {
+                name : `${floor['datas']['mercenaries']}/50 attaquer mercenaire`,
+                icon : "icon-attack",
+                action : "attackMercenari"
+              }
+            ]
+          }else{
+            return [
+              {
+                name : `piller`,
+                icon : "icon-attack",
+                action : "plunder"
+              }
+            ]
+          }
+
+        }
+
+
       }
 
     }else if ( target && target.x === this.chara.x && target.y === this.chara.y ){
@@ -339,7 +385,7 @@ export class UserService {
     }).subscribe( res => {
 
       
-    })
+    });
 
     //this.updateCharaValue('life', this.chara.life + 10 );
   }

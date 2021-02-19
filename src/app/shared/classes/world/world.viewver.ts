@@ -22,6 +22,7 @@ import { ReplaySubject } from 'rxjs';
 import * as THREE from 'three' ;
 import {  Material, Vector3 } from 'three';
 import { WorldService } from '../../services/world.service';
+import { WorldCapital } from './capital.world';
 import { WorldChara } from './chara.world';
 import { WorldFloor } from './floor.world';
 import { WorldModel } from './model.world';
@@ -42,7 +43,8 @@ export class WorldViewer {
             "deepdesert" : new WorldFloor('deepdesert'),
             "neutral" : new WorldFloor('neutral'),
             "chara" : new WorldChara(),
-            "monster" : new WorldMonster()
+            "monster" : new WorldMonster(),
+            "capital" : new WorldCapital()
         }
         
     }

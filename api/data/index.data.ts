@@ -12,28 +12,34 @@ import { Environment } from "../environment/environment";
 
 const client = new MongoClient('mongodb://localhost',{ useUnifiedTopology: true } );
 export let database : Db ;
-client.connect().then( co => {
+export const initMongoDB = (callback: (res)=>void) => {
 
-    database = client.db(Environment.mongodb.name);
-    const cusers = database.collection('users');
-    cusers.createIndex({"email":1}, {unique : true});
+    client.connect().then( co => {
 
-    /**
-     * World managment in db: world is created dynamically when users discovering new areas 
-     * This is wy we create here an index on position as unique to be sure
-     * than all positions will be uniques. 
-     * Each time a user get some part of the word (when he see map and move), 
-     * he potentialy add new positions
-     */
-    const world = database.collection('world');
+        database = client.db(Environment.mongodb.name);
+        const cusers = database.collection('users');
+        cusers.createIndex({"email":1}, {unique : true});
     
-    world.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+        /**
+         * World managment in db: world is created dynamically when users discovering new areas 
+         * This is wy we create here an index on position as unique to be sure
+         * than all positions will be uniques. 
+         * Each time a user get some part of the word (when he see map and move), 
+         * he potentialy add new positions
+         */
+        const world = database.collection('world');
+        world.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+    
+        const buildings = database.collection('buildings');
+        buildings.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+    
+        const charas = database.collection('users');
+        const monsters = database.collection('monsters');
+        callback(true);
 
-    const charas = database.collection('users');
-    const monsters = database.collection('monsters');
+    });
+}
 
-
-});
 
 export const convertId = (_id:any):ObjectId => {
     let id = _id ;

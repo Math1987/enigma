@@ -10,6 +10,7 @@ import { Pattern } from "./base.pattern";
 import { MonsterPattern } from "./monster.pattern";
 
 export class WorldPattern extends Pattern{
+    
     static getCases = ( arr : CaseI[], callback ) => {
         insertOnWorld( arr.map( row => {
                 return { 

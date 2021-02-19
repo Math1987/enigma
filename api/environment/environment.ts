@@ -5,12 +5,12 @@ let env = {
     portHttp : 4000,
     portHttps : 4001,
     ssl : {
-        key : path.join(__dirname, '../../keys/ssl/key.pem'),
-        crt : path.join(__dirname, '../../keys/ssl/crt.pem')
+        key : path.join(__dirname, '../keys/ssl/key.pem'),
+        crt : path.join(__dirname, '../keys/ssl/crt.pem')
     },
     tokenSsh : {
-        key : path.join(__dirname, '../../keys/ssh/key'),
-        crt : path.join(__dirname, '../../keys/ssh/key.pub')
+        key : path.join(__dirname, '../keys/ssh/key'),
+        crt : path.join(__dirname, '../keys/ssh/key.pub')
     },
     mongodb : {
         name : "enigmajdr_test"
@@ -31,8 +31,8 @@ if ( process.env.MODE === "prod" ){
             crt: "/etc/letsencrypt/live/enigmajdr.com/fullchain.pem"
         },
         tokenSsh : {
-            key : path.join(__dirname, '../../keys/ssh/key'),
-            crt : path.join(__dirname, '../../keys/ssh/key.pub')
+            key : path.join(__dirname, '../keys/ssh/key'),
+            crt : path.join(__dirname, '../keys/ssh/key.pub')
         },
     
     }

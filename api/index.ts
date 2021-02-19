@@ -43,6 +43,6 @@ app.use(apiRouter);
  */
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/*", (req, res) => {
-  res.sendFile(process.cwd() + "/dist/public/index.html");
+  res.sendFile(process.cwd() + "/public/index.html");
 });
 

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { WorldBuilding } from 'src/app/shared/classes/world/building.world';
 
 import { WorldChara } from 'src/app/shared/classes/world/chara.world';
 import { WorldFloor } from 'src/app/shared/classes/world/floor.world';
@@ -65,10 +66,11 @@ export class InfoCaseComponent implements OnInit {
 
       this.selectSubscription = this.viewer.viewver.selectEmitter.subscribe(selects => {
 
-        console.log('new selections')
+        console.log('new selections');
+        let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
+        
 
-
-        this.targetFloor = selects.filter( row => row instanceof WorldFloor)[0] ;
+        this.targetFloor = floors[floors.length-1] ;
         const floorInteractions = this.user.getActionsOn(this.targetFloor);
         this.targetFloor['name'] = this.targetFloor.getName();
         this.targetFloor['interactions'] = floorInteractions ;

@@ -8,9 +8,19 @@
  */
 import { findCharaDatasByID, findCharaDatasByUserID } from "../queries/chara.queries";
 import { PATTERNS, SOCKETS } from "./base.pattern";
+import { BuildingPattern } from "./building.pattern";
 import { CharaPattern, convertCharaForFrontend } from "./chara.patterns";
 import { MonsterPattern } from "./monster.pattern";
 import { WorldPattern } from "./world.pattern";
+import { initMongoDB } from './../data/index.data';
+
+initMongoDB( res => {
+    console.log('mongodb ok');
+    PatternHandler.init();
+});
+
+
+
 
 export class PatternHandler {
 
@@ -20,6 +30,7 @@ export class PatternHandler {
         PATTERNS.chara = new CharaPattern();
         PATTERNS.monster = new MonsterPattern();
 
+        BuildingPattern.init();
         MonsterPattern.init();
         
     }

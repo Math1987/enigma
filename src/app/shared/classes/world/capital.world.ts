@@ -8,61 +8,37 @@ import { WorldChara } from "./chara.world";
 export class WorldCapital extends WorldBuilding {
 
     static BUILDING_COORDS = {
-        capital : {
-            left : 760/1000,
-            top :  0.66 ,
-            width : 239/1000,
-            height : 0.33
-        },
-        humanfeminine : {
+        'clan-1' : {
             left : 0,
-            top :  0.136*2.6 ,
-            width : 0.136,
-            height : 0.136*2.6
+            top :  0.5 ,
+            width : 0.5,
+            height : 0.5
         },
-        dwarfmasculin : {
-            left : 0.136,
-            top :  0.136*2.6*2 ,
-            width : 0.136,
-            height : 0.136*2.6
+        'clan-2' : {
+            left : 0.5,
+            top :  0.5 ,
+            width : 0.5,
+            height : 0.5
         },
-        dwarffeminine : {
-            left : 0.136,
-            top :  0.136*2.6 ,
-            width : 0.136,
-            height : 0.136*2.6
+        'clan-3' : {
+            left : 0,
+            top :  0.5 ,
+            width : 0.5,
+            height : 0.5
         },
-        elfmasculin : {
-            left : 0.136*2,
-            top :  0.136*2.6*2 ,
-            width : 0.136,
-            height : 0.136*2.6
-        },
-        elffeminine : {
-            left : 0.136*2,
-            top :  0.136*2.6 ,
-            width : 0.136,
-            height : 0.136*2.6
-        },
-        vampiremasculin : {
-            left : 0.136*3,
-            top :  0.136*2.6*2 ,
-            width : 0.136,
-            height : 0.136*2.6
-        },
-        vampirefeminine : {
-            left : 0.136*3,
-            top :  0.136*2.6 ,
-            width : 0.136,
-            height : 0.136*2.6
+        'clan-4' : {
+            left : 0.5,
+            top :  0 ,
+            width : 0.5,
+            height : 0.5
         },
     }
 
     _id : string ;
     clan : string ;
     decal = {
-        x : 1,
-        y : 1
+        x : 0.5,
+        y : 0.5
     }
 
     datas = null ;
@@ -89,7 +65,7 @@ export class WorldCapital extends WorldBuilding {
     }
     public set type(type:string){}
 
-    constructor(matKey = "chara"){
+    constructor(matKey = "capital"){
         super(matKey);
 
     }
@@ -107,8 +83,8 @@ export class WorldCapital extends WorldBuilding {
             obj.datas = params ;
 
             const geometry = new THREE.BufferGeometry();
-            let width = 2.5;
-            let height = 2.7 ;
+            let width = 1.5;
+            let height = 1.59 ;
             const vertices = new Float32Array( [
                 -width/2, 0,  0,
                 width/2, 0,  0,
@@ -118,7 +94,7 @@ export class WorldCapital extends WorldBuilding {
                 -width/2, height,  0,
                 -width/2, 0,  0
             ] );
-            let rec = WorldCapital.BUILDING_COORDS['capital'] ;
+            let rec = WorldCapital.BUILDING_COORDS[params.clan] ;
             const uvs = new Float32Array( [
                  rec.left, rec.top,
                  rec.left + rec.width , rec.top,
@@ -161,10 +137,9 @@ export class WorldCapital extends WorldBuilding {
     }
     updateInfoCaseFromContext(user, charas : WorldChara[], interactions){
 
-        console.log('UPDAET INTERACTIONS');
-
+        
         for ( let chara of charas ){
-            console.log(chara['clan'], this.datas['clan']);
+
             if ( chara['clan'] === this.datas['clan'] && chara['clan'] !== user['clan'] ){
                 interactions.splice(0,1);
 

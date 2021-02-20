@@ -839,6 +839,7 @@ export class CharaPattern extends Pattern{
     plunder(target : CapitalPattern, callback ){
 
         console.log('plunder');
+        callback(null);
 
     }
 

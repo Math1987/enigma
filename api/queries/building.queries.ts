@@ -60,3 +60,10 @@ export const findBuildingsOnPositions = ( positions : {x:number,y:number}[], cal
     };
     search();
 }
+
+export async function findBuildingQuery(query): Promise<BuildingI> {
+
+    const collection = database.collection("buildings");
+    return await collection.findOne(query) ;
+
+}

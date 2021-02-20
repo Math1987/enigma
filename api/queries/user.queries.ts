@@ -4,6 +4,7 @@ import { findCharaDatasByUserID } from "./chara.queries";
 import { Cursor, FindAndModifyWriteOpResultObject, ObjectId } from "mongodb";
 import { CharaI } from "../interfaces/chara.interface";
 import { database, convertId } from "./../data/index.data";
+import { findBuildingQuery } from "./building.queries";
 
 
 export function createUserDatas( datas : UserI, callback? :  (user : UserI) => void ):void{
@@ -35,10 +36,20 @@ export async function findUserDatasByID( _id:string, projection = { "password" :
  */
 export const readFullUserById = (_id : string, callback : (user:UserI)=>void ):void => {
 
+    console.log('readFullUserById');
+
     findUserDatasByID(_id ).then( user => {
         findCharaDatasByUserID( _id ).then( chara => {
+
             user['chara'] = convertCharaForFrontend(chara) ;
-            callback(user);
+
+            findBuildingQuery({type : "capital", clan : chara.clan}).then( capital => {
+
+                user['chara']['capital'] = capital ;
+                callback(user);
+
+            });
+
         });
     });
 

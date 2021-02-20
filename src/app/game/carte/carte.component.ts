@@ -36,7 +36,7 @@ export class CarteComponent implements OnInit, AfterViewInit {
     console.log('init map on ngAfterViewInit');
 
       this.viewS.buildMap();
-      //this.drawMapCanvas();
+      this.drawMapCanvas();
 
   }
 

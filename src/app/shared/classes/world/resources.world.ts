@@ -14,6 +14,7 @@ export class WorldRes {
             "deepdesert" : new THREE.TextureLoader().load( "/assets/images/texture_deepdesert.png" ),
             "neutral" : new THREE.TextureLoader().load( "/assets/images/grass.png" ),
             "chara" : new THREE.TextureLoader().load( "/assets/images/world.png" ),
+            "capital" : new THREE.TextureLoader().load("/assets/images/sprite_city.png"),
             "arrow" : new THREE.TextureLoader().load("/assets/images/arrow.png")
         };
         WorldRes.FLOORGEO = new THREE.BoxGeometry(0.9,0.9,0.05);
@@ -24,6 +25,10 @@ export class WorldRes {
             "desert" : new THREE.MeshLambertMaterial({ emissiveMap : WorldRes.TEXTURES['desert'], emissive : 0xffffff, emissiveIntensity:1.0}),
             "deepdesert" : new THREE.MeshLambertMaterial({ emissiveMap : WorldRes.TEXTURES['deepdesert'], emissive : 0xffffff, emissiveIntensity:1.0}),
             "neutral" : new THREE.MeshLambertMaterial({ emissiveMap : WorldRes.TEXTURES['neutral'], emissive : 0xffffff, emissiveIntensity:1.0}),
+            "capital" : new THREE.MeshBasicMaterial({
+                map : WorldRes.TEXTURES['capital'],
+               transparent : true 
+           }),
             "chara" : new THREE.MeshBasicMaterial({
                  map : WorldRes.TEXTURES['chara'],
                 transparent : true 

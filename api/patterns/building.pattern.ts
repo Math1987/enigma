@@ -45,7 +45,6 @@ export class BuildingPattern extends Pattern {
             callback(buildings);
         });
 
-
     };
 
 }

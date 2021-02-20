@@ -22,7 +22,7 @@
                         <p>niveau {{chara.level}}</p>
                         <p>Race: {{chara.race}}</p>
                         <div class="clan" [ngClass]="chara.clan"></div>
-                        <p [ngClass]="chara.clan" style="background-color:transparent">capitale: {{chara.capital.position[0]}}x {{chara.capital.position[1]}}y</p>
+                        <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">capitale: {{chara.capital.position[0]}}x {{chara.capital.position[1]}}y</p>
                         <p [ngClass]="chara.clan" style="background-color:transparent">{{chara.clan}}</p>
                     </div>
     
@@ -33,8 +33,6 @@
                         <p>Chasseur: {{chara.hunter}} <span class="clickable" *ngIf="chara.xp > 0" (click)="user.addSkill('hunter')">+1</span></p>
                         <p>Compétences : <span class="xp" *ngIf="chara.xp > 0">{{chara.xp}} </span> <span *ngIf="chara.xp <= 0">0</span></p>
                     </div>
-
-
 
                 </div>
 

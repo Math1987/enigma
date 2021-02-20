@@ -36,19 +36,32 @@ export async function findUserDatasByID( _id:string, projection = { "password" :
  */
 export const readFullUserById = (_id : string, callback : (user:UserI)=>void ):void => {
 
-    console.log('readFullUserById');
-
     findUserDatasByID(_id ).then( user => {
         findCharaDatasByUserID( _id ).then( chara => {
 
-            user['chara'] = convertCharaForFrontend(chara) ;
+            if ( chara ){
 
-            findBuildingQuery({type : "capital", clan : chara.clan}).then( capital => {
+                user['chara'] = convertCharaForFrontend(chara) ;
 
-                user['chara']['capital'] = capital ;
+                findBuildingQuery({type : "capital", clan : chara['clan']}).then(capital => {
+
+                    if ( capital ){
+                        user['chara']['capital'] = capital ;
+                    }   
+                    callback(user);
+
+                }).catch( err => {
+
+                    callback(user);
+
+                });
+
+
+            }else{
+
                 callback(user);
 
-            });
+            }
 
         });
     });

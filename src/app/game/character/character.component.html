@@ -22,7 +22,7 @@
                         <p>niveau {{chara.level}}</p>
                         <p>Race: {{chara.race}}</p>
                         <div class="clan" [ngClass]="chara.clan"></div>
-                        <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">capitale: {{chara.capital.position[0]}}x {{chara.capital.position[1]}}y</p>
+                        <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">capitale: {{-chara.capital.position[1]}}x {{-chara.capital.position[0]}}y</p>
                         <p [ngClass]="chara.clan" style="background-color:transparent">{{chara.clan}}</p>
                     </div>
     

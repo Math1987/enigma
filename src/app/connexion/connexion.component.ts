@@ -35,15 +35,15 @@ export class ConnexionComponent implements OnInit {
 
 
     this.createFG = new FormGroup({
-      name : new FormControl('JeanJean', [Validators.required]),
-      email : new FormControl('JeanJean@JeanJean.com', [Validators.required, Validators.email]),
-      password : new FormControl('jean', [Validators.required, Validators.minLength(4), conf]),
-      confirm : new FormControl('jean', [Validators.required, conf])
+      name : new FormControl('', [Validators.required]),
+      email : new FormControl('', [Validators.required, Validators.email]),
+      password : new FormControl('', [Validators.required, Validators.minLength(4), conf]),
+      confirm : new FormControl('', [Validators.required, conf])
     });
   
     this.loginFG = new FormGroup({
-      email : new FormControl('JeanJean@JeanJean.com', [Validators.required, Validators.email]),
-      password : new FormControl('jean', [Validators.required, Validators.minLength(4)]),
+      email : new FormControl('', [Validators.required, Validators.email]),
+      password : new FormControl('', [Validators.required, Validators.minLength(4)]),
     });
   
 

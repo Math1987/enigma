@@ -1,6 +1,6 @@
 <div id="map" class="map">
     <canvas class="map-canvas" #mapCanvas></canvas>
-    <div class="position" *ngIf="user.charaSubject | async; let chara">{{chara.x}}x {{chara.y}}y</div>
+    <div class="position" *ngIf="user.charaSubject | async; let chara">{{-chara.y}}x {{-chara.x}}y</div>
 </div>
 
 <div class="book infos">

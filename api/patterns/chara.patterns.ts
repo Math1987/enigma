@@ -48,8 +48,8 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         
         life : 100,
         lifeMax : 100,
-        moves : 1000,
-        actions : 1000,
+        moves : 40,
+        actions : 10,
         xp : 50,
         water : 10,
         waterMax : 40,
@@ -345,7 +345,14 @@ export class CharaPattern extends Pattern{
                             }
                             if ( attackRes.death ){
 
-                                this.incrementValues({gold : 1+Math.floor(Math.random()*20)}, goldrRes => {
+                                let gold = 1+Math.floor(Math.random()*19) ;
+                                if ( target.obj.type === "chara" ){
+                                    gold = target.obj.gold ;
+                                }
+
+                                console.log('steal gold', gold);
+
+                                this.incrementValues({gold : gold}, goldrRes => {
 
                                     this.addLevel(1/5, charaF=>{
 
@@ -415,7 +422,7 @@ export class CharaPattern extends Pattern{
 
         if ( this.obj.actions > 0 && !target.obj['clan'] || target.obj['clan'] === this.obj['clan'] ){
 
-            let adder = Math.min(1, Math.max(0,target.obj['lifeMax'] - target.obj['life']) );
+            let adder = Math.min(0, Math.max(0,target.obj['lifeMax'] - target.obj['life']) );
 
             const D100 = 1 + Math.floor(Math.random()*99);
 
@@ -891,13 +898,15 @@ export class CharaPattern extends Pattern{
         
         updateCharaPositionDatas(this.obj._id, newPos.x, newPos.y).then( posRes => {
 
+            
             updateCharaValuesData(this.obj._id, {
                 life : this.obj.lifeMax,
-                actions : 1000,
-                moves : 1000,
+                actions : 0,
+                moves : 0,
                 water : 0, 
                 food : 0,
                 wood : 0, 
+                gold : 0,
                 faith : Math.floor(Math.random()*10)
             }).then( updateLifeRes => {
     

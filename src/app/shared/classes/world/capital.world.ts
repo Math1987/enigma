@@ -67,7 +67,6 @@ export class WorldCapital extends WorldBuilding {
 
     constructor(matKey = "capital"){
         super(matKey);
-
     }
     getName(){
         return "capitale" ;

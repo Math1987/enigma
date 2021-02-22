@@ -117,9 +117,9 @@ export class InfoCaseComponent implements OnInit {
       if ( this.user.chara.messages.length > 0 ){
         mes1 = this.messageService.createMessageTemplate( this.user.chara.messages[0] );
       }
-      if ( this.user.chara.messages.length > 1 ){
-        mes1 += this.messageService.createMessageTemplate( this.user.chara.messages[1] );
-      }
+      // if ( this.user.chara.messages.length > 1 ){
+      //   mes1 += this.messageService.createMessageTemplate( this.user.chara.messages[1] );
+      // }
 
       div.innerHTML = mes1 ;
 

@@ -347,7 +347,7 @@ export class CharaPattern extends Pattern{
 
                                 let gold = 1+Math.floor(Math.random()*19) ;
                                 if ( target.obj.type === "chara" ){
-                                    gold = target.obj.gold ;
+                                    gold = target.obj.gold/2 ;
                                 }
 
                                 console.log('steal gold', gold);
@@ -900,14 +900,7 @@ export class CharaPattern extends Pattern{
 
             
             updateCharaValuesData(this.obj._id, {
-                life : this.obj.lifeMax,
-                actions : 0,
-                moves : 0,
-                water : 0, 
-                food : 0,
-                wood : 0, 
-                gold : 0,
-                faith : Math.floor(Math.random()*10)
+                gold : this.obj.gold/2,
             }).then( updateLifeRes => {
     
                 super.die(dieRes => {

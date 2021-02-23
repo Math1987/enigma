@@ -36,7 +36,7 @@
                         <mat-error>champ requis</mat-error>
                     </mat-form-field>
                     <mat-form-field>
-                        <input matInput formControlName="password" placeholder="mot de passe">
+                        <input type="password" matInput formControlName="password" placeholder="mot de passe">
                         <mat-error>champ requis</mat-error>
                     </mat-form-field>
                     <button mat-raised-button  color='primary' [disabled]="!loginFG.valid" (click)="login()">se connecter</button>

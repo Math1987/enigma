@@ -1,7 +1,7 @@
 <div class="book">
     <div class="page">
         <div class="article">
-            <h2 class="title">Charactéristiques</h2>
+            <h2 class="title">Caractéristiques</h2>
      
             <div class="content" *ngIf="(user.charaSubject | async) ; let chara">
                 
@@ -23,6 +23,7 @@
                         <p>Race: {{chara.race}}</p>
                         <div class="clan" [ngClass]="chara.clan"></div>
                         <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">capitale: {{-chara.capital.position[1]}}x {{-chara.capital.position[0]}}y</p>
+                        <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">défenseur: {{chara.capital.mercenaries}}</p>
                         <p [ngClass]="chara.clan" style="background-color:transparent">{{chara.clan}}</p>
                     </div>
     
@@ -44,8 +45,9 @@
             </div>
         </div>
         <div class="article">
-            <h2 class="title">Trophé et pictos</h2>
+            <h2 class="title">Trophées & pictos</h2>
             <div class="content">
+                Prochainement...
             </div>
         </div>
     </div>
@@ -54,6 +56,7 @@
         <div class="article">
             <h2 class="title">Background</h2>
             <div class="content">
+                Prochainement...
             </div>
         </div>
     </div>

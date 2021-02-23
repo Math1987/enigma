@@ -34,8 +34,8 @@ export class ViewverService {
     /**
      * for each chara update, check viewver
      */
-    this.user.charaSubject.subscribe( () => {
-      this.setViewver();
+    this.user.charaSubject.subscribe( chara => {
+      this.setViewver(chara);
     });
 
   }
@@ -44,12 +44,12 @@ export class ViewverService {
    * if viewver is null but chara exist, create the view
    * on map html element.
    */
-  setViewver(){
+  setViewver(chara){
 
-      if ( !this.viewver && this.user.chara ){
+      if ( !this.viewver && chara ){
         const map = document.getElementById('map') as HTMLDivElement ;
         if ( map ){
-          this.createViewver(map,this.user.chara);
+          this.createViewver(map,chara);
         }
       }
   }
@@ -66,13 +66,13 @@ export class ViewverService {
 
     setTimeout(()=>{
       const map = document.getElementById('map') as HTMLDivElement ;
-      if ( !this.viewver ){
-          this.setViewver();
+      if ( !this.viewver && this.user.chara ){
+          this.setViewver(this.user.chara);
           if ( this.viewver ){
             this.viewver.renderOn(map);
             this.initEmitter.emit(true);
           }
-      }else{
+      }else if ( this.viewver ){
           this.viewver.renderOn(map);
           this.initEmitter.emit(true);
       }

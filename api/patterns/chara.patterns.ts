@@ -288,7 +288,7 @@ export class CharaPattern extends Pattern{
     attack( target : Pattern, callback){
 
 
-        if ( this.obj.actions > 0 && !target['clan'] || target['clan'] !== this.obj['clan'] ){
+        if ( this.obj.actions > 0 && (!target['clan'] || target['clan'] !== this.obj['clan']) ){
 
             this.incrementValues({'actions': -1}, charaUpdated => {
 
@@ -420,21 +420,28 @@ export class CharaPattern extends Pattern{
     }
     heal( target : Pattern, callback ){
 
-        if ( this.obj.actions > 0 && !target.obj['clan'] || target.obj['clan'] === this.obj['clan'] ){
+        if ( 
+            this.obj.actions > 0 && 
+            this.obj.water >= 5 && 
+            this.obj.food >= 5 && 
+            (!target.obj['clan'] || target.obj['clan'] === this.obj['clan']) &&
+            target.obj['life'] < target.obj['lifeMax']
+            ){
 
-            let adder = Math.min(0, Math.max(0,target.obj['lifeMax'] - target.obj['life']) );
 
             const D100 = 1 + Math.floor(Math.random()*99);
 
-            const water = Math.ceil(Math.min(this.obj['water'], 10 * this.obj['dowser']/100)) ;
-            const food = Math.ceil(Math.min(this.obj['food'], 10 * this.obj['dowser']/100)) ;
-            adder += Math.ceil((water + food)*D100/100) ;
-            adder = Math.min( target.obj['lifeMax'] - target.obj['life'], adder );
+            let adder = 10 + Math.ceil(D100*0.2);
+
+
+            // const water = Math.ceil(Math.min(this.obj['water'], 10 * this.obj['dowser']/100)) ;
+            // const food = Math.ceil(Math.min(this.obj['food'], 10 * this.obj['dowser']/100)) ;
+    
 
             this.incrementValues({
                 'actions': -1,
-                'water' : -water,
-                'food' : -food
+                'water' : -5,
+                'food' : -5
             }, charaUpdated => {
                 target.incrementValues({ 'life' : adder }, targetU => {
 
@@ -762,7 +769,7 @@ export class CharaPattern extends Pattern{
         }
     }
     addMercenari( target : CapitalPattern, callback ){
-        if ( this.obj.gold > 20 && target.obj.mercenaries < 50 ){
+        if ( this.obj.gold >= 20 && target.obj.mercenaries < 20 ){
 
             this.incrementValues({ gold : -20}, charaRes => {
 
@@ -796,7 +803,7 @@ export class CharaPattern extends Pattern{
         if ( this.obj.actions > 0 && target.obj.mercenaries > 0 ){
             incBuildingValuesData(target.obj._id, { mercenaries : -1}).then( targetRes => {
 
-                if ( this.obj.life <= target.obj.mercenaries ){
+                if ( this.obj.life <= target.obj.mercenaries*3 ){
                     this.die( dieRes => {
                      
                         updateSocketsValues({
@@ -815,7 +822,7 @@ export class CharaPattern extends Pattern{
 
                 }else{
 
-                    this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries }, charaRes => {
+                    this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries*3 }, charaRes => {
 
                         updateSocketsValues({
                             x : target.obj.position[0],
@@ -900,6 +907,7 @@ export class CharaPattern extends Pattern{
 
             
             updateCharaValuesData(this.obj._id, {
+                life : 100,
                 gold : this.obj.gold/2,
             }).then( updateLifeRes => {
     

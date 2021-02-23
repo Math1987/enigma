@@ -7,8 +7,8 @@ export class BuildingPattern extends Pattern {
 
     static init(){
 
-        const startMercenary = 30 ;
-        const dist = 40 ;
+        const startMercenary = 10 ;
+        const dist = 20 ;
 
         const capitales : CapitalI[] = [
             {

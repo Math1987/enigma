@@ -97,8 +97,8 @@ export class UserService {
 
     })
 
-
     if ( localStorage.getItem('token') ){
+
 
       this.http.get(`${environment.urlApi}/user/read`).subscribe( usr => {
 
@@ -292,7 +292,7 @@ export class UserService {
     
     if ( !target && floor instanceof WorldModel && floor.x === this.chara.x && floor.y === this.chara.y ){
 
-      if ( floor.type === "floor" ){
+      if ( floor.type === "floor" && floor.getName() !== "neutral" ){
         return [
           {
             name : `puiser de l'eau`,
@@ -322,8 +322,8 @@ export class UserService {
         if ( floor['datas']['clan'] === this.chara.clan ){
           return [
             {
-              name : `${floor['datas']['mercenaries']}/50 ajouter mercenaire `,
-              icon : "icon-pray" ,
+              name : `${floor['datas']['mercenaries']}/20 ajouter mercenaire `,
+              icon : "icon-shield" ,
               action : "addMercenari"
             }
           ]
@@ -331,7 +331,7 @@ export class UserService {
           if ( floor['datas']['mercenaries'] > 0 ){
             return [
               {
-                name : `${floor['datas']['mercenaries']}/50 attaquer mercenaire`,
+                name : `${floor['datas']['mercenaries']}/20 attaquer mercenaire`,
                 icon : "icon-attack",
                 action : "attackMercenari"
               }

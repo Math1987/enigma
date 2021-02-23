@@ -129,6 +129,8 @@ export class WorldViewer {
         this.camera.position.x += this.x ;
         this.camera.position.y += this.y ;
 
+        this.selectedP.x = this.x ;
+        this.selectedP.y = this.y ;
 
         this.renderer.setAnimationLoop( anim => {
             this.animation.next();
@@ -197,7 +199,8 @@ export class WorldViewer {
 
             }
 
-        })
+        });
+        this.updateSelection();
     }
 
     updateMovers(){
@@ -215,6 +218,7 @@ export class WorldViewer {
         this.moverMY.position.y = this.y - this.rayon - 2 ;
     }
     updateSelection(){
+        console.log('update selection')
         this.selectByPosition(this.selectedP.x, this.selectedP.y);
     }
 

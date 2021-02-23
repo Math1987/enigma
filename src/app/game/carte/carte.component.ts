@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { WorldChara } from 'src/app/shared/classes/world/chara.world';
 import { WorldFloor } from 'src/app/shared/classes/world/floor.world';
 import { WorldModel } from 'src/app/shared/classes/world/model.world';
@@ -33,10 +34,17 @@ export class CarteComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(){
 
-    console.log('init map on ngAfterViewInit');
+    
+    this.user.charaSubject.pipe( first()).subscribe( chara => {
 
       this.viewS.buildMap();
       this.drawMapCanvas();
+      setTimeout(()=> {
+        
+        this.viewS.viewver.updateSelection();
+      },1000);
+
+    })
 
   }
 

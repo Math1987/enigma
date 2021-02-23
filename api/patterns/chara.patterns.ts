@@ -29,6 +29,7 @@ import {
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
 import { incBuildingValuesData } from "./../queries/building.queries";
+import { CharaI } from "api/interfaces/chara.interface";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -201,7 +202,7 @@ export class CharaPattern extends Pattern{
             const waterUse = Math.min(this.obj.water, 5);
             const foodUse = Math.min(this.obj.food, 5);
 
-            let message = `water -${waterUse}, food -${foodUse}`;
+            let message = `pass water -${waterUse}, food -${foodUse}`;
 
             if ( this.obj.food < 5 ){
                 autoDammages = Math.abs(this.obj.food - 5);
@@ -276,7 +277,7 @@ export class CharaPattern extends Pattern{
         }
 
     }
-    incrementValues(datas: any, callback : CallableFunction){
+    incrementValues(datas: any, callback : (chara:CharaI)=>void){
         incCharaValuesData( this.obj._id, datas).then( res => {
             if ( res.ok ){
                 callback(res.value);
@@ -287,125 +288,83 @@ export class CharaPattern extends Pattern{
     }
     attack( target : Pattern, callback){
 
-
         if ( this.obj.actions > 0 && (!target['clan'] || target['clan'] !== this.obj['clan']) ){
 
-            this.incrementValues({'actions': -1}, charaUpdated => {
+            super.attack(target, attackRes => {
 
-                super.attack(target, attackRes => {
+                let valuesIncThis = {
+                    actions : -1
+                }
 
-                    let message = `D100 ${attackRes.D100} attack ${target.obj.name} -${attackRes.dammage}`
+                let targetName = `${target.obj.clan} ${target.obj.name}` ;
+                if ( target.obj['type'] === "monster" ){
+                    targetName = target.getName();
+                }
 
-                    if ( attackRes.counter ){
-                        if ( attackRes.death ){
-                            message = `D100 ${attackRes.D100} counter life -${attackRes.dammage} death`;
-                        }else{
-                            message = `D100 ${attackRes.D100} counter life -${attackRes.dammage}`;
-                        }
-                    }else if ( attackRes.death ){
-                        message = `D100 ${attackRes.D100} kill ${target.obj.name} -${attackRes.dammage}`;
+                let message = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
+                let messageTarget = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
+                if ( attackRes.counter ){
+                    if ( attackRes.death ){
+                        message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
+                        messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
+                    }else{
+                        message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
+                        messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
                     }
+                }else if ( attackRes.death ){
+                    message += " death" ;
+                    messageTarget += " death";
+                    let gold = 1+Math.floor(Math.random()*19) ;
+                    if ( target.obj.type === "chara" ){
+                        gold = target.obj.gold/2 ;
+                    }
+                    valuesIncThis['gold'] = gold ;
+                    const addLvl = this.addLevel(1/5) ;
+                    valuesIncThis = {...valuesIncThis, ...addLvl };
+                    message += ` xp +${2} gold +${gold}`;
+                    if ( addLvl.xp ){
+                        message += "LVL UP!";
+                    }
+                }
 
-                    addMessageOnChara(this.obj._id, message).then( charaUpdated => {
+                console.log(valuesIncThis);
 
-                        if ( charaUpdated.ok ){
+                this.incrementValues(valuesIncThis, charaRes => {
+                    addMessageOnChara(this.obj._id, message ).then( charaUpdated => {
+                    
+                        
+                        updateSocketsValues({
+                            x : this.obj.position[0],
+                            y : this.obj.position[1]},[
+                                {
+                                    _id : this.obj._id,
+                                    actions : charaRes.actions,
+                                    gold : charaRes.gold,
+                                    xp : charaRes.xp,
+                                    level: charaRes.level,
+                                    messages : charaUpdated.value.messages }
+                            ]
+                        );
+                        if ( target.obj.type === "chara" ){
 
-                            if ( target.obj.type === "chara" ){
-
-                                let message = `${this.obj.name} attack -${attackRes.dammage}`
-
-                                if ( attackRes.counter ){
-                                    if ( attackRes.death ){
-                                        message = `D100 ${attackRes.D100} counter  ${this.obj.name} life -${attackRes.dammage} death`;
-                                    }else{
-                                        message = `D100 ${attackRes.D100} counter  ${this.obj.name} life -${attackRes.dammage}`;
-                                    }
-                                }else if ( attackRes.death ){
-                                    message = ` ${this.obj.name} kill -${attackRes.dammage} death`
-                                }
-
-
-                                addMessageOnChara(target.obj._id, message ).then( targetU => {
-                                
-                                    const targetF = targetU.value ;
-
-                                    updateSocketsValues({
-                                        x : target.obj.position[0],
-                                        y : target.obj.position[1]},[
-                                            {
-                                                '_id' : targetF._id,
-                                                'actions' : targetF.actions,
-                                                'messages' : targetF.messages
-                                            }
-                                        ]
-                                        );
-                                
-                                });
-
-                            }
-                            if ( attackRes.death ){
-
-                                let gold = 1+Math.floor(Math.random()*19) ;
-                                if ( target.obj.type === "chara" ){
-                                    gold = target.obj.gold/2 ;
-                                }
-
-                                console.log('steal gold', gold);
-
-                                this.incrementValues({gold : gold}, goldrRes => {
-
-                                    this.addLevel(1/5, charaF=>{
-
-                                        if ( charaF.ok ){
-    
-                                            updateSocketsValues({
-                                                x : this.obj.position[0],
-                                                y : this.obj.position[1]},[
-                                                    {
-                                                        '_id' : charaF.value._id,
-                                                        'level' : charaF.value.level,
-                                                        'xp' : charaF.value.xp,
-                                                        'actions' : charaF.value.actions,
-                                                        'messages' : charaF.value.messages,
-                                                        "gold" : charaF.value.gold
-                                                    }
-                                                ]
-                                            );
-                                            
-                                        }
-                                            
-                                        callback(attackRes);
-    
-                                    });
-
-                                });
-
-                                
-                            }else{
-
+                            addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
+                                const targetF = targetU.value ;
                                 updateSocketsValues({
-                                    x : this.obj.position[0],
-                                    y : this.obj.position[1]},[
+                                    x : target.obj.position[0],
+                                    y : target.obj.position[1]},[
                                         {
-                                            '_id' : charaUpdated.value._id,
-                                            'actions' : charaUpdated.value.actions,
-                                            'messages' : charaUpdated.value.messages
+                                            '_id' : targetF._id,
+                                            'actions' : targetF.actions,
+                                            'messages' : targetF.messages
                                         }
                                     ]
                                     );
-
-                                callback(attackRes);
-                            }
-
-         
-                        }else{
-
-                            callback(attackRes);
+                            
+                            });
 
                         }
-
-                    })
-
+                        callback(attackRes);
+                    });
                 });
 
             });
@@ -413,7 +372,7 @@ export class CharaPattern extends Pattern{
         }else{
 
             callback({
-                err : 'canont heal.'
+                err : 'cannot attack.'
             });
         }
 
@@ -431,12 +390,7 @@ export class CharaPattern extends Pattern{
 
             const D100 = 1 + Math.floor(Math.random()*99);
 
-            let adder = 10 + Math.ceil(D100*0.2);
-
-
-            // const water = Math.ceil(Math.min(this.obj['water'], 10 * this.obj['dowser']/100)) ;
-            // const food = Math.ceil(Math.min(this.obj['food'], 10 * this.obj['dowser']/100)) ;
-    
+            let adder = Math.min(target.obj['lifeMax']-target.obj['life'], 10 + Math.ceil(D100*0.2));
 
             this.incrementValues({
                 'actions': -1,
@@ -445,11 +399,11 @@ export class CharaPattern extends Pattern{
             }, charaUpdated => {
                 target.incrementValues({ 'life' : adder }, targetU => {
 
-                    addMessageOnChara( this.obj._id, `D100 ${D100} heal ${target.obj.name} +${adder}`).then( charaUpRes => {
+                    addMessageOnChara( this.obj._id, `D100 ${D100} life +${adder} ${target.obj.clan} ${target.obj.name} `).then( charaUpRes => {
 
                         const charaF = charaUpRes.value || charaUpdated ;
 
-                        addMessageOnChara( target.obj._id, `${this.obj.name} heal +${adder}`).then( targetUpRes => {
+                        addMessageOnChara( target.obj._id, `D100 ${D100} life +${adder} ${target.obj.clan} ${target.obj.name} `).then( targetUpRes => {
 
                             const targetF = targetUpRes.value ;
     
@@ -473,7 +427,6 @@ export class CharaPattern extends Pattern{
                                 );
                             
                             callback({ done : true});
-
 
                         });
 
@@ -857,7 +810,8 @@ export class CharaPattern extends Pattern{
 
     }
 
-    addLevel(number, callback){
+    addLevel(number){
+
 
         const ratio = 1/Math.floor(this.obj.level) ;
 
@@ -868,29 +822,11 @@ export class CharaPattern extends Pattern{
 
             const xpAdder = Math.ceil(this.obj.level*2.5);
 
-            this.incrementValues({ level : number*ratio, xp : xpAdder, kills : 1}, chara => {
-
-                addMessageOnChara(this.obj._id, `niveau +1, compétences +${xpAdder}!`).then( charaUpd => {
-
-                    callback(charaUpd);
-
-                });
-
-            });
-
+            return { level : number*ratio, xp : xpAdder, kills : 1};
 
         }else{
 
-            this.incrementValues({ level : number*ratio, kills : 1}, chara => {
-
-                addMessageOnChara(this.obj._id, `xp +${Math.floor(number*10)}`).then( charaUpd => {
-
-                    callback(charaUpd);
-
-                });
-
-
-            });
+            return { level : number*ratio, kills : 1} ;
 
         }
 
@@ -904,8 +840,7 @@ export class CharaPattern extends Pattern{
         }
         
         updateCharaPositionDatas(this.obj._id, newPos.x, newPos.y).then( posRes => {
-
-            
+        
             updateCharaValuesData(this.obj._id, {
                 life : 100,
                 gold : this.obj.gold/2,

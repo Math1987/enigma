@@ -167,7 +167,9 @@ export class MonsterPattern extends Pattern {
     constructor(args?){
         super(args);
     }
-
+    getName(){
+        return 'squelette' ;
+    }
     build(obj = null){
         const patt = new MonsterPattern(obj);
         return patt ;

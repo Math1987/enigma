@@ -29,6 +29,8 @@ export class MessageService {
         template.innerHTML += `<span class='icon icon-wood' ${styleIcon}></span>` ;
       }else if ( word === "faith" ){
         template.innerHTML += `<span class='icon icon-faith' ${styleIcon}></span>` ;
+      }else if ( word === "life" ){
+        template.innerHTML += `<span class='icon icon-life' ${styleIcon}></span>` ;
       }else{
         template.innerHTML += `${word} ` ;
       }
@@ -41,19 +43,27 @@ export class MessageService {
   createMessageTemplate(message : any){
 
     let final = `<div 
-    style="width:100%;
-    height:2rem ;
+    style="
+    width:100%;
     display : flex ;
-    flex-direction : row wrap ;
+    flex-flow: row wrap;
     align-items : center ;
-    ">` ;
+    border-bottom : 1px solid gray ;
+    border-top : 1px solid gray ;
+    border : 1px solid gray ;
+    margin : 2px ;
+    "
+    >` ;
 
     const styleIcon = `style="
     transform : scale(1.5,1.5) ;
+    padding : 0px ;
     "`;
     
     const words = message.split(' ');
-    for ( let word of words ){
+    let i = 0 ;
+    while ( i < words.length ){
+      let word = words[i];
       if ( word === "D100" ){
         final += `<div class='icon icon-dice' ${styleIcon} ></div>` ;
       }else if ( word === "attack" ){
@@ -66,9 +76,19 @@ export class MessageService {
         final += `<div class='icon icon-wood' ${styleIcon}></div>` ;
       }else if ( word === "faith" ){
         final += `<div class='icon icon-faith' ${styleIcon}></div>` ;
+      }else if ( word === "life" ){
+        final += `<div class='icon icon-life' ${styleIcon}></div>` ;
+      }else if ( word === "xp" ){
+        final += `<div class='icon icon-book' ${styleIcon}></div>` ;
+      }else if ( (word as string).includes('clan') ){
+        final += `<div class='${word} text-1' ${styleIcon}> ${words[i+1]} </div>` ;
+        i ++ ;
+      }else if ( word === "pass" ){
+        final += `<div class='icon icon-map' ${styleIcon}></div>` ;
       }else{
         final += `${word} ` ;
       }
+      i ++ ;
     }
     final += '</div>';
 

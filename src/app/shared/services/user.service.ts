@@ -363,6 +363,7 @@ export class UserService {
       }else if ( target.type === "chara" && this.chara.actions > 0 ){
 
         if ( target['clan'] === this.chara.clan && 
+        target['life'] < target['lifeMax'] && 
         this.chara.water >= 5 && 
         this.chara.food >= 5 ){
           return [

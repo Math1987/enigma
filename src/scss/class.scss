@@ -147,6 +147,10 @@
     }
 
 
+    &-book{
+        background-position: calc( var(--icon-size) * -2) calc( var(--icon-size) * -2) ;
+    }
+
     &-message{
 
         --icon-size : 1rem ;

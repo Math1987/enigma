@@ -50,7 +50,7 @@ export const newChara = {
 export class UserService {
 
 
-  private user : UserI = null ;
+  public user : UserI = null ;
   public chara : CharaI = null ;
 
   public subject : ReplaySubject<UserI> = new ReplaySubject();

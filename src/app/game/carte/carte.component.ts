@@ -39,10 +39,6 @@ export class CarteComponent implements OnInit, AfterViewInit {
 
       this.viewS.buildMap();
       this.drawMapCanvas();
-      setTimeout(()=> {
-        
-        this.viewS.viewver.updateSelection();
-      },1000);
 
     })
 

@@ -1,5 +1,6 @@
 
 import { Route, RouterModule } from "@angular/router";
+import { UserGuard } from "../shared/guards/user.guard";
 import { CarteComponent } from "./carte/carte.component";
 import { HistoricComponent } from "./carte/historic/historic.component";
 import { InfoCaseComponent } from "./carte/info-case/info-case.component";
@@ -19,6 +20,7 @@ const routes: Route[] = [
         },
         {
           path : 'carte',
+          canActivate: [UserGuard],
           component : CarteComponent,
           children : [
             {
@@ -37,6 +39,7 @@ const routes: Route[] = [
         },
         {
           path : 'personnage',
+          canActivate: [UserGuard],
           component : CharacterComponent
         },
         {

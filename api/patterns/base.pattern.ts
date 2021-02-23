@@ -124,6 +124,9 @@ export const fixObjDatas = (obj:any):any =>{
     const nobj = {...obj};
     nobj.x = obj.position[0] ;
     nobj.y = obj.position[1] ;  
+    if ( obj['level'] ){
+        obj['level'] = Math.floor(obj['level']*10)/10 ;
+    }
     return nobj ;
 }
 
@@ -258,6 +261,9 @@ export class Pattern {
     pass(){}
     makeAction(actionType : string, target : Pattern, callback: CallableFunction ){
         callback({ action : "done"});
+    }
+    getName(){
+        return '' ;
     }
     incrementValues( datas: any, callback : CallableFunction){
         callback(false);

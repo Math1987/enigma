@@ -91,6 +91,7 @@ export class ViewverService {
   private createViewver(map : HTMLDivElement, chara: CharaI){
 
     this.viewver = new WorldViewer(map, chara.x, chara.y);
+
     this.viewver.moverEmitter.subscribe( moveReq => {
       this.user.move( moveReq, res => {
         if ( res ){

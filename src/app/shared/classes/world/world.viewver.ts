@@ -218,7 +218,7 @@ export class WorldViewer {
         this.moverMY.position.y = this.y - this.rayon - 2 ;
     }
     updateSelection(){
-        console.log('update selection')
+
         this.selectByPosition(this.selectedP.x, this.selectedP.y);
     }
 
@@ -253,6 +253,7 @@ export class WorldViewer {
        
     }
     selectByPosition(x:number, y:number ){
+        console.log('select by positions');
         const rows = this.stock.filter( row => {
             if( row.x === x && row.y === y && row instanceof WorldFloor ){
                 return true ;
@@ -308,6 +309,7 @@ export class WorldViewer {
             for ( let cc of cases ){
                 this.addInCase(cc.x,cc.y, cc);
             }
+            this.updateSelection();
         });
 
     }
@@ -401,6 +403,7 @@ export class WorldViewer {
             for ( let c of cases ){
                 this.buildObj(c.type,c.x,c.y, c);
             }
+            this.updateSelection();
 
         });
     }
@@ -442,6 +445,7 @@ export class WorldViewer {
             for ( let c of cases ){
                 this.buildObj(c.type,c.x,c.y, c);
             }
+            this.updateSelection();
 
         });
     }
@@ -452,7 +456,7 @@ export class WorldViewer {
                 row.move(x,y);
             }
         });
-
+        this.updateSelection();
 
     }
     moveObjOnPositionById(id:string, x: number, y : number){
@@ -473,7 +477,7 @@ export class WorldViewer {
                 });
             }
         });
-
+        this.updateSelection();
     }
 
 

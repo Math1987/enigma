@@ -48,7 +48,9 @@ export class InfoCaseComponent implements OnInit {
 
     this.viewer.initEmitter.pipe( first()).subscribe( init => {
 
-      this.initSelection();
+      setTimeout(()=> {
+        this.initSelection();
+      },0);
 
     });
 
@@ -64,43 +66,49 @@ export class InfoCaseComponent implements OnInit {
     }
     if ( this.viewer.viewver ){
 
+      console.log(this.viewer.viewver.selected);
+
       this.selectSubscription = this.viewer.viewver.selectEmitter.subscribe(selects => {
 
-
-        let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
-
-        this.targetFloor = floors[floors.length-1] ;
-        const floorInteractions = this.user.getActionsOn(this.targetFloor);
-        this.targetFloor['name'] = this.targetFloor.getName();
-        this.targetFloor['interactions'] = floorInteractions ;
-
-        this.targetCharas = selects.filter(row => row instanceof WorldChara).map( row => {
-          const interactions = this.user.getActionsOn(this.targetFloor,row);
-          const nobj = {...row, interactions : interactions};
-          nobj['x'] = row.x ;
-          nobj['y'] = row.y ;
-          nobj['img'] = row.img ;
-          nobj['name'] = row.getName()
-          return nobj ;
-        }) ;
-
-        this.targetMonsters = selects.filter(row => row instanceof WorldMonster ).map( row => {
-          const interactions = this.user.getActionsOn(this.targetFloor,row);
-          const nobj = {...row, interactions : interactions};
-          nobj['x'] = row.x ;
-          nobj['y'] = row.y ;
-          nobj['img'] = row.img ;
-          nobj['name'] = row.getName()
-          return nobj ;
-        }) ;
-
-        if ( this.targetFloor instanceof WorldBuilding ){
-          this.targetFloor.updateInfoCaseFromContext(this.user.chara, this.targetCharas, this.targetFloor['interactions']);
-        }
-
+        this.updateSelectedCase(selects);
 
       })
     }
+
+  }
+  updateSelectedCase( selects ){
+
+    let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
+
+    this.targetFloor = floors[floors.length-1] ;
+    const floorInteractions = this.user.getActionsOn(this.targetFloor);
+    this.targetFloor['name'] = this.targetFloor.getName();
+    this.targetFloor['interactions'] = floorInteractions ;
+
+    this.targetCharas = selects.filter(row => row instanceof WorldChara).map( row => {
+      const interactions = this.user.getActionsOn(this.targetFloor,row);
+      const nobj = {...row, interactions : interactions};
+      nobj['x'] = row.x ;
+      nobj['y'] = row.y ;
+      nobj['img'] = row.img ;
+      nobj['name'] = row.getName()
+      return nobj ;
+    }) ;
+
+    this.targetMonsters = selects.filter(row => row instanceof WorldMonster ).map( row => {
+      const interactions = this.user.getActionsOn(this.targetFloor,row);
+      const nobj = {...row, interactions : interactions};
+      nobj['x'] = row.x ;
+      nobj['y'] = row.y ;
+      nobj['img'] = row.img ;
+      nobj['name'] = row.getName()
+      return nobj ;
+    }) ;
+
+    if ( this.targetFloor instanceof WorldBuilding ){
+      this.targetFloor.updateInfoCaseFromContext(this.user.chara, this.targetCharas, this.targetFloor['interactions']);
+    }
+
 
   }
 

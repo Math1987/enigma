@@ -1,5 +1,6 @@
 
 import { Route, RouterModule } from "@angular/router";
+import { CreateCharaGuard } from "../shared/guards/createChara.guard";
 import { UserGuard } from "../shared/guards/user.guard";
 import { CarteComponent } from "./carte/carte.component";
 import { HistoricComponent } from "./carte/historic/historic.component";
@@ -16,6 +17,7 @@ const routes: Route[] = [
       children : [
         {
           path : 'creer',
+          canActivate : [CreateCharaGuard],
           loadChildren : () => import('./create/create.module').then(m=>m.CreateModule)
         },
         {

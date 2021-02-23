@@ -317,6 +317,7 @@ export class CharaPattern extends Pattern{
                     let gold = 1+Math.floor(Math.random()*19) ;
                     if ( target.obj.type === "chara" ){
                         gold = target.obj.gold/2 ;
+                        messageTarget += ` gold -${gold}`;
                     }
                     valuesIncThis['gold'] = gold ;
                     const addLvl = this.addLevel(1/5) ;

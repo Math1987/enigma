@@ -292,7 +292,7 @@ export class UserService {
     
     if ( !target && floor instanceof WorldModel && floor.x === this.chara.x && floor.y === this.chara.y ){
 
-      if ( floor.type === "floor" && floor.getName() !== "neutral" ){
+      if ( floor.type === "floor" && floor.getName() !== "neutral" && this.chara.actions > 0 ){
         return [
           {
             name : `puiser de l'eau`,
@@ -352,19 +352,34 @@ export class UserService {
       }
 
     }else if ( target && target.x === this.chara.x && target.y === this.chara.y ){
-      if ( target.type === "monster" ){
+      if ( target.type === "monster"  && this.chara.actions > 0 ){
         return [
-          `attack`,
+          {
+            name : `attaquer`,
+            icon : "icon-attack",
+            action : "attack"
+          }
         ]
-      }else if ( target.type === "chara" ){
+      }else if ( target.type === "chara" && this.chara.actions > 0 ){
 
-        if ( target['clan'] === this.chara.clan ){
+        if ( target['clan'] === this.chara.clan && 
+        this.chara.water >= 5 && 
+        this.chara.food >= 5 ){
           return [
-            'heal'
+            {
+              name : `soigner`,
+              icon : "icon-heal",
+              action : "heal"
+            }
           ] ;
-        }else if ( floor.getName() !== "neutral" ){
+        }else if ( target['clan'] !== this.chara.clan && 
+         floor.getName() !== "neutral" ){
           return [
-            "attack",
+            {
+              name : `attaquer`,
+              icon : "icon-attack",
+              action : "attack"
+            }
           ] ;
         }
       } 

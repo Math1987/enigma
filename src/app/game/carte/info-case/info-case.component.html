@@ -61,13 +61,10 @@
                 <div class="actions">
                     <div class="action" 
                     *ngFor="let action of chara.interactions"
-                    (click)="user.makeAction(chara, action)"
+                    (click)="user.makeAction(chara, action.action)"
                     >
-                        <div class="icon" [ngClass]="{
-                            'icon-attack' : action === 'attack',
-                            'icon-heal' : action === 'heal'
-                        }"></div>
-                        {{action}}
+                    <div class="icon" [ngClass]="action['icon']"></div>
+                    {{action.name}}
                     </div>
                 </div>
             </div>
@@ -95,13 +92,10 @@
                 <div class="actions">
                     <div class="action" 
                     *ngFor="let action of chara.interactions"
-                    (click)="user.makeAction(chara, action)"
+                    (click)="user.makeAction(chara, action.action)"
                     >
-                        <div class="icon" [ngClass]="{
-                            'icon-attack' : action === 'attack',
-                            'icon-heal' : action === 'heal'
-                        }"></div>
-                        {{action}}
+                        <div class="icon" [ngClass]="action['icon']"></div>
+                        {{action.name}}
                     </div>
                 </div>
             </div>

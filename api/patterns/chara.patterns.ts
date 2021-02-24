@@ -434,11 +434,11 @@ export class CharaPattern extends Pattern{
             }, charaUpdated => {
                 target.incrementValues({ 'life' : adder }, targetU => {
 
-                    addMessageOnChara( this.obj._id, `D100 ${D100} life +${adder} ${target.obj.clan} ${target.obj.name} `).then( charaUpRes => {
+                    addMessageOnChara( this.obj._id, `D100 ${D100} soin ${this.obj.clan} ${this.obj.name} => ${target.obj.clan} ${target.obj.name} life +${adder}`).then( charaUpRes => {
 
                         const charaF = charaUpRes.value || charaUpdated ;
 
-                        addMessageOnChara( target.obj._id, `D100 ${D100} life +${adder} ${target.obj.clan} ${target.obj.name} `).then( targetUpRes => {
+                        addMessageOnChara( target.obj._id, `D100 ${D100} soin ${this.obj.clan} ${this.obj.name} => ${target.obj.clan} ${target.obj.name} life +${adder}`).then( targetUpRes => {
 
                             const targetF = targetUpRes.value ;
     

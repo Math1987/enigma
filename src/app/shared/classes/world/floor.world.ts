@@ -1,3 +1,4 @@
+import { CharaI } from "api/interfaces/chara.interface";
 import * as THREE from "three" ;
 import { WorldModel } from "./model.world";
 import { WorldRes } from "./resources.world";
@@ -21,6 +22,35 @@ export class WorldFloor extends WorldModel{
 
     getName(){
         return this.matKey ;
+    }
+    getCharaInteractions(floor:WorldModel, chara: CharaI ){
+        if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
+            return [
+                {
+                name : `puiser de l'eau`,
+                icon : "icon-water",
+                action : `puiser de l'eau`
+                },
+                {
+                name : "chasser", 
+                icon : "icon-attack",
+                action : `chasser`
+                },
+                {
+                name : "bûcheronner",
+                icon : "icon-wood",
+                action : `bûcheronner`
+                },
+                {
+                name : "prier",
+                icon : "icon-pray",
+                action : "prier"
+                }
+            ];
+
+        }else{
+            return null ;
+        }
     }
 
     create(scene : THREE.Scene, px, py, params){

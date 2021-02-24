@@ -290,7 +290,10 @@ export class UserService {
   }
   getActionsOn(floor : WorldModel, target = null ){
     
-    if ( !target && floor instanceof WorldModel && floor.x === this.chara.x && floor.y === this.chara.y ){
+
+    if ( floor === target && floor.getCharaInteractions(floor, this.chara )){
+      return floor.getCharaInteractions(floor, this.chara) ;
+    }else if ( !target && floor instanceof WorldModel && floor.x === this.chara.x && floor.y === this.chara.y ){
 
       if ( floor.type === "floor" && floor.getName() !== "neutral" && this.chara.actions > 0 ){
         return [

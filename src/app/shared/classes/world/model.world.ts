@@ -1,4 +1,6 @@
+import { CharaI } from "api/interfaces/chara.interface";
 import * as THREE from "three" ;
+import { WorldChara } from "./chara.world";
 import { WorldRes } from './resources.world' ;
 
 export class WorldModel {
@@ -43,6 +45,10 @@ export class WorldModel {
     }
     getName(){
         return 'model' ;
+    }
+    getCharaInteractions(floor:WorldModel, chara: CharaI ){
+        console.log('get interactions')
+        return null ;
     }
     select(){
         console.log('select')

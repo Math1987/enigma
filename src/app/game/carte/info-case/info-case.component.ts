@@ -83,7 +83,7 @@ export class InfoCaseComponent implements OnInit {
     let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
 
     this.targetFloor = floors[floors.length-1] ;
-    const floorInteractions = this.user.getActionsOn(this.targetFloor);
+    const floorInteractions = this.user.getActionsOn(this.targetFloor, this.targetFloor);
     this.targetFloor['name'] = this.targetFloor.getName();
     this.targetFloor['interactions'] = floorInteractions ;
 

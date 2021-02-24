@@ -12,6 +12,7 @@ export interface CharaI {
     level : number ;
     clan : string ;
     
+    position : [number,number];
     x : number ;
     y : number ;
 
@@ -23,6 +24,7 @@ export interface CharaI {
     water : number ;
     food : number ;
     wood : number ;
+    gold : number ;
     faith : number ;
 
     defense : number ;

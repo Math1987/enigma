@@ -47,7 +47,6 @@ export class WorldViewer {
             "monster" : new WorldMonster(),
             "tree" : new WorldTree(),
             "capital" : new WorldCapital()
-
         }
         
     }
@@ -251,6 +250,8 @@ export class WorldViewer {
         this.selectedP.y =  target.y
 
         const selecteds = this.stock.filter( row =>row.x === this.selected.x && row.y === this.selected.y );
+
+        console.log(selecteds);
 
         this.selectEmitter.emit(selecteds) ;
        

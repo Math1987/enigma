@@ -1,11 +1,14 @@
+import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
+import { WorldBuilding } from './building.world';
+import { WorldFloor } from './floor.world';
 import { WorldModel } from "./model.world";
 import { WorldRes } from './resources.world';
 
 
 
-export class WorldTree extends WorldModel {
+export class WorldTree extends WorldBuilding {
 
     static TREES_SPRITE_COORDS = {
         tree1 : {
@@ -26,7 +29,7 @@ export class WorldTree extends WorldModel {
     _id : string ;
     decal = {
         x : 0.25,
-        y : 0.25
+        y : 0.5
     }
 
     datas = null ;
@@ -55,7 +58,39 @@ export class WorldTree extends WorldModel {
     }
 
     getName(){
-        return 'tree' ;
+        if ( this.datas.ownerName ){
+            return this.datas.ownerName ;
+        }
+        return 'arbre' ;
+    }
+    getCharaInteractions(floor:WorldModel, chara: CharaI ){
+        if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
+            return [
+                {
+                name : `puiser de l'eau`,
+                icon : "icon-water",
+                action : `puiser de l'eau`
+                },
+                {
+                name : "chasser", 
+                icon : "icon-attack",
+                action : `chasser`
+                },
+                {
+                name : "bûcheronner",
+                icon : "icon-wood",
+                action : `bûcheronner`
+                },
+                {
+                name : "prier",
+                icon : "icon-pray",
+                action : "prier"
+                }
+            ];
+
+        }else{
+            return null ;
+        }
     }
 
     create(scene: THREE.Scene, x:number,y:number, params ) {

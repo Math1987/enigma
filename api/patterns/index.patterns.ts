@@ -14,6 +14,7 @@ import { MonsterPattern } from "./monster.pattern";
 import { WorldPattern } from "./world.pattern";
 import { initMongoDB } from './../data/index.data';
 import { CapitalPattern } from "./capital.pattern";
+import { TreePattern } from "./tree.pattern";
 
 initMongoDB( res => {
     console.log('mongodb ok');
@@ -31,6 +32,8 @@ export class PatternHandler {
         PATTERNS.chara = new CharaPattern();
         PATTERNS.monster = new MonsterPattern();
         PATTERNS.capital = new CapitalPattern();
+        PATTERNS.tree = new TreePattern();
+
 
         BuildingPattern.init();
         MonsterPattern.init();
@@ -40,6 +43,7 @@ export class PatternHandler {
 
         CharaPattern.pass();
         MonsterPattern.pass();
+        TreePattern.pass();
 
     }
 

@@ -1,4 +1,4 @@
-import { FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
+import { Cursor, FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
 import { BuildingI } from "../interfaces/building.interface";
 import { convertId, database } from "./../data/index.data";
 import { fixObjDatas } from "../patterns/base.pattern";
@@ -59,6 +59,14 @@ export const findBuildingsOnPositions = ( positions : {x:number,y:number}[], cal
         }
     };
     search();
+}
+export async function findBuildingsQuery( query : {} ): Promise<Cursor<BuildingI>> {
+    const collection = database.collection('buildings');
+    return await collection.find(query);
+}
+export async function updateBuildingById( id : any, datas : {} ){
+    const collection = database.collection('buildings');
+    return await collection.findOneAndUpdate( { _id : convertId(id) }, datas, { returnOriginal:false} ) ;
 }
 
 export async function findBuildingQuery(query): Promise<BuildingI> {

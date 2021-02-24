@@ -242,6 +242,14 @@ export const socketMove = ( _id : string, newX : number, newY : number, oldPosit
  */
 export class Pattern {
 
+    static isOnNeutral = ( x : number, y : number) => {
+        if ( x >= -2 && x <= 2 && y >= -2 && y <= 2 ){
+            return true ;
+        }
+        return false ;
+    }
+
+
     /**
      * @obj obj contain the specifics datas of each unique instance in the game
      */

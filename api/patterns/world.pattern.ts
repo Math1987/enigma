@@ -8,9 +8,17 @@ import { CaseI } from "../interfaces/case.interface";
 import { insertOnWorld } from "../queries/world.queries";
 import { Pattern } from "./base.pattern";
 import { MonsterPattern } from "./monster.pattern";
+import { TreePattern } from "./tree.pattern";
 
 export class WorldPattern extends Pattern{
     
+    /**
+     * GetCases : provide all the knowed cases from db, 
+     * if no case founds, generate it with monster & tree creation probability
+     * 
+     * @param arr 
+     * @param callback 
+     */
     static getCases = ( arr : CaseI[], callback ) => {
         insertOnWorld( arr.map( row => {
                 return { 
@@ -19,20 +27,29 @@ export class WorldPattern extends Pattern{
                 })
             ).then( insertRes => {
                 if ( insertRes.ops ){
-                    MonsterPattern.createRandomMonstersOnArray(insertRes.ops.filter(row => row['type'] === "neutral" ? false : true), monsters => {
-                        const arrF = arr.map( row => {
-                            if ( WorldPattern.isOnNeutral(row.x, row.y) ){
-                                return {...row, type : "neutral"};
-                            }else if ( WorldPattern.isOnDesert(row.x, row.y) ) {
-                                return {...row, type : "desert"};
-                            }
-                            return {...row, type : "deepdesert"};
+
+                    const freeCases = insertRes.ops.filter(row => row['type'] === "neutral" ? false : true) ;
+
+                    TreePattern.createRandomTreesOnArray(freeCases, trees => {
+                        console.log(trees);
+                        MonsterPattern.createRandomMonstersOnArray(freeCases, monsters => {
+                            const arrF = arr.map( row => {
+                                if ( WorldPattern.isOnNeutral(row.x, row.y) ){
+                                    return {...row, type : "neutral"};
+                                }else if ( WorldPattern.isOnDesert(row.x, row.y) ) {
+                                    return {...row, type : "desert"};
+                                }
+                                return {...row, type : "deepdesert"};
+                            });
+                            monsters.forEach( monster => {
+                                    arrF.push(monster);
+                            });
+                            callback(arrF);
                         });
-                        monsters.forEach( monster => {
-                                arrF.push(monster);
-                        });
-                        callback(arrF);
+
                     });
+
+
                 }else{
                     callback(arr.map( row => {
                         if ( WorldPattern.isOnNeutral(row.x, row.y) ){

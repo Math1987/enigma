@@ -28,6 +28,7 @@ import { WorldFloor } from './floor.world';
 import { WorldModel } from './model.world';
 import { WorldMonster } from './monster.world';
 import { WorldRes } from './resources.world';
+import { WorldTree } from './tree.world';
 
 export class WorldViewer {
 
@@ -44,7 +45,9 @@ export class WorldViewer {
             "neutral" : new WorldFloor('neutral'),
             "chara" : new WorldChara(),
             "monster" : new WorldMonster(),
+            "tree" : new WorldTree(),
             "capital" : new WorldCapital()
+
         }
         
     }

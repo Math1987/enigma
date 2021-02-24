@@ -72,6 +72,80 @@ export class WorldCapital extends WorldBuilding {
         return "capitale" ;
     }
 
+    getCharaInteractions(floor : WorldModel, chara : CharaI ){
+        console.log('getting action on Capital');
+
+        const actions = [] ;
+
+
+        if ( this['datas']['clan'] === chara.clan ){
+            if ( chara.gold >= 20 ){
+                actions.push(
+                    {
+                        name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20} ajouter mercenaire `,
+                        icon : "icon-shield" ,
+                        action : "addMercenari"
+                    }
+                );
+            }else{
+                actions.push(
+                    {
+                        name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20}`,
+                        icon : "icon-shield" ,
+                        action : null
+                    }
+                );
+            }
+            if ( chara.wood >= 10 ){
+                actions.push(
+                    {
+                        name : "consolider",
+                        icon : "icon-shield",
+                        action : "addWood"
+                    }
+                )
+            }
+
+          }else{
+            if ( floor['datas']['mercenaries'] > 0 ){
+              actions.push(
+                {
+                  name : `${this['datas']['mercenaries']}/20 attaquer mercenaire`,
+                  icon : "icon-attack",
+                  action : "attackMercenari"
+                }
+              );
+            }else{
+
+            
+            actions.push(
+                {
+                    name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20}`,
+                    icon : "icon-shield",
+                    action : null
+                });
+
+                if ( chara.actions > 0 ){
+
+                    actions.push(
+                        {
+                          name : `piller`,
+                          icon : "icon-attack",
+                          action : "plunder"
+                        }
+                      );
+
+                }
+
+            }
+  
+          }
+
+
+        return  actions ;
+
+    }
+
     create(scene: THREE.Scene, x:number,y:number, params ) {
 
 

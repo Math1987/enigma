@@ -28,8 +28,9 @@ import {
 } from "./base.pattern";
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
-import { incBuildingValuesData } from "./../queries/building.queries";
+import { findBuildingOnPosition, incBuildingValuesData } from "./../queries/building.queries";
 import { CharaI } from "api/interfaces/chara.interface";
+import { BuildingPattern } from "./building.pattern";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -197,49 +198,79 @@ export class CharaPattern extends Pattern{
     pass(){
         getCharaPattern( {}, charaModel => {
            
-            let autoDammages = 0 ;
 
-            const waterUse = Math.min(this.obj.water, 5);
-            const foodUse = Math.min(this.obj.food, 5);
+            const end = (building) => {
 
-            let message = `pass water -${waterUse}, food -${foodUse}`;
+                let autoDammages = 0 ;
 
-            if ( this.obj.food < 5 ){
-                autoDammages = Math.abs(this.obj.food - 5);
-            }
-            if ( this.obj.water < 5 ){
-                autoDammages += Math.abs(this.obj.water - 5 );
-            }
+                let waterUse = Math.min(this.obj.water, 5);
+                let foodUse = Math.min(this.obj.food, 5);
+    
+                let message = `pass water -${waterUse}, food -${foodUse}`;
+    
+                if ( this.obj.food < 5 ){
+                    autoDammages = Math.abs(this.obj.food - 5);
+                }
+                if ( this.obj.water < 5 ){
+                    autoDammages += Math.abs(this.obj.water - 5 );
+                }
 
-            this.obj.water = Math.max(0, this.obj.water - 5 );
-            this.obj.food = Math.max(0, this.obj.food - 5 );
-            if ( autoDammages > 0 ){
-                message += `, life -${autoDammages}`;
-                this.obj.life = Math.max(0, this.obj.life - autoDammages);
-            }
+
+                if ( building && building.type === "capital" && building.clan === this.obj.clan ){
+                    autoDammages = 0 ;
+                    waterUse = 0 ;
+                    foodUse = 0 ;
+                    this.obj.water = Math.min(this.obj.waterMax, this.obj.water + 10 );
+                    this.obj.food = Math.min(this.obj.foodMax, this.obj.food + 10 );
+                    this.obj.life = Math.min(this.obj.lifeMax, this.obj.life + 10 );
+                    this.obj.xp = this.obj.xp + 1 ;
+
+                }else{
+
+
+                    this.obj.water = Math.max(0, this.obj.water - 5 );
+                    this.obj.food = Math.max(0, this.obj.food - 5 );
+                    if ( autoDammages > 0 ){
+                        message += `, life -${autoDammages}`;
+                        this.obj.life = Math.max(0, this.obj.life - autoDammages);
+                    }
+
+                }
+    
 
     
-            if ( this.obj.life <= 0 ){
+        
+                if ( this.obj.life <= 0 ){
+    
+                    message += `...death` ;
+    
+                    addMessageOnChara( this.obj._id, message);
+    
+                    this.die( res => {});
+    
+                }else{
+    
+                    addMessageOnChara( this.obj._id, message );
+    
+                    updateCharaValuesData(this.obj._id, {
+                        life : this.obj.life,
+                        water : this.obj.water, 
+                        food : this.obj.food,
+                        xp : this.obj.xp,
+                        actions : charaModel.actions,
+                        moves : charaModel.moves
+                    });
+                }
 
-                message += `...death` ;
 
-                addMessageOnChara( this.obj._id, message);
-
-                this.die( res => {});
-
-            }else{
-
-                addMessageOnChara( this.obj._id, message );
-
-                updateCharaValuesData(this.obj._id, {
-                    life : this.obj.life,
-                    water : this.obj.water, 
-                    food : this.obj.food,
-                    actions : charaModel.actions,
-                    moves : charaModel.moves
-                });
             }
-            
+
+
+            findBuildingOnPosition( this.obj.position).then(building => {
+
+                end(building);
+
+            }).catch( err => end(null));
 
         });
 
@@ -270,6 +301,9 @@ export class CharaPattern extends Pattern{
             break ;
             case "attackMercenari" :
                 this.attackMercenari(target, callback);
+            break ;
+            case "addWood" :
+                this.upgreatBuilding(target, callback);
             break ;
             case "plunder" :
                 this.plunder(target, callback);
@@ -596,10 +630,20 @@ export class CharaPattern extends Pattern{
 
             getCalculs(calculs => {
 
+
                 const D100 = 1 + Math.floor(Math.random()*99);
-                let caseFactor = 0.25 ;
+                let caseFactor = 0.0125 ;
                 if ( WorldPattern.isOnNeutral( this.obj.position[0], this.obj.position[1]) ){
                     caseFactor = calculs.lumberjack.neutral ;
+                }
+                if ( target 
+                    && target.obj 
+                    && target.obj.type === "tree" 
+                    && target.obj.life >= 20 ){
+                    caseFactor = 1 ;
+                    target.incrementValues({life : -20}, res => {
+
+                    });
                 }
 
                 let wood = Math.max(
@@ -613,7 +657,7 @@ export class CharaPattern extends Pattern{
                 );
 
                 let woodF = Math.min( this.obj.woodMax - this.obj.wood, wood );
-                
+
                 this.incrementValues({
                     'actions': -1,
                     'wood' : + woodF
@@ -723,7 +767,7 @@ export class CharaPattern extends Pattern{
         }
     }
     addMercenari( target : CapitalPattern, callback ){
-        if ( this.obj.gold >= 20 && target.obj.mercenaries < 20 ){
+        if ( this.obj.gold >= 20 && target.obj.mercenaries < (target.obj.mercenariesMax || 20) ){
 
             this.incrementValues({ gold : -20}, charaRes => {
 
@@ -804,10 +848,121 @@ export class CharaPattern extends Pattern{
         }
 
     }
+    upgreatBuilding(target: Pattern, callback ){
+
+        if ( target instanceof CapitalPattern && target.obj.mercenariesMax < 50 ){
+
+            this.incrementValues({wood : -10}, charaRes => {
+
+                if ( target instanceof CapitalPattern ){
+                    (target as CapitalPattern).upgreatBuilding(1, capitalRes => {
+
+                        updateSocketsValues( 
+                            {x : charaRes.position[0],y:charaRes.position[1]},
+                            [{
+                                _id : charaRes._id,
+                                wood : charaRes.wood
+                            },
+                            {
+                                _id : capitalRes._id,
+                                mercenariesMax : capitalRes['mercenariesMax']
+                            }]
+                        );
+
+                    });
+                }
+
+            });
+
+        }
+
+    }
     plunder(target : CapitalPattern, callback ){
 
-        console.log('plunder');
-        callback(null);
+        if ( this.obj.actions > 0 ){
+
+            target.plunder(this, plunderRes => {
+
+                if ( plunderRes ){
+
+                    if ( plunderRes['gold'] ){
+
+                        this.incrementValues({
+                            gold : 1,
+                            actions : -1
+                        }, incRes => {
+
+                            if ( plunderRes['mercenariesMax'] ){
+
+                                addMessageOnChara( this.obj._id, `gold +${plunderRes['gold'] } death` ).then( chara => {
+
+                                    updateSocketsValues({x:this.obj.position[0], y:this.obj.position[1]}, [
+                                        {
+                                            _id : this.obj._id,
+                                            gold : chara.value.gold,
+                                            actions : chara.value.actions,
+                                            messages : chara.value.messages
+                                        },
+                                        {
+                                            _id : target.obj._id,
+                                            mercenariesMax : plunderRes['mercenariesMax']
+                                        }
+                                    ])
+
+                                });
+
+                            }else{
+
+                                addMessageOnChara( this.obj._id, `gold +${plunderRes['gold'] }` ).then( chara => {
+
+                                    updateSocketsValues({x:this.obj.position[0], y:this.obj.position[1]}, [
+                                        {
+                                            _id : this.obj._id,
+                                            gold : chara.value.gold,
+                                            actions : chara.value.actions,
+                                            messages : chara.value.messages
+                                        }
+                                    ])
+
+                                });
+
+                            }
+
+                        });
+
+                    }else{
+
+                        this.incrementValues({
+                            gold : 1,
+                            actions : -1
+                        }, charaRes => {
+
+                            addMessageOnChara( this.obj._id, 'attack empty' ).then( chara => {
+
+                                updateSocketsValues({x:this.obj.position[0], y:this.obj.position[1]}, [
+                                    {
+                                        _id : this.obj._id,
+                                        actions : chara.value.actions,
+                                        messages : chara.value.messages
+                                    }
+                                ])
+
+                            });
+
+                        });
+
+                    }
+
+                }
+
+                callback(null);
+
+            });
+
+        }else{
+            callback(null);
+        }
+
 
     }
 

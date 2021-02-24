@@ -65,28 +65,38 @@ export class WorldTree extends WorldBuilding {
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
         if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
-            return [
-                {
-                name : `puiser de l'eau`,
-                icon : "icon-water",
-                action : `puiser de l'eau`
-                },
-                {
-                name : "chasser", 
-                icon : "icon-attack",
-                action : `chasser`
-                },
-                {
-                name : "bûcheronner",
-                icon : "icon-wood",
-                action : `bûcheronner`
-                },
-                {
-                name : "prier",
-                icon : "icon-pray",
-                action : "prier"
-                }
-            ];
+
+            const datas = [];
+            if ( chara.water < chara.waterMax ){
+                datas.push(                {
+                    name : `puiser de l'eau`,
+                    icon : "icon-water",
+                    action : `puiser de l'eau`
+                    });
+            }
+            if ( chara.food < chara.foodMax ){
+                datas.push(                {
+                    name : "chasser", 
+                    icon : "icon-attack",
+                    action : `chasser`
+                    });
+            }
+            if ( chara.wood < chara.woodMax ){
+                datas.push({
+                    name : `bûcheronner ${this.datas.life/20}/5`,
+                    icon : "icon-wood",
+                    action : `bûcheronner`
+                    })
+            }
+            if ( chara.faith < chara.faithMax ){
+                datas.push({
+                    name : "prier",
+                    icon : "icon-pray",
+                    action : "prier"
+                    });
+            }
+
+            return datas ;
 
         }else{
             return null ;
@@ -149,6 +159,7 @@ export class WorldTree extends WorldBuilding {
         return null ;
 
     }
+
 
 
     move(x:number, y:number){

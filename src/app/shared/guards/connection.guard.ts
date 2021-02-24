@@ -23,11 +23,9 @@ export class ConnectionGuard implements CanActivate {
     | boolean
     | UrlTree {
 
-      console.log('guard co called');
       if ( localStorage.getItem('token') ){
 
         return this.user.subject.pipe( map(user => {
-          console.log(user);
           if ( user ){
             this.router.navigate(['/jeu/carte']);
           }

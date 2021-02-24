@@ -290,6 +290,8 @@ export class UserService {
   }
   getActionsOn(floor : WorldModel, target = null ){
     
+    console.log('interactions from', floor)
+
 
     if ( floor === target && floor.getCharaInteractions(floor, this.chara )){
       return floor.getCharaInteractions(floor, this.chara) ;
@@ -320,7 +322,7 @@ export class UserService {
         ]
       }else if ( floor.type === "capital" ){
 
-        console.log('clan', floor['datas'] );
+        console.log('get actions on capital');
 
         if ( floor['datas']['clan'] === this.chara.clan ){
           return [
@@ -392,20 +394,23 @@ export class UserService {
   }
   makeAction(target : WorldModel, action:string){
     
-    const targetF = {
-      _id : target['_id'],
-      type : target.type,
-      name : target['name']
-    };
+    if ( action ){
 
-    this.http.post(`${environment.urlApi}/user/chara/action`, {
-      target : targetF,
-      action : action
-    }).subscribe( res => {
-
+      const targetF = {
+        _id : target['_id'],
+        type : target.type,
+        name : target['name']
+      };
       
-    });
-
+      this.http.post(`${environment.urlApi}/user/chara/action`, {
+        target : targetF,
+        action : action
+      }).subscribe( res => {
+        
+        
+      });
+      
+    }
     //this.updateCharaValue('life', this.chara.life + 10 );
   }
   updateUser( user ){

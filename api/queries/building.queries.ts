@@ -1,4 +1,4 @@
-import { Cursor, FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
+import { Cursor, DeleteWriteOpResultObject, FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
 import { BuildingI } from "../interfaces/building.interface";
 import { convertId, database } from "./../data/index.data";
 import { fixObjDatas } from "../patterns/base.pattern";
@@ -73,5 +73,14 @@ export async function findBuildingQuery(query): Promise<BuildingI> {
 
     const collection = database.collection("buildings");
     return await collection.findOne(query) ;
+
+}
+
+export async function deleteBuildingData( _id : any) : Promise<DeleteWriteOpResultObject> {
+    
+    const collection = database.collection('buildings');
+    return await collection.deleteOne({ 
+        _id : convertId(_id)
+    });
 
 }

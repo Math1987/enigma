@@ -47,7 +47,6 @@ export class WorldModel {
         return 'model' ;
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
-        console.log('get interactions')
         return null ;
     }
     select(){

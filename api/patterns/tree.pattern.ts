@@ -1,6 +1,7 @@
 import { TreeI } from "./../interfaces/building.interface";
-import { findBuildingsQuery, insertBuildingsDatas, updateBuildingById } from "./../queries/building.queries";
+import { deleteBuildingData, findBuildingsQuery, incBuildingValuesData, insertBuildingsDatas, updateBuildingById } from "./../queries/building.queries";
 import { findRandomPlaceOn, findWorld } from "./../queries/world.queries";
+import { updateSocketsValues } from "./base.pattern";
 import { BuildingPattern } from "./building.pattern";
 import { WorldPattern } from "./world.pattern";
 
@@ -101,6 +102,33 @@ export class TreePattern extends BuildingPattern {
         const patt = new TreePattern(obj);
         return patt ;
     }
+    incrementValues(values, callback:CallableFunction ){
 
+        incBuildingValuesData( this.obj._id, values).then( res => {
+            if ( res.ok ){
+                if ( res.value['life'] <= 0 ){
+                    this.die( res => {
+
+                    });
+                }else{
+                    console.log('socket update tree take',{x:this.obj.position[0],y:this.obj.position[1]}, this.obj._id)
+                    updateSocketsValues({x:this.obj.position[0],y:this.obj.position[1]}, [{
+                        _id : this.obj._id,
+                        life : res.value['life']
+                    }]);
+                }
+                callback(res.value);
+            }else{
+                callback(null);
+            }
+        }).catch( err => callback(null));
+
+    }
+    die(callback){
+        deleteBuildingData(this.obj._id).then( () => {
+            super.die(callback);
+        });
+
+    }
 
 }

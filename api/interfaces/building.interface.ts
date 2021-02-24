@@ -13,6 +13,8 @@ export interface CapitalI {
     type : "capital";
     clan : string ;
     mercenaries : number ;
+    mercenariesMax? : number ;
+
 
 }
 

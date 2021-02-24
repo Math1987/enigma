@@ -102,7 +102,17 @@ export class WorldBuilding extends WorldModel {
         return null ;
 
     }
-
+    update(obj : any){
+        console.log('tree update ok', obj);
+        for ( let key of Object.keys(obj) ){
+            if ( this[key] ){
+                this[key] = obj[key];
+            }else if ( this.datas[key] ){
+                this.datas[key] = obj[key];
+            }
+        }
+        return this ;
+    }
     updateInfoCaseFromContext( user : CharaI, charas : WorldChara[], interactions : any[] ){
 
         for ( let chara of charas ){

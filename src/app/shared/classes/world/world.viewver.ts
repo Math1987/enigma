@@ -146,8 +146,6 @@ export class WorldViewer {
         const mouse = new THREE.Vector2();
         const rayTracer = new THREE.Raycaster();
 
-        console.log('renderOn');
-
         element.appendChild(this.renderer.domElement );
         element.addEventListener('mousedown', event => {
 
@@ -156,8 +154,6 @@ export class WorldViewer {
 
             rayTracer.setFromCamera(mouse, this.camera);
             const intercects = rayTracer.intersectObjects(this.scene.children);
-
-            console.log(intercects);
 
             let mover = null ;
             let move = {x : 0, y : 0} ;
@@ -194,8 +190,6 @@ export class WorldViewer {
                 });
                 if ( targets.length > 0 ){
     
-                    console.log('click targets', targets);
-
                     this.select(targets[0]);
                 }
 
@@ -251,13 +245,10 @@ export class WorldViewer {
 
         const selecteds = this.stock.filter( row =>row.x === this.selected.x && row.y === this.selected.y );
 
-        console.log(selecteds);
-
         this.selectEmitter.emit(selecteds) ;
        
     }
     selectByPosition(x:number, y:number ){
-        console.log('select by positions');
         const rows = this.stock.filter( row => {
             if( row.x === x && row.y === y && row instanceof WorldFloor ){
                 return true ;
@@ -285,6 +276,8 @@ export class WorldViewer {
 
                 if ( obj['_id'] && data['_id'] === obj['_id'] ){
                     
+                    console.log('update', obj);
+
                     obj.update(data);
 
                 }
@@ -369,7 +362,6 @@ export class WorldViewer {
 
     move(mx:number, my: number){
 
-        console.log('move')
         const news = [] ;
         for ( let x = 0 ; x < this.rayon*2+1 ; x ++ ){
             for ( let y = 0 ; y < this.rayon*2+1 ; y ++ ){

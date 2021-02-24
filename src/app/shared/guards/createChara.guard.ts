@@ -23,13 +23,11 @@ export class CreateCharaGuard implements CanActivate {
     | boolean
     | UrlTree {
 
-      console.log('guard map called');
       if ( this.user.user ){
         return true ;
       }else if ( localStorage.getItem('token') ){
 
         return this.user.subject.pipe( map(user => {
-          console.log(user);
           if ( user.chara ){
             this.router.navigate(['/jeu/carte']);
           }

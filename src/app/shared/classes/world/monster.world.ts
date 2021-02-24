@@ -59,8 +59,6 @@ export class WorldMonster extends WorldModel {
 
     create(scene: THREE.Scene, x:number,y:number, params ) {
 
-        console.log('create monster');
-
         if ( params._id ){
 
             const obj = new WorldMonster(this.matKey);

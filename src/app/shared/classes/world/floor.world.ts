@@ -24,30 +24,38 @@ export class WorldFloor extends WorldModel{
         return this.matKey ;
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
-        if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
-            return [
-                {
-                name : `puiser de l'eau`,
-                icon : "icon-water",
-                action : `puiser de l'eau`
-                },
-                {
-                name : "chasser", 
-                icon : "icon-attack",
-                action : `chasser`
-                },
-                {
-                name : "bûcheronner",
-                icon : "icon-wood",
-                action : `bûcheronner`
-                },
-                {
-                name : "prier",
-                icon : "icon-pray",
-                action : "prier"
-                }
-            ];
+        if ( chara.actions > 0 && chara.position[0] === floor.x && chara.position[1] === floor.y ){
+            const datas = [];
+            if ( chara.water < chara.waterMax ){
+                datas.push(                {
+                    name : `puiser de l'eau`,
+                    icon : "icon-water",
+                    action : `puiser de l'eau`
+                    });
+            }
+            if ( chara.food < chara.foodMax ){
+                datas.push(                {
+                    name : "chasser", 
+                    icon : "icon-attack",
+                    action : `chasser`
+                    });
+            }
+            if ( chara.wood < chara.woodMax ){
+                datas.push({
+                    name : `bûcheronner`,
+                    icon : "icon-wood",
+                    action : `bûcheronner`
+                    })
+            }
+            if ( chara.faith < chara.faithMax ){
+                datas.push({
+                    name : "prier",
+                    icon : "icon-pray",
+                    action : "prier"
+                    });
+            }
 
+            return datas ;
         }else{
             return null ;
         }

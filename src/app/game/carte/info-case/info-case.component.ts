@@ -54,6 +54,10 @@ export class InfoCaseComponent implements OnInit {
 
     });
 
+    this.user.updatesEmitter.subscribe( update => {
+      this.viewer.viewver.updateSelection();
+    })
+
     this.initSelection();
 
     this.viewer.viewver.updateSelection();

@@ -60,7 +60,9 @@ export class InfoCaseComponent implements OnInit {
 
     this.initSelection();
 
-    this.viewer.viewver.updateSelection();
+    if ( this.viewer.viewver ){
+      this.viewer.viewver.updateSelection();
+    }
 
   }
   initSelection(){

@@ -76,7 +76,7 @@ export class UserService {
       localStorage.setItem('token', user.token);
       
       this.user = user ;
-      this.chara = user.chara ;
+      this.chara = {...this.chara, ...user.chara} ;
       this.charaSubject.next(this.user.chara);
 
     
@@ -87,6 +87,8 @@ export class UserService {
     this.charaSubject.subscribe( chara => {
 
       if ( chara ){
+
+        console.log('chara', chara);
 
         if ( !this.socketChara ){
           this.runSocketChara();
@@ -226,9 +228,6 @@ export class UserService {
         callback(null);
 
       }
-
-
-
     });
 
     // setTimeout(()=> {
@@ -290,105 +289,10 @@ export class UserService {
   }
   getActionsOn(floor : WorldModel, target = null ){
     
-    console.log('interactions from', floor)
-
-
     if ( floor === target && floor.getCharaInteractions(floor, this.chara )){
       return floor.getCharaInteractions(floor, this.chara) ;
-    }else if ( !target && floor instanceof WorldModel && floor.x === this.chara.x && floor.y === this.chara.y ){
-
-      if ( floor.type === "floor" && floor.getName() !== "neutral" && this.chara.actions > 0 ){
-        return [
-          {
-            name : `puiser de l'eau`,
-            icon : "icon-water",
-            action : `puiser de l'eau`
-          },
-          {
-            name : "chasser", 
-            icon : "icon-attack",
-            action : `chasser`
-          },
-          {
-            name : "bûcheronner",
-            icon : "icon-wood",
-            action : `bûcheronner`
-          },
-          {
-            name : "prier",
-            icon : "icon-pray",
-            action : "prier"
-          }
-        ]
-      }else if ( floor.type === "capital" ){
-
-        console.log('get actions on capital');
-
-        if ( floor['datas']['clan'] === this.chara.clan ){
-          return [
-            {
-              name : `${floor['datas']['mercenaries']}/20 ajouter mercenaire `,
-              icon : "icon-shield" ,
-              action : "addMercenari"
-            }
-          ]
-        }else{
-          if ( floor['datas']['mercenaries'] > 0 ){
-            return [
-              {
-                name : `${floor['datas']['mercenaries']}/20 attaquer mercenaire`,
-                icon : "icon-attack",
-                action : "attackMercenari"
-              }
-            ]
-          }else{
-            return [
-              {
-                name : `piller`,
-                icon : "icon-attack",
-                action : "plunder"
-              }
-            ]
-          }
-
-        }
-
-
-      }
-
-    }else if ( target && target.x === this.chara.x && target.y === this.chara.y ){
-      if ( target.type === "monster"  && this.chara.actions > 0 ){
-        return [
-          {
-            name : `attaquer`,
-            icon : "icon-attack",
-            action : "attack"
-          }
-        ]
-      }else if ( target.type === "chara" && this.chara.actions > 0 ){
-
-        if ( target['clan'] === this.chara.clan && 
-        target['life'] < target['lifeMax'] && 
-        this.chara.water >= 5 && 
-        this.chara.food >= 5 ){
-          return [
-            {
-              name : `soigner`,
-              icon : "icon-heal",
-              action : "heal"
-            }
-          ] ;
-        }else if ( target['clan'] !== this.chara.clan && 
-         floor.getName() !== "neutral" ){
-          return [
-            {
-              name : `attaquer`,
-              icon : "icon-attack",
-              action : "attack"
-            }
-          ] ;
-        }
-      } 
+    }else if ( target !== null && target.getCharaInteractions(floor, this.chara )){
+      return target.getCharaInteractions(target, this.chara) ;
     }
     return [] ;
   }
@@ -418,7 +322,11 @@ export class UserService {
   }
   updateChara( chara ){
     
-    this.user.chara = chara ;
+    if ( this.user.chara ){
+      this.user.chara = {...this.user.chara, ...chara} ;
+    }else{
+      this.user.chara = chara ;
+    }
     this.subject.next(this.user);
 
   }

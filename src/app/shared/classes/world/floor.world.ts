@@ -30,28 +30,32 @@ export class WorldFloor extends WorldModel{
                 datas.push(                {
                     name : `puiser de l'eau`,
                     icon : "icon-water",
-                    action : `puiser de l'eau`
+                    action : `puiser de l'eau`,
+                    tooltip : "coût 1 action"
                     });
             }
             if ( chara.food < chara.foodMax ){
                 datas.push(                {
                     name : "chasser", 
                     icon : "icon-attack",
-                    action : `chasser`
+                    action : `chasser`,
+                    tooltip : "coût 1 action"
                     });
             }
             if ( chara.wood < chara.woodMax ){
                 datas.push({
                     name : `bûcheronner`,
                     icon : "icon-wood",
-                    action : `bûcheronner`
+                    action : `bûcheronner`,
+                    tooltip : "coût 1 action"
                     })
             }
             if ( chara.faith < chara.faithMax ){
                 datas.push({
                     name : "prier",
                     icon : "icon-pray",
-                    action : "prier"
+                    action : "prier",
+                    tooltip : "coût 1 action"
                     });
             }
 

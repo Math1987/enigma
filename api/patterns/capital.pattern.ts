@@ -7,6 +7,46 @@ import { CharaPattern } from "./chara.patterns";
 
 export class CapitalPattern extends BuildingPattern {
 
+    static init(){
+        console.log('init capital');
+
+        const startMercenary = 20 ;
+        const merceneriesMax = 20 ;
+        const dist = 20 ;
+
+        const capitales : CapitalI[] = [
+            {
+                position : [-dist,0],
+                type : "capital",
+                clan : "clan-1",
+                mercenaries : startMercenary,
+                mercenariesMax : merceneriesMax
+            },
+            {
+                position : [0,-dist],
+                type : "capital",
+                clan : "clan-2",
+                mercenaries : startMercenary,
+                mercenariesMax : merceneriesMax
+            },            {
+                position : [dist,0],
+                type : "capital",
+                clan : "clan-3",
+                mercenaries : startMercenary,
+                mercenariesMax : merceneriesMax
+            },            {
+                position : [0,dist],
+                type : "capital",
+                clan : "clan-4",
+                mercenaries : startMercenary,
+                mercenariesMax : merceneriesMax
+            }
+        ];
+
+        insertBuildingsDatas(capitales);
+
+    }
+
     build(obj = null){
         const patt = new CapitalPattern(obj);
         return patt ;

@@ -384,6 +384,9 @@ export class CharaPattern extends Pattern{
 
                             addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
                                 const targetF = targetU.value ;
+
+                                console.log('death message sent to target');
+
                                 updateSocketsValues({
                                     x : target.obj.position[0],
                                     y : target.obj.position[1]},[
@@ -850,7 +853,8 @@ export class CharaPattern extends Pattern{
     }
     upgreatBuilding(target: Pattern, callback ){
 
-        if ( target instanceof CapitalPattern && target.obj.mercenariesMax < 50 ){
+        console.log('updateBuilding in capital', target.obj);
+        if ( this.obj.wood >= 10 && target instanceof CapitalPattern && target.obj.mercenariesMax < 50 ){
 
             this.incrementValues({wood : -10}, charaRes => {
 
@@ -1009,11 +1013,11 @@ export class CharaPattern extends Pattern{
                         socketsAdd(newPos, fixObjDatas(charaRes) );
                         socketsResurrection(charaRes);
 
+
+                        callback(null);
+
                     });
 
-
-
-                    callback(null);
                 });
 
     

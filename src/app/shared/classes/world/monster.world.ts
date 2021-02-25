@@ -1,3 +1,4 @@
+import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
 import { WorldModel } from "./model.world";
@@ -110,6 +111,21 @@ export class WorldMonster extends WorldModel {
     
         }
         return null ;
+
+    }
+
+    getCharaInteractions( floor, chara : CharaI ){
+
+        if ( chara.actions > 0 ){
+            return [
+                {
+                name : `attaquer`,
+                icon : "icon-attack",
+                action : "attack",
+                tooltip : "attaquer, coût 1 action"
+                }
+            ] ;
+        }
 
     }
 

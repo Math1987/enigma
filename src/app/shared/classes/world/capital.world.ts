@@ -73,18 +73,17 @@ export class WorldCapital extends WorldBuilding {
     }
 
     getCharaInteractions(floor : WorldModel, chara : CharaI ){
-        console.log('getting action on Capital');
+
 
         const actions = [] ;
-
-
         if ( this['datas']['clan'] === chara.clan ){
             if ( chara.gold >= 20 ){
                 actions.push(
                     {
                         name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20} ajouter mercenaire `,
                         icon : "icon-shield" ,
-                        action : "addMercenari"
+                        action : "addMercenari",
+                        tooltip : "ajouter un mercenaire: coût:20 or"
                     }
                 );
             }else{
@@ -92,7 +91,8 @@ export class WorldCapital extends WorldBuilding {
                     {
                         name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20}`,
                         icon : "icon-shield" ,
-                        action : null
+                        action : null,
+                        tooltip : `il y a ${this['datas']['mercenaries']} sur ${this['datas']['mercenariesMax'] || 20} mercenaires`
                     }
                 );
             }
@@ -101,7 +101,8 @@ export class WorldCapital extends WorldBuilding {
                     {
                         name : "consolider",
                         icon : "icon-shield",
-                        action : "addWood"
+                        action : "addWood",
+                        tooltip : `augmente la limite de 1 mercenaire. Coût: 10bois`
                     }
                 )
             }
@@ -110,9 +111,10 @@ export class WorldCapital extends WorldBuilding {
             if ( floor['datas']['mercenaries'] > 0 ){
               actions.push(
                 {
-                  name : `${this['datas']['mercenaries']}/20 attaquer mercenaire`,
-                  icon : "icon-attack",
-                  action : "attackMercenari"
+                    name : `${this['datas']['mercenaries']}/20 attaquer mercenaire`,
+                    icon : "icon-attack",
+                    action : "attackMercenari",
+                    tooltip : `attaquer un mercenaire, coûte le nombre de mercenaires en vie. Coûte 1 action`
                 }
               );
             }else{
@@ -122,7 +124,8 @@ export class WorldCapital extends WorldBuilding {
                 {
                     name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20}`,
                     icon : "icon-shield",
-                    action : null
+                    action : null,
+                    tooltip : `il y a ${this['datas']['mercenaries']} sur ${this['datas']['mercenariesMax'] || 20} mercenaires`
                 });
 
                 if ( chara.actions > 0 ){
@@ -131,7 +134,8 @@ export class WorldCapital extends WorldBuilding {
                         {
                           name : `piller`,
                           icon : "icon-attack",
-                          action : "plunder"
+                          action : "plunder",
+                          tooltip : `donne une chance de récolter de l'or. Coûte 1 action`
                         }
                       );
 

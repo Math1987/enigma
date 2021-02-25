@@ -9,7 +9,7 @@ import { CarteComponent } from './carte/carte.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { InfoCaseComponent } from './carte/info-case/info-case.component';
 import { HistoricComponent } from './carte/historic/historic.component' ;
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,8 @@ import { HistoricComponent } from './carte/historic/historic.component' ;
   imports: [
     CommonModule,
     GameRouting,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule
   ]
 })
 export class GameModule { }

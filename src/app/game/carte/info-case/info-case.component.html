@@ -27,6 +27,7 @@
                     <div class="action" 
                     *ngFor="let action of floor.interactions"
                     (click)="user.makeAction(floor, action.action)"
+                    [matTooltip]="action.tooltip"
                     >
                         <div class="icon" [ngClass]="action['icon']"></div>
                         {{action.name}}
@@ -62,6 +63,7 @@
                     <div class="action" 
                     *ngFor="let action of chara.interactions"
                     (click)="user.makeAction(chara, action.action)"
+                    [matTooltip]="action.tooltip"
                     >
                     <div class="icon" [ngClass]="action['icon']"></div>
                     {{action.name}}
@@ -93,6 +95,7 @@
                     <div class="action" 
                     *ngFor="let action of chara.interactions"
                     (click)="user.makeAction(chara, action.action)"
+                    [matTooltip]="action.tooltip"
                     >
                         <div class="icon" [ngClass]="action['icon']"></div>
                         {{action.name}}

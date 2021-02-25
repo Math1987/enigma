@@ -1,3 +1,4 @@
+import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
 import { WorldModel } from "./model.world";
@@ -157,6 +158,35 @@ export class WorldChara extends WorldModel {
     
         }
         return null ;
+
+    }
+
+    getCharaInteractions( floor, chara : CharaI ){
+
+        if ( this.datas['clan'] === chara.clan && 
+            this.datas['life'] < this.datas['lifeMax'] && 
+            chara.actions > 0 &&
+            chara.water >= 5 && 
+            chara.food >= 5 ){
+            return [
+                {
+                name : `soigner`,
+                icon : "icon-heal",
+                action : "heal",
+                tooltip : "soigner, coûte 5 eau, 5 nourriture, 1 action"
+                }
+            ] ;
+            }else if ( this.datas['clan'] !== chara.clan && 
+            floor.getName() !== "neutral" ){
+                return [
+                    {
+                    name : `attaquer`,
+                    icon : "icon-attack",
+                    action : "attack",
+                    tooltip : "attaquer, coût 1 action"
+                    }
+                ] ;
+        }
 
     }
 

@@ -79,7 +79,9 @@ export class WorldViewer {
         this.x = x ;
         this.y = y ;
 
-        const unit = 50 ;
+        console.log(parent.offsetWidth, );
+
+        const unit = parent.offsetWidth*(25/360) ;
         this.camera = new THREE.OrthographicCamera(
             -parent.offsetWidth/2/unit,
             parent.offsetWidth/2/unit,

@@ -1,4 +1,4 @@
-<div>
+<div class="header">
     <div class="account" *ngIf="!(user.subject | async) ; let user" [routerLink]="'/connection'">se connecter</div>
     <div class="account" *ngIf="user.subject | async" [matMenuTriggerFor]="menu">mon compte</div>
     <mat-menu #menu="matMenu">

@@ -342,7 +342,7 @@ export class UserService {
             name : res['name'],
             img : res['img'],
             token : res['token'],
-            chara : res['chara'],
+            chara : this.buildCharaDatas(res['chara']),
             ...res
           };
 

@@ -14,37 +14,42 @@
     border : 1px solid var(--book-page-border-color) ;
     padding: 2rem 1rem 1rem 1rem ;
     margin-bottom: 2rem ;
-    max-height: var(--book-page-height-max) ;
     background-color: var(--book-page-content-background-color);
+    min-height: none ;
+    max-height: none ;
 
 }
-
 .book{
 
     @include no-select ;
-
-    background : no-repeat url('/assets/images/book.png');
-    background-size: contain;
-    width : var(--book-width-vw) ;
-    height : calc(var(--book-height) ) ;
+    background : repeat url('/assets/images/page-texture.png');
+    background-size: cover ;
     display : flex ;
-    flex-flow: row nowrap ;
+    flex-flow: column nowrap ;
+    justify-content: flex-start ;
     color : var(--book-page-border-color) ;
     margin : 0px ;
     padding : 1rem ;
+    width : 100% ;
+    min-height: 100vh ;
+    max-height: none ;
+    overflow: auto ;
 
     .page {
         margin : 0rem 0px 2rem 0px  ;
         padding: 1rem ;
         display : flex ;
-        max-height:  calc(var(--book-height) - 2rem ) ;
         flex-flow: column nowrap ;
         align-items: center ;
-
-        flex : 0.5 ;
-        overflow : auto ;
+        height: auto ;
+        max-height: none ;
+        flex : auto ;
+        max-width: none ;
+        overflow: hidden !important ;
     }
     .article{
+
+        flex : auto ;
         flex-flow: column nowrap ;
         align-items: center ;
         position : relative ;
@@ -52,8 +57,11 @@
         border : 1px solid var(--book-page-border-color) ;
         padding: 2rem 1rem 1rem 1rem ;
         margin-top: 2rem ;
-        max-height: var(--book-page-height-max) ;
         background-color: var(--book-page-content-background-color);
+        min-height: none ;
+        max-height: none ;
+
+
 
     }
     .title{
@@ -76,10 +84,10 @@
         height : 100% ;
         top : 0px ;
         overflow: auto;
+        max-height: none ;
+
     }
 }
-
-
 .icon{
     width : var(--icon-size) ;
     height: var(--icon-size)  ;
@@ -163,8 +171,6 @@
     }
 
 }
-
-
 .clan{
 
     position : absolute ;

@@ -119,3 +119,32 @@
     @include res ;
     left : calc(100vw*0.65);
 }
+
+
+
+
+@media screen and (max-width : 640px ){
+
+    .header{
+        height: 200px ;
+        display: flex ;
+        flex-flow: column nowrap ;
+    }
+    .menu{
+        display : flex ;
+        flex-flow: row wrap ;
+        justify-content: center;
+        align-items: center ;
+    }
+
+    .tokens{
+        left : 0px ;
+        top : 154px ;
+    }
+    .resources{
+        left : 0px ;
+        top : 100px ;
+
+    }
+
+}

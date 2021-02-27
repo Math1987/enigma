@@ -10,7 +10,7 @@
  */
 import { Response } from 'express' ;
 import { actionCharaReq, createCharaReq, incCharaValueReq, moveCharaReq } from '../controlers/chara.controller';
-import { rankKillReq, rankLevelReq } from '../controlers/rank.controller';
+import { rankClan, rankKillReq, rankLevelReq } from '../controlers/rank.controller';
 import { createUserReq, readUserReq, loginUserReq } from '../controlers/user.controller';
 import { getWorldReq } from '../controlers/world.controller';
 import { PatternHandler } from '../patterns/index.patterns';
@@ -27,6 +27,8 @@ routes.post('/api/user/login', loginUserReq );
 
 routes.get('/api/rank/level', rankLevelReq );
 routes.get('/api/rank/kill', rankKillReq );
+routes.get('/api/rank/clan', rankClan );
+
 
 //FOR DEV IN ALPHA WORK...keep it secret ;)
 routes.get('/api/world/pass', (req:Request, res : Response) => { PatternHandler.pass() ; res.status(200).send('ok');} );

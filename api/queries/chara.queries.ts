@@ -71,9 +71,9 @@ export async function updateCharaPositionDatas( _id : string, x : number, y : nu
     }, { returnOriginal : false }) ;
 
 }
-export async function findCharasCursor():Promise<Cursor<CharaI>>{
+export async function findCharasCursor(query = {}, projection = {}):Promise<Cursor<CharaI>>{
     const collection = database.collection('charas');
-    return await collection.find();
+    return await collection.find(query, {projection : projection});
 }
 export async function findSortedCharasCursor( query ):Promise<Cursor<CharaI>>{
     const collection = database.collection('charas');

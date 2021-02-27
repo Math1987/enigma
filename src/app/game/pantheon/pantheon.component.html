@@ -60,7 +60,12 @@
         <div class="article">
             <h2 class="title">Classement par Factions</h2>
             <div class="content">
-                Prochainement...
+                <h3>Factions dévastatrices</h3>
+                <ol>
+                    <li *ngFor="let rank of (rank.kills | async)">
+                        {{rank.name}} ({{rank.value}}) 
+                    </li>
+                </ol>
             </div>
         </div>
     </div>

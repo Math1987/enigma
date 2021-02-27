@@ -116,7 +116,9 @@ export class WorldMonster extends WorldModel {
 
     getCharaInteractions( floor, chara : CharaI ){
 
-        if ( chara.actions > 0 ){
+        if ( 
+            this.x === chara.x && this.y === chara.y && 
+            chara.actions > 0 ){
             return [
                 {
                 name : `attaquer`,

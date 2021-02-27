@@ -163,7 +163,9 @@ export class WorldChara extends WorldModel {
 
     getCharaInteractions( floor, chara : CharaI ){
 
-        if ( this.datas['clan'] === chara.clan && 
+        if ( 
+            this.datas.x === chara.x && this.datas.y === chara.y && 
+            this.datas['clan'] === chara.clan && 
             this.datas['life'] < this.datas['lifeMax'] && 
             chara.actions > 0 &&
             chara.water >= 5 && 
@@ -176,8 +178,11 @@ export class WorldChara extends WorldModel {
                 tooltip : "soigner, coûte 5 eau, 5 nourriture, 1 action"
                 }
             ] ;
-            }else if ( this.datas['clan'] !== chara.clan && 
-            floor.getName() !== "neutral" ){
+            }else if (
+                this.datas.x === chara.x && this.datas.y === chara.y && 
+                this.datas['clan'] !== chara.clan && 
+                floor.getName() !== "neutral" 
+                ){
                 return [
                     {
                     name : `attaquer`,

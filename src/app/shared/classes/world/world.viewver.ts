@@ -79,8 +79,6 @@ export class WorldViewer {
         this.x = x ;
         this.y = y ;
 
-        console.log(parent.offsetWidth, );
-
         const unit = parent.offsetWidth*(25/360) ;
         this.camera = new THREE.OrthographicCamera(
             -parent.offsetWidth/2/unit,
@@ -148,11 +146,11 @@ export class WorldViewer {
         const mouse = new THREE.Vector2();
         const rayTracer = new THREE.Raycaster();
 
-        element.appendChild(this.renderer.domElement );
-        element.addEventListener('mousedown', event => {
+        const touchCase = (x:number,y:number): {x:number,y:number} | WorldModel[] => {
 
-            mouse.x = (event.clientX - element.getBoundingClientRect().left)/element.getBoundingClientRect().width * 2 -1 ;
-            mouse.y = - (event.clientY - element.getBoundingClientRect().top)/element.getBoundingClientRect().height * 2 + 1 ;
+
+            mouse.x = x ;// (event.clientX - element.getBoundingClientRect().left)/element.getBoundingClientRect().width * 2 -1 ;
+            mouse.y = y ;//- (event.clientY - element.getBoundingClientRect().top)/element.getBoundingClientRect().height * 2 + 1 ;
 
             rayTracer.setFromCamera(mouse, this.camera);
             const intercects = rayTracer.intersectObjects(this.scene.children);
@@ -176,7 +174,8 @@ export class WorldViewer {
             }
 
             if ( mover ){
-                this.moverEmitter.emit(move);
+                // this.moverEmitter.emit(move);
+                return move ;
             }else{
 
                 const targets = this.stock.filter( row => {
@@ -190,14 +189,78 @@ export class WorldViewer {
                         return true ;
                     }
                 });
-                if ( targets.length > 0 ){
-    
-                    this.select(targets[0]);
-                }
+     
+                return targets ;
 
             }
 
+
+
+        }
+
+        let lastClick = Date.now();
+
+        element.appendChild(this.renderer.domElement );
+        element.addEventListener('mousedown', event => {
+            lastClick = Date.now();
+            mouse.x = (event.clientX - element.getBoundingClientRect().left)/element.getBoundingClientRect().width * 2 -1 ;
+            mouse.y = - (event.clientY - element.getBoundingClientRect().top)/element.getBoundingClientRect().height * 2 + 1 ;
+
+            const tch = touchCase(mouse.x,mouse.y) ;
+            console.log(tch)
+            if ( Array.isArray(tch) ){
+                if ( tch.length > 0 ){
+                    this.select(tch[0]);
+                }
+            }else if ( tch ){
+                this.moverEmitter.emit(tch);
+            }
+
         });
+
+        let mousOn = null ;
+
+        element.addEventListener('mousemove', event => {
+
+            const mx = (event.clientX - element.getBoundingClientRect().left) ;
+            const my = (event.clientY - element.getBoundingClientRect().top) ;
+            mouse.x = (event.clientX - element.getBoundingClientRect().left)/element.getBoundingClientRect().width * 2 -1 ;
+            mouse.y = - (event.clientY - element.getBoundingClientRect().top)/element.getBoundingClientRect().height * 2 + 1 ;
+
+            let tch = touchCase(mouse.x,mouse.y) ;
+
+            const changMouseOn = (tch) => {
+                if ( (!mousOn && tch ) || ( mousOn.x !== tch.x || mousOn.y !== tch.y )){
+                    mousOn = tch ;
+                    setTimeout(()=> {
+                        if ( mousOn === tch && Date.now() - lastClick > 1000){
+                            const doc = document.querySelector('#mouseOnPosition') as HTMLDivElement;
+                            doc.style.left = `${mx-doc.offsetWidth/2}px` ;
+                            doc.style.top = `${my-doc.offsetHeight}px` ;
+                            doc.innerHTML = `${-tch.y}x ${-tch.x}y`;
+                            doc.style.opacity = "1" ;
+                            setTimeout(()=> {
+                                doc.style.opacity = "0";
+                            },1000);
+
+                            console.log(doc );
+                        }
+                    },500);
+                }
+            }
+
+            if ( Array.isArray(tch) ){
+                if ( tch.length > 0 ){
+                    tch = { x : tch[0].x, y : tch[0].y};
+                    changMouseOn(tch);
+                }
+            }else{
+                changMouseOn(tch);
+            }
+
+
+
+        })
         this.updateSelection();
     }
 

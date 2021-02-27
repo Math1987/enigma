@@ -120,7 +120,25 @@
 
 }
 
-
+#mouseOnPosition{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position : absolute ;
+    border-radius: 1rem ;
+    text-align: center ;
+    vertical-align: text-top;
+    pointer-events: none;
+    left : 50% ;
+    top : 50% ;
+    width : 5rem ;
+    height : 2rem ;
+    background-color: white ;
+    opacity: 0 ;
+    transition: opacity 1s ;
+    z-index: 100;
+}
 
 
 @media screen and (max-width : 640px ){

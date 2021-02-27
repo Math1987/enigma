@@ -1,4 +1,5 @@
 <div id="map" class="map">
+    <div id="mouseOnPosition"></div>
     <canvas class="map-canvas" #mapCanvas></canvas>
     <div class="position" *ngIf="user.charaSubject | async; let chara">{{-chara.y}}x {{-chara.x}}y</div>
 </div>

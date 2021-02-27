@@ -12,6 +12,9 @@ export class PantheonComponent implements OnInit {
   levels : BehaviorSubject<[]> = new BehaviorSubject([]);
   kills : BehaviorSubject<[]> = new BehaviorSubject([]);
 
+  clans : BehaviorSubject<[]> = new BehaviorSubject([]);
+
+
 
   constructor(
     public rank : RankService
@@ -24,6 +27,11 @@ export class PantheonComponent implements OnInit {
     });
     this.rank.getKills( levels => {
       this.kills.next(levels);
+    });
+
+    this.rank.getClans( clans => {
+      console.log('clans', clans)
+      this.clans.next(clans);
     });
 
   }

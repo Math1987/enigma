@@ -62,8 +62,8 @@
             <div class="content">
                 <h3>Factions dévastatrices</h3>
                 <ol>
-                    <li *ngFor="let rank of (rank.kills | async)">
-                        {{rank.name}} ({{rank.value}}) 
+                    <li *ngFor="let clan of (clans | async)" [ngClass]="clan.clan" class="clan-rank">
+                        {{clan.clan}} ({{clan.value}}) 
                     </li>
                 </ol>
             </div>

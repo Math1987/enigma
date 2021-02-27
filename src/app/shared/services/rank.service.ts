@@ -46,5 +46,14 @@ export class RankService {
     });
   }
 
+  getClans(callback : CallableFunction){
+    this.http.get(`${environment.urlApi}/rank/clan`).subscribe( clans => {
+      console.log('kills', clans );
+      callback(clans);
+    }, err => {
+      callback([]);
+    });
+  }
+
 
 }

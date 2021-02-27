@@ -350,7 +350,7 @@ export class CharaPattern extends Pattern{
                     messageTarget += " death";
                     let gold = 1+Math.floor(Math.random()*19) ;
                     if ( target.obj.type === "chara" ){
-                        gold = target.obj.gold/2 ;
+                        gold = Math.floor(target.obj.gold/2) ;
                         messageTarget += ` gold -${gold}`;
                     }
                     valuesIncThis['gold'] = gold ;

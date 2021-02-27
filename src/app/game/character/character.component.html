@@ -19,7 +19,8 @@
                 
                     <div class="item" style="position:relative;">
                         <h2>{{chara.name}}</h2>
-                        <p>niveau {{chara.level}}</p>
+                        <p>niveau {{chara.level | floor | number:'0.0-0'}}</p>
+                        <div class="bar m1"><div class="bar-content" [ngStyle]="{'width.%' : (chara.level%1)*100}"></div></div>
                         <p>Race: {{chara.race}}</p>
                         <div class="clan" [ngClass]="chara.clan"></div>
                         <p *ngIf="chara.capital" [ngClass]="chara.clan" style="background-color:transparent">capitale: {{-chara.capital.position[1]}}x {{-chara.capital.position[0]}}y</p>

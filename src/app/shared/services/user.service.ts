@@ -253,8 +253,8 @@ export class UserService {
       level : res['level'],
       clan : res['clan'],
       
-      x : res['x'],
-      y : res['y'],
+      x : res['x'] || res['position'][0],
+      y : res['y'] || res['position'][1],
   
       life : res['life'],
       lifeMax : res['lifeMax'],
@@ -264,6 +264,7 @@ export class UserService {
       water : res['water'],
       food : res['food'],
       wood : res['wood'],
+      gold : res['gold'],
       faith : res['faith'],
   
       defense : res['defense'],

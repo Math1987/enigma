@@ -35,6 +35,9 @@ export const initMongoDB = (callback: (res)=>void) => {
     
         const charas = database.collection('users');
         const monsters = database.collection('monsters');
+
+        
+
         callback(true);
 
     });

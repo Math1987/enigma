@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { InfoCaseComponent } from './carte/info-case/info-case.component';
 import { HistoricComponent } from './carte/historic/historic.component' ;
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { EnigmaModule } from '../shared/modules/enigma/enigma.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     GameRouting,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    EnigmaModule
   ]
 })
 export class GameModule { }

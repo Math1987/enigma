@@ -89,42 +89,44 @@ export class ViewverService {
    * 
    */
   private createViewver(map : HTMLDivElement, chara: CharaI){
+    console.log('createViewver', chara);
+    if ( chara ){
+      this.viewver = new WorldViewer(map, chara.x, chara.y);
 
-    this.viewver = new WorldViewer(map, chara.x, chara.y);
-
-    this.viewver.moverEmitter.subscribe( moveReq => {
-      this.user.move( moveReq, res => {
-        if ( res ){
-          this.viewver.move(moveReq.x, moveReq.y);
-          this.user.updateChara(res);
-          this.viewver.selectByPosition( this.user.chara.x, this.user.chara.y);
-        }
+      this.viewver.moverEmitter.subscribe( moveReq => {
+        this.user.move( moveReq, res => {
+          if ( res ){
+            this.viewver.move(moveReq.x, moveReq.y);
+            this.user.updateChara(res);
+            this.viewver.selectByPosition( this.user.chara.x, this.user.chara.y);
+          }
+        });
       });
-    });
 
-    /**
-     * thoose emitions comme from backend and
-     * say to the user service that something 
-     * is changing on him view area
-     */
-    this.user.updatesEmitter.subscribe( updates => {
-      this.viewver.updatesObjs(updates);  
-    });
-    this.user.moveEmitter.subscribe( (mover : { _id : string, newX : number, newY : number}) => {
-      this.viewver.moveObjOnPositionById(mover._id, mover.newX, mover.newY);
-    })
-    this.user.addEmitter.subscribe( obj => {
-      this.viewver.addInCase(obj.x, obj.y, obj);
-    });
-    this.user.removeEmitter.subscribe( id => {
-      this.viewver.removeObj(id);
-      this.viewver.updateSelection();
-    });
-    this.user.resurrectionEmitter.subscribe( obj => {
-      this.viewver.moveTo(obj.x, obj.y);
-      this.user.updateChara(obj);
-      document.location.reload();
-    });
+      /**
+       * thoose emitions comme from backend and
+       * say to the user service that something 
+       * is changing on him view area
+       */
+      this.user.updatesEmitter.subscribe( updates => {
+        this.viewver.updatesObjs(updates);  
+      });
+      this.user.moveEmitter.subscribe( (mover : { _id : string, newX : number, newY : number}) => {
+        this.viewver.moveObjOnPositionById(mover._id, mover.newX, mover.newY);
+      })
+      this.user.addEmitter.subscribe( obj => {
+        this.viewver.addInCase(obj.x, obj.y, obj);
+      });
+      this.user.removeEmitter.subscribe( id => {
+        this.viewver.removeObj(id);
+        this.viewver.updateSelection();
+      });
+      this.user.resurrectionEmitter.subscribe( obj => {
+        this.viewver.moveTo(obj.x, obj.y);
+        this.user.updateChara(obj);
+        document.location.reload();
+      });
+    }
 
   }
 

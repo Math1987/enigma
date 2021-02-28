@@ -79,7 +79,6 @@ export const convertCharaForFrontend = (chara) => {
     if ( chara ){
         chara['x'] = chara.position[0] ;
         chara['y'] = chara.position[1] ;
-        chara['level'] = chara['level'].toFixed(1);
         chara['type'] = "chara" ;
     }
     return chara ;
@@ -223,7 +222,6 @@ export class CharaPattern extends Pattern{
                     this.obj.water = Math.min(this.obj.waterMax, this.obj.water + 10 );
                     this.obj.food = Math.min(this.obj.foodMax, this.obj.food + 10 );
                     this.obj.life = Math.min(this.obj.lifeMax, this.obj.life + 10 );
-                    this.obj.xp = this.obj.xp + 1 ;
 
                 }else{
 
@@ -237,6 +235,11 @@ export class CharaPattern extends Pattern{
 
                 }
     
+                if ( !WorldPattern.isOnNeutral(this.obj.position[0], this.obj.position[1]) ){
+                    this.obj.xp = this.obj.xp + 1 ;
+                }else if ( WorldPattern.isOnDeepDesert(this.obj.position[0], this.obj.position[1])){
+                    this.obj.life = Math.max(this.obj.life-10,0 );
+                }
 
     
         
@@ -346,6 +349,7 @@ export class CharaPattern extends Pattern{
                         messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
                     }
                 }else if ( attackRes.death ){
+
                     message += " death" ;
                     messageTarget += " death";
                     let gold = 1+Math.floor(Math.random()*19) ;
@@ -362,12 +366,9 @@ export class CharaPattern extends Pattern{
                     }
                 }
 
-                console.log(valuesIncThis);
-
                 this.incrementValues(valuesIncThis, charaRes => {
                     addMessageOnChara(this.obj._id, message ).then( charaUpdated => {
                     
-                        
                         updateSocketsValues({
                             x : this.obj.position[0],
                             y : this.obj.position[1]},[
@@ -384,8 +385,6 @@ export class CharaPattern extends Pattern{
 
                             addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
                                 const targetF = targetU.value ;
-
-                                console.log('death message sent to target');
 
                                 updateSocketsValues({
                                     x : target.obj.position[0],
@@ -853,7 +852,6 @@ export class CharaPattern extends Pattern{
     }
     upgreatBuilding(target: Pattern, callback ){
 
-        console.log('updateBuilding in capital', target.obj);
         if ( this.obj.wood >= 10 && target instanceof CapitalPattern && target.obj.mercenariesMax < 50 ){
 
             this.incrementValues({wood : -10}, charaRes => {
@@ -978,9 +976,11 @@ export class CharaPattern extends Pattern{
         const oldLevel = this.obj.level ;
         const newLevel = parseFloat(this.obj.level) + number*ratio  ;
 
+        console.log("add level:",oldLevel, newLevel);
+
         if ( Math.floor(newLevel) > Math.floor(oldLevel) ){
 
-            const xpAdder = Math.ceil(this.obj.level*2.5);
+            const xpAdder = Math.max(5, Math.ceil(this.obj.level*1.1));
 
             return { level : number*ratio, xp : xpAdder, kills : 1};
 

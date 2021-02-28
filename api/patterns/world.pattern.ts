@@ -78,6 +78,12 @@ export class WorldPattern extends Pattern{
         }
         return false ;
     }
+    static isOnDeepDesert = (x: number, y : number ) => {
+        if ( !WorldPattern.isOnNeutral(x,y) && WorldPattern.isOnDesert(x,y)){
+            return true ;
+        }
+        return false ;
+    }
     static getFloorType = (x:number, y:number) => {
         if ( WorldPattern.isOnNeutral(x,y)){
             return 'neutral';

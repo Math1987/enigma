@@ -76,7 +76,7 @@ export class UserService {
       localStorage.setItem('token', user.token);
       
       this.user = user ;
-      this.chara = {...this.chara, ...user.chara} ;
+      this.chara = this.buildCharaDatas({...this.chara, ...user.chara}) ;
       this.charaSubject.next(this.user.chara);
 
     
@@ -243,6 +243,15 @@ export class UserService {
 
   }
   buildCharaDatas( res ){
+
+    let px = res['x'] ;
+    let py = res['y'] ;
+
+    if ( res['position'] ){
+      px = res['position'][0] ;
+      py = res['position'][1] ;
+    }
+
     return {
       _id : res['_id'],
       name : res['_id'],
@@ -253,8 +262,8 @@ export class UserService {
       level : res['level'],
       clan : res['clan'],
       
-      x : res['x'] || res['position'][0],
-      y : res['y'] || res['position'][1],
+      x : px,
+      y : py,
   
       life : res['life'],
       lifeMax : res['lifeMax'],
@@ -324,9 +333,9 @@ export class UserService {
   updateChara( chara ){
     
     if ( this.user.chara ){
-      this.user.chara = {...this.user.chara, ...chara} ;
+      this.user.chara = this.buildCharaDatas({...this.user.chara, ...chara}) ;
     }else{
-      this.user.chara = chara ;
+      this.user.chara = this.buildCharaDatas(chara) ;
     }
     this.subject.next(this.user);
 

@@ -102,7 +102,6 @@ export class WorldChara extends WorldModel {
 
     create(scene: THREE.Scene, x:number,y:number, params ) {
 
-
         if ( params._id && 
             WorldChara.RACES_SPRITE_COORDS[params['race']+params['sexe']] ){
 
@@ -163,6 +162,23 @@ export class WorldChara extends WorldModel {
 
     getCharaInteractions( floor, chara : CharaI ){
 
+        const actions = [] ;
+
+        if ( chara.actions > 0 && 
+            chara.state !== "defense" &&
+            this.datas._id === chara._id 
+            ){
+                actions.push({
+                    name : "défense",
+                    icon : "icon-shield",
+                    action : "defend",
+                    tooltip : "coûte 1 action. se met en position défensive, protégeant les membres du même clan et augmentant la défense de 5%"
+                })
+
+
+            }
+
+
         if ( 
             this.datas.x === chara.x && this.datas.y === chara.y && 
             this.datas['clan'] === chara.clan && 
@@ -170,29 +186,39 @@ export class WorldChara extends WorldModel {
             chara.actions > 0 &&
             chara.water >= 5 && 
             chara.food >= 5 ){
-            return [
+                actions.push(
                 {
                 name : `soigner`,
                 icon : "icon-heal",
                 action : "heal",
                 tooltip : "soigner, coûte 5 eau, 5 nourriture, 1 action"
                 }
-            ] ;
+                );
             }else if (
                 this.datas.x === chara.x && this.datas.y === chara.y && 
                 this.datas['clan'] !== chara.clan && 
                 floor.getName() !== "neutral" 
                 ){
-                return [
+                actions.push(
                     {
                     name : `attaquer`,
                     icon : "icon-attack",
                     action : "attack",
                     tooltip : "attaquer, coût 1 action"
                     }
-                ] ;
+                 );
         }
+        return actions ;
 
+    }
+    getPassiveInfos( chara: CharaI ){
+        const obj = {};
+        if ( this.datas.state ){
+            obj['state'] = {
+                icon : 'icon icon-shield'
+            }
+        };
+        return obj ;
     }
 
 

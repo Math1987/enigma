@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { WorldChara } from '../classes/world/chara.world';
 import { WorldFloor } from '../classes/world/floor.world';
 import { WorldModel } from '../classes/world/model.world';
 import { CharaI } from '../interfaces/chara.interface';

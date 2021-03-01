@@ -31,6 +31,9 @@ import { WorldPattern } from "./world.pattern";
 import { findBuildingOnPosition, incBuildingValuesData } from "./../queries/building.queries";
 import { CharaI } from "api/interfaces/chara.interface";
 import { BuildingPattern } from "./building.pattern";
+import { CaseI } from "api/interfaces/case.interface";
+import { BuildingI } from "api/interfaces/building.interface";
+import { MonsterI } from "api/interfaces/monster.interface";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -69,9 +72,11 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         dowser : 5,
         lumberjack : 5,
         priest : 5,
+
+        state : "",
         
-        messages :[],
-        kills : 0
+        kills : 0,
+        messages :[]
     });
 
 }
@@ -81,7 +86,7 @@ export const convertCharaForFrontend = (chara) => {
         chara['y'] = chara.position[1] ;
         chara['type'] = "chara" ;
     }
-    return chara ;
+    return fixObjDatas(chara) ;
 }
 
 export class CharaPattern extends Pattern{
@@ -123,25 +128,26 @@ export class CharaPattern extends Pattern{
             return false ;
 
     }
-    static makeAction = ( action : string, charaFrom : Object, target : any, callback : CallableFunction  ) => {
+    static makeAction = ( caseObjs : (CaseI | CharaI | BuildingI | MonsterI)[], action : string, charaFrom : Object, target : any, callback : CallableFunction  ) => {
 
         if ( target['_id'] ){
-            CharaPattern.makeActionOnObjec(charaFrom, target['_id'], action, callback);
+            CharaPattern.makeActionOnObjec(caseObjs, charaFrom, target['_id'], action, callback);
         }else if ( target['type'] === "floor" ) {
-            CharaPattern.makeActionOnFloor(charaFrom, target, action, callback);
+            CharaPattern.makeActionOnFloor(caseObjs, charaFrom, target, action, callback);
         }else{
             callback(null);
         }
 
 
     }
-    static makeActionOnObjec(user, targetID, action, callback ){
+    static makeActionOnObjec(caseObjs : (CharaI | CaseI | MonsterI | BuildingI)[], user, targetID, action, callback ){
+
 
         buildInstanceFromDatas( user, charaFromPattern => {
             buildInstanceFromId( targetID, targetPattern => {
 
                 if ( charaFromPattern && targetPattern ){
-                    charaFromPattern.makeAction(action, targetPattern, actRes => {
+                    charaFromPattern.makeAction(caseObjs, action, targetPattern, actRes => {
                         callback(actRes);
                     })
 
@@ -152,7 +158,7 @@ export class CharaPattern extends Pattern{
             });
         });
     }
-    static makeActionOnFloor(user, target, action, callback){
+    static makeActionOnFloor(caseObjs, user, target, action, callback){
 
         if ( target.name === "neutral" ){
             callback(null);
@@ -196,7 +202,6 @@ export class CharaPattern extends Pattern{
     }
     pass(){
         getCharaPattern( {}, charaModel => {
-           
 
             const end = (building) => {
 
@@ -204,6 +209,8 @@ export class CharaPattern extends Pattern{
 
                 let waterUse = Math.min(this.obj.water, 5);
                 let foodUse = Math.min(this.obj.food, 5);
+
+                this.obj.state = '' ;
     
                 let message = `pass water -${waterUse}, food -${foodUse}`;
     
@@ -261,6 +268,7 @@ export class CharaPattern extends Pattern{
                         food : this.obj.food,
                         xp : this.obj.xp,
                         actions : charaModel.actions,
+                        state : this.obj.state,
                         moves : charaModel.moves
                     });
                 }
@@ -278,14 +286,14 @@ export class CharaPattern extends Pattern{
         });
 
     }
-    makeAction(actionType : string, target : Pattern, callback : CallableFunction ){
+    makeAction(caseObjs : (CaseI|CharaI|MonsterI|BuildingI)[], actionType : string, target : Pattern, callback : CallableFunction ){
 
         switch ( actionType){
             case "heal" :
                 this.heal(target, callback);
             break ;
             case "attack" :
-                this.attack(target, callback);
+                this.attack(caseObjs, target, callback);
             break ;
             case "puiser de l'eau" : 
                 this.drawWater(target, callback);
@@ -298,6 +306,9 @@ export class CharaPattern extends Pattern{
             break ;
             case "prier" : 
                 this.pray(target, callback);
+            break ;
+            case "defend" : 
+                this.defend(target, callback);
             break ;
             case "addMercenari" :
                 this.addMercenari(target, callback);
@@ -323,93 +334,120 @@ export class CharaPattern extends Pattern{
             }
         }).catch( err => callback(null));
     }
-    attack( target : Pattern, callback){
+    attack( caseObjs : (CaseI | CharaI | MonsterI | BuildingI )[], target : Pattern, callback){
 
         if ( this.obj.actions > 0 && (!target['clan'] || target['clan'] !== this.obj['clan']) ){
 
-            super.attack(target, attackRes => {
 
-                let valuesIncThis = {
-                    actions : -1
-                }
-
-                let targetName = `${target.obj.clan} ${target.obj.name}` ;
-                if ( target.obj['type'] === "monster" ){
-                    targetName = target.getName();
-                }
-
-                let message = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
-                let messageTarget = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
-                if ( attackRes.counter ){
-                    if ( attackRes.death ){
-                        message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
-                        messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
-                    }else{
-                        message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
-                        messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
+            let canAttack = true ;
+            let defensors = [] ;
+            console.log('attack');
+            const clanEnemys = caseObjs.filter( row => {
+                if ( (row.type === "chara" && row['clan'] === target.obj.clan ) ){
+                    if ( row['state'] && row['state'] === "defense" ){
+                        defensors.push(row) ;
                     }
-                }else if ( attackRes.death ){
-
-                    message += " death" ;
-                    messageTarget += " death";
-                    let gold = 1+Math.floor(Math.random()*19) ;
-                    if ( target.obj.type === "chara" ){
-                        gold = Math.floor(target.obj.gold/2) ;
-                        messageTarget += ` gold -${gold}`;
-                    }
-                    valuesIncThis['gold'] = gold ;
-                    const addLvl = this.addLevel(1/5) ;
-                    valuesIncThis = {...valuesIncThis, ...addLvl };
-                    message += ` xp +${2} gold +${gold}`;
-                    if ( addLvl.xp ){
-                        message += "LVL UP!";
-                    }
+                    return true ;
                 }
+                return false ;
+             });
+             console.log(defensors.length);
+             if ( clanEnemys.length > 0 &&
+                    defensors.length > 0 && 
+                    target.obj['state'] !== "defense" ){
+                    canAttack = false ;
+             }
 
-                this.incrementValues(valuesIncThis, charaRes => {
-                    addMessageOnChara(this.obj._id, message ).then( charaUpdated => {
-                    
-                        updateSocketsValues({
-                            x : this.obj.position[0],
-                            y : this.obj.position[1]},[
-                                {
-                                    _id : this.obj._id,
-                                    actions : charaRes.actions,
-                                    gold : charaRes.gold,
-                                    xp : charaRes.xp,
-                                    level: charaRes.level,
-                                    messages : charaUpdated.value.messages }
-                            ]
-                        );
-                        if ( target.obj.type === "chara" ){
+             if ( canAttack ){
 
-                            addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
-                                const targetF = targetU.value ;
+                super.attack( caseObjs, target, attackRes => {
 
-                                updateSocketsValues({
-                                    x : target.obj.position[0],
-                                    y : target.obj.position[1]},[
-                                        {
-                                            '_id' : targetF._id,
-                                            'actions' : targetF.actions,
-                                            'messages' : targetF.messages
-                                        }
-                                    ]
-                                    );
-                            
-                            });
+                    let valuesIncThis = {
+                        actions : -1
+                    }
 
+                    let targetName = `${target.obj.clan} ${target.obj.name}` ;
+                    if ( target.obj['type'] === "monster" ){
+                        targetName = target.getName();
+                    }
+
+                    let message = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
+                    let messageTarget = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
+                    if ( attackRes.counter ){
+                        if ( attackRes.death ){
+                            message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
+                            messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
+                        }else{
+                            message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
+                            messageTarget = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage}`;
                         }
-                        callback(attackRes);
-                    });
-                });
+                    }else if ( attackRes.death ){
 
-            });
+                        message += " death" ;
+                        messageTarget += " death";
+                        let gold = 1+Math.floor(Math.random()*19) ;
+                        if ( target.obj.type === "chara" ){
+                            gold = Math.floor(target.obj.gold/2) ;
+                            messageTarget += ` gold -${gold}`;
+                        }
+                        valuesIncThis['gold'] = gold ;
+                        const addLvl = this.addLevel(1/5) ;
+                        valuesIncThis = {...valuesIncThis, ...addLvl };
+                        message += ` xp +${2} gold +${gold}`;
+                        if ( addLvl.xp ){
+                            message += "LVL UP!";
+                        }
+                    }
+
+                    this.incrementValues(valuesIncThis, charaRes => {
+                        addMessageOnChara(this.obj._id, message ).then( charaUpdated => {
+                        
+                            updateSocketsValues({
+                                x : this.obj.position[0],
+                                y : this.obj.position[1]},[
+                                    {
+                                        _id : this.obj._id,
+                                        actions : charaRes.actions,
+                                        gold : charaRes.gold,
+                                        xp : charaRes.xp,
+                                        level: charaRes.level,
+                                        messages : charaUpdated.value.messages }
+                                ]
+                            );
+                            if ( target.obj.type === "chara" ){
+
+                                addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
+                                    const targetF = targetU.value ;
+
+                                    updateSocketsValues({
+                                        x : target.obj.position[0],
+                                        y : target.obj.position[1]},[
+                                            {
+                                                '_id' : targetF._id,
+                                                'actions' : targetF.actions,
+                                                'messages' : targetF.messages
+                                            }
+                                        ]
+                                        );
+                                
+                                });
+
+                            }
+                            callback(attackRes);
+                        });
+                    });
+
+                });
+            }else{
+                callback({
+                    error : 'must attack defensor before'
+                });
+            }
 
         }else{
 
             callback({
-                err : 'cannot attack.'
+                error : 'cannot attack.'
             });
         }
 
@@ -480,6 +518,39 @@ export class CharaPattern extends Pattern{
             });
         }
 
+
+    }
+    defend( target : Pattern, callback ){
+
+        console.log('defend called', target.obj._id, this.obj._id );
+
+        if ( 
+            this.obj.actions > 0 && 
+            this.obj.state !== "defense" && 
+            (target.obj._id + '') === ('' + this.obj._id) 
+            ){
+            
+                console.log('defend');
+                updateCharaValuesData(this.obj._id, {
+                    state : "defense",
+                    actions : this.obj.actions -1
+                }).then( charaR => {
+
+
+                    console.log(charaR);
+
+                    updateSocketsValues( {x: this.obj.position[0], y : this.obj.position[1]}, [{
+                        _id : this.obj._id,
+                        state : charaR.value.state,
+                        actions : charaR.value.actions
+                    }]);
+
+
+                });
+
+
+
+            }
 
     }
 
@@ -976,7 +1047,6 @@ export class CharaPattern extends Pattern{
         const oldLevel = this.obj.level ;
         const newLevel = parseFloat(this.obj.level) + number*ratio  ;
 
-        console.log("add level:",oldLevel, newLevel);
 
         if ( Math.floor(newLevel) > Math.floor(oldLevel) ){
 

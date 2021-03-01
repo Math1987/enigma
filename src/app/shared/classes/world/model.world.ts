@@ -1,3 +1,4 @@
+import { CaseI } from "api/interfaces/case.interface";
 import { CharaI } from "api/interfaces/chara.interface";
 import * as THREE from "three" ;
 import { WorldChara } from "./chara.world";
@@ -45,6 +46,9 @@ export class WorldModel {
     }
     getName(){
         return 'model' ;
+    }
+    getPassiveInfos( obj : CaseI){
+        return {} ;
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
         return null ;

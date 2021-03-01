@@ -1,9 +1,10 @@
 import { CharaI } from "../interfaces/chara.interface";
 import { MonsterI } from "../interfaces/monster.interface";
-import { findCharaDatasByID } from "./chara.queries";
-import { findMonsterByID } from "./monster.queries";
-import { findBuildingFromID } from "./building.queries";
+import { findCharaDatasByID, findCharasOnPositions } from "./chara.queries";
+import { findMonsterByID, findMonstersOnPosition } from "./monster.queries";
+import { findBuildingFromID, findBuildingOnPosition } from "./building.queries";
 import { BuildingI } from "api/interfaces/building.interface";
+import { CaseI } from "api/interfaces/case.interface";
 
 /**
  * 
@@ -38,5 +39,34 @@ export const findObjDatasByID = (id:any, callback: (obj: CharaI | MonsterI | Bui
         }
     });
 
+
+}
+
+
+export const findObjsByPosition = ( x:number, y:number, callback: (objs :(CaseI | CharaI | MonsterI | BuildingI )[])=>void ):void => {
+
+    const apps = [] ;
+
+    findBuildingOnPosition([x,y]).then( building => {
+
+        if ( building ){
+            apps.push(building);
+        }
+        findCharasOnPositions([{x:x,y:y}], charas => {
+            if ( charas ){
+                charas.forEach(row => {
+                    apps.push(row) ;
+                })
+            }
+            findMonstersOnPosition(x,y, ()=>{}).then( monsters => {
+                if ( monsters ){
+                    monsters.forEach( monster => {
+                        apps.push(monster);
+                    }) ;
+                }
+                callback(apps);
+            });
+        });
+    });
 
 }

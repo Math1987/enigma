@@ -32,5 +32,8 @@ export interface CharaI {
     hunter : number ;
     dowser : number ;
 
+    state : string ;
+
+    kills : number ;
     messages : string[] ;
 }

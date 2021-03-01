@@ -43,7 +43,8 @@ export interface CharaI {
     dowser? : number;
     lumberjack? : number;
     priest? : number;
-    messages? : string[];
+    state? : string ;
     kills? : number ;
+    messages? : string[];
 
 }

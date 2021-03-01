@@ -9,7 +9,7 @@
  * 
  */
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { createCharaDatas, findCharaDatasByUserID, findCharaDatasByID, incCharaValuesData, updateCharaPositionDatas } from "../queries/chara.queries";
 import { CharaI } from "../interfaces/chara.interface";
@@ -17,7 +17,27 @@ import { fixObjDatas } from "../patterns/base.pattern";
 import { CharaPattern, convertCharaForFrontend, getCharaPattern } from "../patterns/chara.patterns";
 import { PatternHandler } from "../patterns/index.patterns";
 import { WorldPattern } from "../patterns/world.pattern";
+import { findObjsByPosition } from "../queries/global.queries";
 
+export const addWorldCaseOnHeader = ( req: Request, res : Response, next : NextFunction ):void => {
+
+    console.log("addWorldCaseCalled" );
+
+    if ( req.user && req.user.chara ){
+
+        findObjsByPosition( req.user.chara.position[0], req.user.chara.position[1], objs => {
+
+            req.worldCase = objs.map( row => fixObjDatas(row)) ;
+
+            next();
+
+        });
+
+    }else{
+        next();
+    }
+
+}
 
 export const createCharaReq = ( req: Request, res : Response ):void => {
 
@@ -134,7 +154,7 @@ export const actionCharaReq = (req: Request, res : Response ):void => {
         req.body['action'] 
         ){
 
-        CharaPattern.makeAction(req.body['action'], req.user.chara, req.body['target'], actionRes => {
+        CharaPattern.makeAction(req.worldCase, req.body['action'], req.user.chara, req.body['target'], actionRes => {
             res.status(200).send(actionRes);
         });
 

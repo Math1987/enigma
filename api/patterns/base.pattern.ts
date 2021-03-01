@@ -18,6 +18,9 @@ import { findObjDatasByID } from "../queries/global.queries" ;
 import { CalculsI } from "../interfaces/calculs.interface";
 import { CharaI } from "../interfaces/chara.interface";
 import { findCharaDatasByUserID } from "../queries/chara.queries";
+import { BuildingI } from "api/interfaces/building.interface";
+import { MonsterI } from "api/interfaces/monster.interface";
+import { CaseI } from "api/interfaces/case.interface";
 
 export const PATTERNS : { [name : string]: Pattern} = {} ;
 export const SOCKETS : Socket[] = [] ;
@@ -122,6 +125,7 @@ export const getCalculs = ( callback : (calculs:CalculsI)=>void ):void => {
  */
 export const fixObjDatas = (obj:any):any =>{
     const nobj = {...obj};
+    nobj._id = '' + obj._id ;
     nobj.x = obj.position[0] ;
     nobj.y = obj.position[1] ;  
     return nobj ;
@@ -264,7 +268,7 @@ export class Pattern {
         return new Pattern(obj);
     }
     pass(){}
-    makeAction(actionType : string, target : Pattern, callback: CallableFunction ){
+    makeAction(caseObjs : (CharaI | CaseI | MonsterI | BuildingI)[], actionType : string, target : Pattern, callback: CallableFunction ){
         callback({ action : "done"});
     }
     getName(){
@@ -312,7 +316,7 @@ export class Pattern {
         });
      
     }
-    attack( target : Pattern, callback ){
+    attack( caseObjs : (CaseI | CharaI | MonsterI | BuildingI )[], target : Pattern, callback ){
 
         target.counterAttack(this, counterRes => {
 

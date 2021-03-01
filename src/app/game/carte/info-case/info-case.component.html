@@ -45,6 +45,7 @@
                 <div class="avatar">
                     <img [src]="chara.img" >
                     <div class="clan" [ngClass]="chara.clan"></div>
+                    <div *ngIf="chara.state" class="state" [ngClass]="chara.state.icon"></div>
                 </div>
                 <p class="name">{{chara.datas.name}}</p>
             </div>

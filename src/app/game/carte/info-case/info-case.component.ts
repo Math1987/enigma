@@ -22,8 +22,8 @@ import { ViewverService } from '../viewver.service';
 export class InfoCaseComponent implements OnInit {
 
   targetFloor : WorldModel = null ;
-  targetCharas : WorldChara[] = [] ;
-  targetMonsters : WorldMonster[] = [] ;
+  targetCharas : any[] = [] ;
+  targetMonsters : any[] = [] ;
 
   @ViewChild('mapCanvas') mapCanvas ;
 
@@ -84,7 +84,7 @@ export class InfoCaseComponent implements OnInit {
     }
 
   }
-  updateSelectedCase( selects ){
+  updateSelectedCase( selects : WorldModel[] ){
 
     let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
 
@@ -93,17 +93,18 @@ export class InfoCaseComponent implements OnInit {
     this.targetFloor['name'] = this.targetFloor.getName();
     this.targetFloor['interactions'] = floorInteractions ;
 
-    this.targetCharas = selects.filter(row => row instanceof WorldChara).map( row => {
+    this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[]).map( row => {
+      row instanceof WorldChara ;
       const interactions = this.user.getActionsOn(this.targetFloor,row);
-      const nobj = {...row, interactions : interactions};
+      const nobj = {...row, ...row.getPassiveInfos(row.datas), interactions : interactions};
       nobj['x'] = row.x ;
       nobj['y'] = row.y ;
       nobj['img'] = row.img ;
-      nobj['name'] = row.getName()
+      nobj['name'] = row.getName();      
       return nobj ;
-    }) ;
+    } );
 
-    this.targetMonsters = selects.filter(row => row instanceof WorldMonster ).map( row => {
+    this.targetMonsters = (selects.filter(row => row instanceof WorldMonster )as WorldMonster[]).map( row => {
       const interactions = this.user.getActionsOn(this.targetFloor,row);
       const nobj = {...row, interactions : interactions};
       nobj['x'] = row.x ;

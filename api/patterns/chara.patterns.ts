@@ -166,7 +166,7 @@ export class CharaPattern extends Pattern{
             buildInstanceFromDatas( user, charaFromPattern => {
 
                 if ( charaFromPattern ){
-                    charaFromPattern.makeAction(action, target, actRes => {
+                    charaFromPattern.makeAction(caseObjs, action, target, actRes => {
                         callback(actRes);
                     });
                 }else{

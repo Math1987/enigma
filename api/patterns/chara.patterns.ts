@@ -338,10 +338,8 @@ export class CharaPattern extends Pattern{
 
         if ( this.obj.actions > 0 && (!target['clan'] || target['clan'] !== this.obj['clan']) ){
 
-
             let canAttack = true ;
             let defensors = [] ;
-            console.log('attack');
             const clanEnemys = caseObjs.filter( row => {
                 if ( (row.type === "chara" && row['clan'] === target.obj.clan ) ){
                     if ( row['state'] && row['state'] === "defense" ){
@@ -371,8 +369,8 @@ export class CharaPattern extends Pattern{
                         targetName = target.getName();
                     }
 
-                    let message = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
-                    let messageTarget = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life -${attackRes.dammage}`
+                    let message = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life ${attackRes.life}`
+                    let messageTarget = `D100 ${attackRes.D100} ${this.obj['clan']} ${this.obj['name']} attack ${targetName} life ${attackRes.life}`
                     if ( attackRes.counter ){
                         if ( attackRes.death ){
                             message = `D100 ${attackRes.D100} ${targetName} counter ${this.obj['clan']} ${this.obj['name']} life -${attackRes.dammage} death`;
@@ -451,6 +449,14 @@ export class CharaPattern extends Pattern{
             });
         }
 
+    }
+    beHitten(dammage : number){
+        let dts = { life : -Math.round(dammage)} ;
+        if ( this.obj.state === "defense" ){
+            dts.life = Math.round(dts.life*0.95) ;
+            dts = {...dts,...this.addLevel(0.5/5)}
+        }
+        return dts ;
     }
     heal( target : Pattern, callback ){
 
@@ -1039,7 +1045,7 @@ export class CharaPattern extends Pattern{
 
     }
 
-    addLevel(number){
+    addLevel(number):{level : number, kills : number, xp?:number }{
 
 
         const ratio = 1/Math.floor(this.obj.level) ;
@@ -1068,12 +1074,19 @@ export class CharaPattern extends Pattern{
             x: Math.floor(-2+Math.random()*4), 
             y: Math.floor(-2+Math.random()*4)
         }
+        let updateValues = {} ;
+        if ( this.obj.state === "defense" ){
+            updateValues = {...this.addLevel( 1.5/5 )};
+        }
         
         updateCharaPositionDatas(this.obj._id, newPos.x, newPos.y).then( posRes => {
         
             updateCharaValuesData(this.obj._id, {
+                ...updateValues,
                 life : 100,
                 gold : this.obj.gold/2,
+                level : this.obj.level,
+                state : ""
             }).then( updateLifeRes => {
     
                 super.die(dieRes => {

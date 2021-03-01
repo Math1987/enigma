@@ -316,19 +316,19 @@ export class Pattern {
         });
      
     }
-    attack( caseObjs : (CaseI | CharaI | MonsterI | BuildingI )[], target : Pattern, callback ){
+    attack( caseObjs : (CaseI | CharaI | MonsterI | BuildingI )[], target : Pattern, callback, power = 1 ){
 
         target.counterAttack(this, counterRes => {
 
             if ( counterRes ){
 
-                target.hit(this, 0.5, hitRes => {
+                target.hit(this, 0.5*power, hitRes => {
                     callback({...hitRes, counter : true })
                 });
 
             }else{
 
-                this.hit(target, 1.0, hitRes => {
+                this.hit(target, 1.0*power, hitRes => {
                     callback({...hitRes, counter : false })
                 });
 
@@ -367,22 +367,24 @@ export class Pattern {
               )
             );
 
-            dammages = Math.min( target.obj['life'], dammages*power );
+            const beHitten = target.beHitten(Math.min( target.obj['life'], dammages*power ));
 
             if ( dammages >= target.obj['life'] ){
 
                 target.die( deathRes => {
 
                     callback({
+                        ...deathRes,
+                        ...beHitten,
                         death : true,
                         D100 : D100,
-                        dammage : dammages
+                        dammage : beHitten.life
                     });
                 });
 
             }else{
 
-                target.incrementValues({ 'life' : -dammages }, targetUpdated => {
+                target.incrementValues({...beHitten }, targetUpdated => {
                 
                     updateSocketsValues({
                         x : this.obj.position[0],
@@ -395,13 +397,17 @@ export class Pattern {
                         );
                     
                     callback({ 
+                        ...beHitten,
                         death : false,
                         D100 : D100,
-                        dammage : dammages
+                        dammage : beHitten.life
                     });
                 });
             }
         });
+    }
+    beHitten(dammage : number){
+        return {life : -Math.round(dammage)} ;
     }
     die( callback ){
 

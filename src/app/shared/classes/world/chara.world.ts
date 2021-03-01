@@ -160,7 +160,7 @@ export class WorldChara extends WorldModel {
 
     }
 
-    getCharaInteractions( floor, chara : CharaI ){
+    getCharaInteractions( floor, chara : CharaI, caseObjs? : WorldModel[] ){
 
         const actions = [] ;
 
@@ -186,7 +186,8 @@ export class WorldChara extends WorldModel {
             chara.actions > 0 &&
             chara.water >= 5 && 
             chara.food >= 5 ){
-                actions.push(
+
+            actions.push(
                 {
                 name : `soigner`,
                 icon : "icon-heal",
@@ -199,15 +200,40 @@ export class WorldChara extends WorldModel {
                 this.datas['clan'] !== chara.clan && 
                 floor.getName() !== "neutral" 
                 ){
-                actions.push(
-                    {
-                    name : `attaquer`,
-                    icon : "icon-attack",
-                    action : "attack",
-                    tooltip : "attaquer, coût 1 action"
+
+
+                let canAttack = true ;
+                if ( caseObjs && this.datas.state !== "defense" ){
+                    const defensors = [] ;
+                    const enemys = caseObjs.filter( row => {
+                        if ( row &&
+                             row instanceof WorldChara &&
+                             row.datas['clan'] === this.datas.clan ){
+                                 if ( row.datas['state'] === "defense" ){
+                                    defensors.push(row);
+                                 }
+                            return true ;
+                        }
+                        return false ;
+                    });
+                    if ( defensors.length > 0 ){
+                        canAttack = false ;
                     }
-                 );
-        }
+                }
+                    
+                if ( canAttack ){
+
+                    actions.push(
+                        {
+                            name : `attaquer`,
+                            icon : "icon-attack",
+                            action : "attack",
+                            tooltip : "attaquer, coût 1 action"
+                        }
+                        );
+                    }
+                }
+
         return actions ;
 
     }

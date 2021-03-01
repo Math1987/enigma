@@ -93,9 +93,20 @@ export class InfoCaseComponent implements OnInit {
     this.targetFloor['name'] = this.targetFloor.getName();
     this.targetFloor['interactions'] = floorInteractions ;
 
-    this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[]).map( row => {
+    this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])
+    .sort( (a,b) => {
+
+      if ( b.datas._id === this.user.chara._id ){
+        return 1 ;
+      }else if ( b.datas.state === "defense" ){
+        return 1 ;
+      }else{
+        return -1 ;
+      }
+
+    }).map( row => {
       row instanceof WorldChara ;
-      const interactions = this.user.getActionsOn(this.targetFloor,row);
+      const interactions = this.user.getActionsOn(this.targetFloor ,row , selects );
       const nobj = {...row, ...row.getPassiveInfos(row.datas), interactions : interactions};
       nobj['x'] = row.x ;
       nobj['y'] = row.y ;

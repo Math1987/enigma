@@ -298,12 +298,12 @@ export class UserService {
 
 
   }
-  getActionsOn(floor : WorldModel, target = null ){
+  getActionsOn(floor : WorldModel, target = null, worldObjs? : WorldModel[] ){
     
     if ( floor === target && floor.getCharaInteractions(floor, this.chara )){
-      return floor.getCharaInteractions(floor, this.chara) ;
+      return floor.getCharaInteractions(floor, this.chara, worldObjs) ;
     }else if ( target !== null && target.getCharaInteractions(floor, this.chara )){
-      return target.getCharaInteractions(target, this.chara) ;
+      return target.getCharaInteractions(target, this.chara, worldObjs ) ;
     }
     return [] ;
   }

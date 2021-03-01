@@ -50,7 +50,7 @@ export class WorldModel {
     getPassiveInfos( obj : CaseI){
         return {} ;
     }
-    getCharaInteractions(floor:WorldModel, chara: CharaI ){
+    getCharaInteractions(floor:WorldModel, chara: CharaI, worldObjs? : WorldModel[] ){
         return null ;
     }
     select(){

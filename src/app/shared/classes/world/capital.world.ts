@@ -103,6 +103,32 @@ export class WorldCapital extends WorldBuilding {
                         icon : "icon-shield",
                         action : "addWood",
                         tooltip : `augmente la limite de 1 mercenaire. Coût: 10bois`
+                    },
+                    {
+                        name : "stocker du bois",
+                        icon : "icon-wood",
+                        action : "stockWood",
+                        tooltip : `stock 10 points de bois, rapporte 1xp`
+                    }
+                )
+            }
+            if ( chara.water >= 10 ){
+                actions.push(
+                    {
+                        name : "stocker de l'eau",
+                        icon : "icon-water",
+                        action : "stockWater",
+                        tooltip : `stock 10 points d'eau, rapporte 1xp`
+                    }
+                )
+            }
+            if ( chara.food >= 10 ){
+                actions.push(
+                    {
+                        name : "stocker de la nourriture",
+                        icon : "icon-food",
+                        action : "stockFood",
+                        tooltip : `stock 10 points de nourriture, rapporte 1xp`
                     }
                 )
             }

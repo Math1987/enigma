@@ -263,9 +263,7 @@ export class UserService {
       level : res['level'],
       clan : res['clan'],
       
-      x : px,
-      y : py,
-  
+
       life : res['life'],
       lifeMax : res['lifeMax'],
       moves : res['moves'],
@@ -283,7 +281,10 @@ export class UserService {
       dowser : res['dowser'],
   
       messages : [],
-      ...res };
+      ...res, 
+      x : px,
+      y : py
+   };
   }
 
   addSkill(skill:string){

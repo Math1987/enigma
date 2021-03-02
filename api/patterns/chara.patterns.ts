@@ -28,7 +28,7 @@ import {
 } from "./base.pattern";
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
-import { findBuildingOnPosition, incBuildingValuesData } from "./../queries/building.queries";
+import { findBuildingOnPosition, incBuildingValuesData, updateBuildingById } from "./../queries/building.queries";
 import { CharaI } from "api/interfaces/chara.interface";
 import { BuildingPattern } from "./building.pattern";
 import { CaseI } from "api/interfaces/case.interface";
@@ -309,6 +309,15 @@ export class CharaPattern extends Pattern{
             break ;
             case "defend" : 
                 this.defend(target, callback);
+            break ;
+            case "stockWater" :
+                this.stockResource("water", target, callback);
+            break ;
+            case "stockFood" :
+                this.stockResource("food", target, callback);
+            break ;
+            case "stockWood" :
+                this.stockResource("wood", target, callback);
             break ;
             case "addMercenari" :
                 this.addMercenari(target, callback);
@@ -843,6 +852,59 @@ export class CharaPattern extends Pattern{
 
         }else{
             callback({err : 'no actions'});
+        }
+    }
+    stockResource( resource : string, target : CapitalPattern, callback) {
+        if ( this.obj[resource] >= 10 &&
+            target instanceof CapitalPattern &&
+            target.obj.clan === this.obj.clan
+            ){
+
+                let inc = {}
+                inc[resource] = - 10 ;
+                inc = {...inc, ...this.addLevel(0.5/5)};
+
+                const incBuilding = {} ;
+                incBuilding[resource] = 10 ;
+
+                this.incrementValues(inc, chara1 => {
+
+                    let message = `stock 10 ${resource} +1 xp` ;
+                    if ( inc['xp'] && inc['xp'] > 0 ){
+                        message += " levelUp!" ;
+                    }
+
+                    addMessageOnChara( this.obj._id, message ).then( chara2 => {
+
+                        incBuildingValuesData( target.obj._id, incBuilding).then( capitalRes => {
+
+
+                            let updt = {
+                                _id : chara2.value._id, 
+                                xp : chara2.value.xp,
+                                level : chara2.value.level,
+                                messages : chara2.value.messages
+                            };
+                            updt[resource] = chara1[resource] ;
+
+                            updateSocketsValues( 
+                                {x : chara2.value.position[0], y : chara2.value.position[1]}, 
+                                [
+                                    updt
+                                ] 
+                                );
+    
+                        }).catch( err => {
+    
+                        });
+
+
+                    });
+
+
+
+                });
+
         }
     }
     addMercenari( target : CapitalPattern, callback ){

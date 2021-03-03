@@ -945,15 +945,23 @@ export class CharaPattern extends Pattern{
                 if ( this.obj.life <= target.obj.mercenaries*3 ){
                     this.die( dieRes => {
                      
-                        updateSocketsValues({
-                            x : target.obj.position[0],
-                            y : target.obj.position[1]},[
-                                {
-                                    '_id' : targetRes.value['_id'],
-                                    'mercenaries' : targetRes.value['mercenaries']
-                                }
-                            ]
-                            );
+                        addMessageOnChara( 
+                            this.obj._id, 
+                            `attack ${target.obj.clan} capital -1 mercenaire life -${target.obj.mercenaries+1} death`).then( charaR => {
+
+                                updateSocketsValues({
+                                    x : target.obj.position[0],
+                                    y : target.obj.position[1]},[
+                                        {
+                                            '_id' : targetRes.value['_id'],
+                                            'mercenaries' : targetRes.value['mercenaries']
+                                        }
+                                    ]
+                                    );
+        
+
+                        });
+
 
                             callback(true);
 
@@ -963,20 +971,25 @@ export class CharaPattern extends Pattern{
 
                     this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries*3 }, charaRes => {
 
-                        updateSocketsValues({
-                            x : target.obj.position[0],
-                            y : target.obj.position[1]},[
-                                {
-                                    '_id' : targetRes.value['_id'],
-                                    'mercenaries' : targetRes.value['mercenaries']
-                                },
-                                {
-                                    '_id' : this.obj._id,
-                                    "actions" : charaRes.actions,
-                                    "life" : charaRes.life
-                                }
-                            ]
-                            );
+                        addMessageOnChara( this.obj._id, `attack ${target.obj.clan} capital -1 mercenaire life -${target.obj.mercenaries+1}`).then( charaF => {
+
+                            updateSocketsValues({
+                                x : target.obj.position[0],
+                                y : target.obj.position[1]},[
+                                    {
+                                        '_id' : targetRes.value['_id'],
+                                        'mercenaries' : targetRes.value['mercenaries']
+                                    },
+                                    {
+                                        '_id' : this.obj._id,
+                                        "actions" : charaRes.actions,
+                                        "life" : charaRes.life,
+                                        "messages" : charaF.value.messages
+                                    }
+                                ]
+                                );
+
+                        });
             
                         callback(targetRes);
     

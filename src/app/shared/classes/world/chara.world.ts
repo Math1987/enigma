@@ -1,6 +1,7 @@
 import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
+import { WorldFloor } from './floor.world';
 import { WorldModel } from "./model.world";
 import { WorldRes } from './resources.world';
 
@@ -162,18 +163,33 @@ export class WorldChara extends WorldModel {
 
     getCharaInteractions( floor, chara : CharaI, caseObjs? : WorldModel[] ){
 
+        console.log('getInteractions', caseObjs );
+
         const actions = [] ;
 
         if ( chara.actions > 0 && 
             chara.state !== "defense" &&
             this.datas._id === chara._id 
             ){
-                actions.push({
-                    name : "défense",
-                    icon : "icon-shield",
-                    action : "defend",
-                    tooltip : "coûte 1 action. se met en position défensive, protégeant les membres du même clan et augmentant la défense de 5%"
-                })
+
+
+                if ( caseObjs && caseObjs.reduce( (acc,row) => {
+                    console.log('caseObjs reduce', acc)
+                    if ( row instanceof WorldFloor 
+                        && row.getName() === "neutral"){
+                        acc = false ;
+                    }
+                    return acc ;
+                }, true ) ){
+                    actions.push({
+                        name : "défense",
+                        icon : "icon-shield",
+                        action : "defend",
+                        tooltip : "coûte 1 action. se met en position défensive, protégeant les membres du même clan et augmentant la défense de 5%"
+                    })
+                }
+
+
 
 
             }
@@ -197,8 +213,7 @@ export class WorldChara extends WorldModel {
                 );
             }else if (
                 this.datas.x === chara.x && this.datas.y === chara.y && 
-                this.datas['clan'] !== chara.clan && 
-                floor.getName() !== "neutral" 
+                this.datas['clan'] !== chara.clan 
                 ){
 
 
@@ -216,9 +231,20 @@ export class WorldChara extends WorldModel {
                         }
                         return false ;
                     });
+
                     if ( defensors.length > 0 ){
                         canAttack = false ;
                     }
+                }
+                if ( caseObjs && caseObjs.reduce( (acc,row) => {
+                    console.log('caseObjs reduce', acc)
+                    if ( row instanceof WorldFloor 
+                        && row.getName() === "neutral"){
+                        acc = true ;
+                    }
+                    return acc ;
+                }, false ) ){
+                    canAttack = false ;
                 }
                     
                 if ( canAttack ){

@@ -345,7 +345,11 @@ export class CharaPattern extends Pattern{
     }
     attack( caseObjs : (CaseI | CharaI | MonsterI | BuildingI )[], target : Pattern, callback){
 
-        if ( this.obj.actions > 0 && (!target['clan'] || target['clan'] !== this.obj['clan']) ){
+        if ( this.obj.actions > 0 
+            && !WorldPattern.isOnNeutral(this.obj.position[0], this.obj.position[1])
+            && (!target['clan'] || target['clan'] !== this.obj['clan']) 
+            
+            ){
 
             let canAttack = true ;
             let defensors = [] ;
@@ -542,6 +546,7 @@ export class CharaPattern extends Pattern{
         if ( 
             this.obj.actions > 0 && 
             this.obj.state !== "defense" && 
+            !WorldPattern.isOnNeutral(this.obj.position[0], this.obj.position[1]) &&
             (target.obj._id + '') === ('' + this.obj._id) 
             ){
             

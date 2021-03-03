@@ -403,7 +403,8 @@ export class CharaPattern extends Pattern{
                         }
                         valuesIncThis['gold'] = gold ;
                         const addLvl = this.addLevel(1/5) ;
-                        valuesIncThis = {...valuesIncThis, ...addLvl };
+                        valuesIncThis = {...valuesIncThis, ...addLvl};
+                        valuesIncThis['kills'] = 1 ;
                         message += ` xp +${2} gold +${gold}`;
                         if ( addLvl.xp ){
                             message += "LVL UP!";
@@ -1125,7 +1126,7 @@ export class CharaPattern extends Pattern{
 
     }
 
-    addLevel(number):{level : number, kills : number, xp?:number }{
+    addLevel(number):{level : number, xp?:number }{
 
 
         const ratio = 1/Math.floor(this.obj.level) ;
@@ -1138,11 +1139,11 @@ export class CharaPattern extends Pattern{
 
             const xpAdder = Math.max(5, Math.ceil(this.obj.level*1.1));
 
-            return { level : number*ratio, xp : xpAdder, kills : 1};
+            return { level : number*ratio, xp : xpAdder};
 
         }else{
 
-            return { level : number*ratio, kills : 1} ;
+            return { level : number*ratio} ;
 
         }
 

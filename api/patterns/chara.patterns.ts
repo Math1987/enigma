@@ -428,6 +428,11 @@ export class CharaPattern extends Pattern{
                             );
                             if ( target.obj.type === "chara" ){
 
+                                console.log('target attack datas', attackRes);
+                                if ( attackRes.targetInfos['level'] ){
+                                    messageTarget += ` xp + ${Math.max(1,Math.ceil(attackRes.targetInfos['level']*5))}`;
+                                }
+
                                 addMessageOnChara(target.obj._id, messageTarget ).then( targetU => {
                                     const targetF = targetU.value ;
 
@@ -464,11 +469,21 @@ export class CharaPattern extends Pattern{
         }
 
     }
-    beHitten(dammage : number){
-        let dts = { life : -Math.round(dammage)} ;
+    beHitten(dammage : number) : { incrementations : {}, life : number , targetInfos : {} }{
+        let dts = {
+             life : -Math.round(dammage),
+             incrementations : {
+                    life : - Math.round(dammage)
+                },
+                targetInfos : {}
+            };
         if ( this.obj.state === "defense" ){
             dts.life = Math.round(dts.life*0.95) ;
-            dts = {...dts,...this.addLevel(0.5/5)}
+            dts.incrementations.life = Math.round(dts.life*0.95) ;
+            const addLevel = this.addLevel(0.5/5)  ;
+            dts.incrementations = {...dts.incrementations, ...addLevel}
+            dts = {...dts,...addLevel}
+            dts.targetInfos = {...addLevel};
         }
         return dts ;
     }

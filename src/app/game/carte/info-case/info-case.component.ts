@@ -111,9 +111,6 @@ export class InfoCaseComponent implements OnInit {
       }
 
     }).map( row => {
-
-
-
       row instanceof WorldChara ;
       const interactions = this.user.getActionsOn(this.targetFloor ,row , selects );
       const nobj = {...row, ...row.getPassiveInfos(row.datas), interactions : interactions};

@@ -384,7 +384,7 @@ export class Pattern {
 
             }else{
 
-                target.incrementValues({...beHitten }, targetUpdated => {
+                target.incrementValues({...beHitten.incrementations }, targetUpdated => {
                 
                     updateSocketsValues({
                         x : this.obj.position[0],
@@ -406,8 +406,14 @@ export class Pattern {
             }
         });
     }
-    beHitten(dammage : number){
-        return {life : -Math.round(dammage)} ;
+    beHitten(dammage : number) : { incrementations : {}, life : number, targetInfos : {}}{
+        return {
+            life : -Math.round(dammage),
+            incrementations : {
+                life : - Math.round(dammage)
+            },
+            targetInfos : {}
+        };
     }
     die( callback ){
 

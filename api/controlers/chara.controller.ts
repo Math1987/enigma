@@ -105,11 +105,17 @@ export const moveCharaReq = (req: Request, res : Response ):void => {
     const charaId = chara['_id'] ;
     const mover = req.body ;
 
+    console.log('moving', mover);
+
     if ( 
         chara &&
         mover && 
         (mover['x'] || mover['y']) && 
-        chara['moves'] > 0
+        (chara['moves'] > 0 ||
+         (
+             WorldPattern.isOnNeutral(chara.position[0], chara.position[1]) && 
+             WorldPattern.isOnNeutral(chara.position[0] + mover.x, chara.position[1] + mover.y)
+         ))
         ){
 
         const oldPosition = { x : chara.x, y : chara.y };
@@ -121,7 +127,8 @@ export const moveCharaReq = (req: Request, res : Response ):void => {
                     PatternHandler.moveOnSockets(chara._id, chara.x, chara.y, oldPosition);
                     res.status(200).send( chara );
                 }
-                if ( WorldPattern.isOnNeutral(charaMoved.position[0], charaMoved.position[1])){
+                if ( WorldPattern.isOnNeutral(chara.position[0], chara.position[1]) &&
+                     WorldPattern.isOnNeutral(chara.position[0] + mover.x, chara.position[1] + mover.y )){
                     moveIt(charaMoved);
                 }else{
 

@@ -65,7 +65,9 @@
                         [ngClass]="obj['icon']"
                         [matTooltip]="obj.tooltip"
                         (click)="mouseDownItem(refItem, obj)"
-                        ></div>
+                        >
+                        <span *ngIf="obj['datas']['number']">{{obj['datas']['number']}}</span>
+                    </div>
                     </div>
                    
                 </div>

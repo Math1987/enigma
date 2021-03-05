@@ -334,6 +334,11 @@ export class UserService {
     }
     //this.updateCharaValue('life', this.chara.life + 10 );
   }
+  useItem(item, callback){
+    this.http.post(`${environment.urlApi}/user/chara/useItem`, { _id : this.user._id, item : item} ).subscribe( res => {
+      console.log(res);
+    })
+  }
   updateUser( user ){
     this.subject.next(user);
   }

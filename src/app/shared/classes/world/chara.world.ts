@@ -173,8 +173,11 @@ export class WorldChara extends WorldModel {
         }
         if ( this.datas._id === userChara._id ){
             obj['inventory'] = userChara.inventory.map( row => {
-                return METADATAS[row.name];
+                return {...METADATAS[row.name], datas : row};
             }) ;
+            while ( obj['inventory'].length < 6 ){
+                obj['inventory'].push(null);
+            }
         }
         return obj ;
     }

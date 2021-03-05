@@ -10,8 +10,9 @@ export interface AdderI {
     type : "adder" ;
     name : string ;
     consumes : string ;
-    consumeValue : number,
-    add : string,
-    addValue : number
+    consumeValue : number ;
+    add : string ;
+    addValue : number ;
+    number : number ;
 
 }

@@ -192,6 +192,7 @@
             padding : 0px ;
             margin : 0px ;
             margin-left: 1rem ;
+            margin-bottom: 0.5rem ;
             
             &-item-container{
                 position : relative ;
@@ -201,6 +202,15 @@
                 border-radius: 50%;
                 background-color: rgba(0,0,0,0.125) ;
                 border : 1px solid var(--border-color );
+
+                span{
+                    display: block ;
+                    position : absolute ;
+                    bottom : -0.5rem ;
+                    font-size: 0.75rem ;
+                    color : var(--border-color );
+                }
+
             }
             &-item{
                 cursor: pointer ;

@@ -13,11 +13,12 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { createCharaDatas, findCharaDatasByUserID, findCharaDatasByID, incCharaValuesData, updateCharaPositionDatas } from "../queries/chara.queries";
 import { CharaI } from "../interfaces/chara.interface";
-import { fixObjDatas } from "../patterns/base.pattern";
+import { fixObjDatas, buildInstanceFromId } from "../patterns/base.pattern";
 import { CharaPattern, convertCharaForFrontend, getCharaPattern } from "../patterns/chara.patterns";
 import { PatternHandler } from "../patterns/index.patterns";
 import { WorldPattern } from "../patterns/world.pattern";
 import { findObjsByPosition } from "../queries/global.queries";
+
 
 export const addWorldCaseOnHeader = ( req: Request, res : Response, next : NextFunction ):void => {
 
@@ -169,4 +170,49 @@ export const actionCharaReq = (req: Request, res : Response ):void => {
         res.status(400).send({err : 'need datas'});
     }
 
+}
+
+export const userItemReq = (req:Request, res : Response) :void => {
+
+    console.log('try using item', req.body)
+
+    if ( 
+        req.user.chara && 
+        req.body && req.body['_id'] && 
+        req.body['item'] 
+        ){
+
+            buildInstanceFromId(req.user.chara._id, charaM => {
+
+                if ( charaM && charaM instanceof CharaPattern ){
+
+                    charaM.useItem(req.body.item, useRes => {
+                        
+                        res.status(200).send({itemUse : true});
+                        
+                        
+                    });
+
+                }
+                    
+            });
+
+            // getCharaPattern(req.user.chara, charaP => {
+
+            //     console.log(charaP);
+
+            //     charaP.useItem(req.body.item, useRes => {
+
+            //         res.status(200).send({itemUse : true});
+
+
+            //     });
+
+            // })
+           
+
+
+    }else{
+        res.status(400).send({err : 'need datas'});
+    }
 }

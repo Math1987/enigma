@@ -126,6 +126,14 @@ export async function addItemOnCharaInventory( _id : any,  item):Promise<FindAnd
         { returnOriginal : false});
 }
 
+export async function queryCharaFindOneAndUpdateById( _id : any,  query : any, ops = {} ):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
+    const collection = database.collection('charas');
+    return await collection.findOneAndUpdate({
+        _id : convertId(_id)
+        }, query, 
+        {...ops, returnOriginal : false});
+}
+
 /**
  * this function does not use mongodb directly
  * It call a cycle of functions using mongodb

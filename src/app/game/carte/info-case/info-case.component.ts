@@ -190,15 +190,26 @@ export class InfoCaseComponent implements OnInit {
   }
 
   itemSelected = null ;
+  lastClick = Date.now();
   mouseDownItem(itemHtml, itemObj){
-    itemHtml['datas'] = {
-      time : Date.now(),
-      ...itemObj
-    };
-    console.log('mouseDown', itemHtml);
-    if ( !this.itemSelected ){
-      this.itemSelected = itemHtml ;
+
+    if ( Date.now() - this.lastClick >= 500 ){
+      this.user.useItem(itemObj.datas, ()=> {
+
+      });
+  
     }
+    this.lastClick = Date.now();
+
+
+    // itemHtml['datas'] = {
+    //   time : Date.now(),
+    //   ...itemObj
+    // };
+    // console.log('mouseDown', itemHtml);
+    // if ( !this.itemSelected ){
+    //   this.itemSelected = itemHtml ;
+    // }
   }
 
 

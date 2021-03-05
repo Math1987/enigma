@@ -24,7 +24,7 @@ export class WorldFloor extends WorldModel{
         return this.matKey ;
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
-        if ( chara.actions > 0 && chara.position[0] === floor.x && chara.position[1] === floor.y ){
+        if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
             const datas = [];
             if ( chara.searches > 0 ){
                 datas.push(                {
@@ -34,37 +34,40 @@ export class WorldFloor extends WorldModel{
                     tooltip : "coût 1 point de fouille"
                     });
             }
-            if ( chara.water < chara.waterMax ){
-                datas.push(                {
-                    name : `puiser de l'eau`,
-                    icon : "icon-water",
-                    action : `puiser de l'eau`,
-                    tooltip : "coût 1 action"
-                    });
-            }
-            if ( chara.food < chara.foodMax ){
-                datas.push(                {
-                    name : "chasser", 
-                    icon : "icon-attack",
-                    action : `chasser`,
-                    tooltip : "coût 1 action"
-                    });
-            }
-            if ( chara.wood < chara.woodMax ){
-                datas.push({
-                    name : `bûcheronner`,
-                    icon : "icon-wood",
-                    action : `bûcheronner`,
-                    tooltip : "coût 1 action"
-                    })
-            }
-            if ( chara.faith < chara.faithMax ){
-                datas.push({
-                    name : "prier",
-                    icon : "icon-pray",
-                    action : "prier",
-                    tooltip : "coût 1 action"
-                    });
+            if ( chara.actions > 0 ){
+
+                if ( chara.water < chara.waterMax ){
+                    datas.push(                {
+                        name : `puiser de l'eau`,
+                        icon : "icon-water",
+                        action : `puiser de l'eau`,
+                        tooltip : "coût 1 action"
+                        });
+                }
+                if ( chara.food < chara.foodMax ){
+                    datas.push(                {
+                        name : "chasser", 
+                        icon : "icon-attack",
+                        action : `chasser`,
+                        tooltip : "coût 1 action"
+                        });
+                }
+                if ( chara.wood < chara.woodMax ){
+                    datas.push({
+                        name : `bûcheronner`,
+                        icon : "icon-wood",
+                        action : `bûcheronner`,
+                        tooltip : "coût 1 action"
+                        })
+                }
+                if ( chara.faith < chara.faithMax ){
+                    datas.push({
+                        name : "prier",
+                        icon : "icon-pray",
+                        action : "prier",
+                        tooltip : "coût 1 action"
+                        });
+                }
             }
 
             return datas ;

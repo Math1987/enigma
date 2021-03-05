@@ -108,6 +108,9 @@
         background-position: calc( var(--icon-size) * -3) calc( var(--icon-size) * -1) ;
 
     }
+    &-search{
+        background-position: calc( var(--icon-size) * 10) calc( var(--icon-size) * 10) ;
+    }
     &-shield{
         background-position: calc( var(--icon-size) * -2) calc( var(--icon-size) * 0) ;
     }

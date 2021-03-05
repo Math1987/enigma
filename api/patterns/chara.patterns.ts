@@ -374,7 +374,6 @@ export class CharaPattern extends Pattern{
                 }
                 return false ;
              });
-             console.log(defensors.length);
              if ( clanEnemys.length > 0 &&
                     defensors.length > 0 && 
                     target.obj['state'] !== "defense" ){
@@ -440,7 +439,6 @@ export class CharaPattern extends Pattern{
                             );
                             if ( target.obj.type === "chara" ){
 
-                                console.log('target attack datas', attackRes);
                                 if ( attackRes.targetInfos['level'] ){
                                     messageTarget += ` xp + ${Math.max(1,Math.ceil(attackRes.targetInfos['level']*5))}`;
                                 }
@@ -569,8 +567,6 @@ export class CharaPattern extends Pattern{
     }
     defend( target : Pattern, callback ){
 
-        console.log('defend called', target.obj._id, this.obj._id );
-
         if ( 
             this.obj.actions > 0 && 
             this.obj.state !== "defense" && 
@@ -578,14 +574,10 @@ export class CharaPattern extends Pattern{
             (target.obj._id + '') === ('' + this.obj._id) 
             ){
             
-                console.log('defend');
                 updateCharaValuesData(this.obj._id, {
                     state : "defense",
                     actions : this.obj.actions -1
                 }).then( charaR => {
-
-
-                    console.log(charaR);
 
                     updateSocketsValues( {x: this.obj.position[0], y : this.obj.position[1]}, [{
                         _id : this.obj._id,
@@ -1154,7 +1146,6 @@ export class CharaPattern extends Pattern{
     }
 
     search(target : any, callback ){
-        console.log('fouille sur ', target) ;
 
         if ( this.obj.searches > 0 ){
 
@@ -1164,50 +1155,69 @@ export class CharaPattern extends Pattern{
 
                     const foundObj = createItem('tea') ;
                     foundObj['number'] = Math.ceil(Math.random()*10);
-                    console.log(foundObj);
 
-                    const obj = this.obj.inventory.filter( row => row.name === foundObj.name );
-                    if ( obj.length <= 0 ){
+                    addMessageOnChara(this.obj._id, `objet trouvé ${foundObj.name}` ).then( chM => {
+
+                        const obj = this.obj.inventory.filter( row => row.name === foundObj.name );
+                        if ( obj.length <= 0 ){
 
 
-                        addItemOnCharaInventory(this.obj._id, foundObj).then( charaR => {
+                            addItemOnCharaInventory(this.obj._id, foundObj).then( charaR => {
 
-                            updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                                {
-                                    _id : this.obj._id,
-                                    searches : charaR.value.searches,
-                                    inventory : charaR.value.inventory
-                                }
-                            ]);
-                            callback(true) ;
+                                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                                    {
+                                        _id : this.obj._id,
+                                        searches : charaR.value.searches,
+                                        inventory : charaR.value.inventory,
+                                        messages : charaR.value.messages
+                                    }
+                                ]);
+                                callback(true) ;
 
-                        } );
+                            } );
 
-                    }else{
-                        
-                        const req = {$inc : {}}
-                        req.$inc[`inventory.$[elem].number`] = foundObj.number ;
-                        const ops = {
-                            arrayFilters : [
-                                {
-                                    'elem.name' : foundObj['name']
-                                }
-                            ]
-                        };
-                        queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
-                            updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                                {
-                                    _id : this.obj._id,
-                                    searches : char1.searches,
-                                    inventory : newCharaRes.value.inventory
-                                }
-                            ]);
-                            callback(true) ;
+                        }else{
+                            
+                            const req = {$inc : {}}
+                            req.$inc[`inventory.$[elem].number`] = foundObj.number ;
+                            const ops = {
+                                arrayFilters : [
+                                    {
+                                        'elem.name' : foundObj['name']
+                                    }
+                                ]
+                            };
+                            queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
+                                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                                    {
+                                        _id : this.obj._id,
+                                        searches : newCharaRes.value.searches,
+                                        inventory : newCharaRes.value.inventory,
+                                        messages : newCharaRes.value.messages
+                                    }
+                                ]);
+                                callback(true) ;
 
-                        });
-                    }
+                            });
+                        }
+                });
 
                 }else{
+
+
+                    addMessageOnChara(this.obj._id, 'fouille infructueuse').then( charaR2 => {
+
+                        
+                        updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                            {
+                                _id : this.obj._id,
+                                searches : char1.searches,
+                                messages : charaR2.value.messages
+                            }
+                        ]);
+
+                    });
+                        
                     callback(false);
                 }
 
@@ -1264,7 +1274,6 @@ export class CharaPattern extends Pattern{
 
 
                     }).catch( err => {
-                        console.log('err', err);
                         callback(false);
                     })
 

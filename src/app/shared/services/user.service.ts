@@ -299,6 +299,9 @@ export class UserService {
 
 
   }
+  getInfosOn(target : WorldModel, floor : WorldModel, caseObjs? : WorldModel[]){
+    return target.getInfos(this.chara, floor, caseObjs);
+  }
   getActionsOn(floor : WorldModel, target = null, worldObjs? : WorldModel[] ){
     
     console.log("getActionsOn", worldObjs);

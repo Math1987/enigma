@@ -64,6 +64,36 @@ export class InfoCaseComponent implements OnInit {
       this.viewer.viewver.updateSelection();
     }
 
+
+    document.addEventListener('mousemove', event => {
+
+
+      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time > 10000 ){
+
+        const parent = this.itemSelected.parentNode ;
+        const parentP = {
+          x: parent.getBoundingClientRect().left,
+          y: parent.getBoundingClientRect().top
+        }
+
+
+        this.itemSelected.style.zIndex = "10" ;
+
+        this.itemSelected.style.left = `${event.clientX - parentP.x - this.itemSelected.offsetWidth/2}px`;
+        this.itemSelected.style.top = `${event.clientY - parentP.y - this.itemSelected.offsetHeight/2}px`;
+
+      }
+
+    });
+    document.addEventListener('mouseup', event => {
+      console.log('ACTION ITEM');
+      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time <= 1000 ){
+        alert('Action');
+      }
+      this.itemSelected = null ;
+    })
+
+
   }
   initSelection(){
 
@@ -112,14 +142,13 @@ export class InfoCaseComponent implements OnInit {
 
     }).map( row => {
       row instanceof WorldChara ;
-      const interactions = this.user.getActionsOn(this.targetFloor ,row , selects );
-      const nobj = {...row, ...row.getPassiveInfos(row.datas), interactions : interactions};
+      const nobj = {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
       nobj['x'] = row.x ;
       nobj['y'] = row.y ;
       nobj['img'] = row.img ;
       nobj['name'] = row.getName();      
       return nobj ;
-    } );
+    });
 
     this.targetMonsters = (selects.filter(row => row instanceof WorldMonster )as WorldMonster[]).map( row => {
       const interactions = this.user.getActionsOn(this.targetFloor,row);
@@ -158,6 +187,18 @@ export class InfoCaseComponent implements OnInit {
 
     }
 
+  }
+
+  itemSelected = null ;
+  mouseDownItem(itemHtml, itemObj){
+    itemHtml['datas'] = {
+      time : Date.now(),
+      ...itemObj
+    };
+    console.log('mouseDown', itemHtml);
+    if ( !this.itemSelected ){
+      this.itemSelected = itemHtml ;
+    }
   }
 
 

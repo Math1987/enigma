@@ -1,6 +1,7 @@
 import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
+import { METADATAS } from '../../metadatas/metadatas';
 import { WorldFloor } from './floor.world';
 import { WorldModel } from "./model.world";
 import { WorldRes } from './resources.world';
@@ -161,6 +162,22 @@ export class WorldChara extends WorldModel {
 
     }
 
+    getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
+
+        console.log(userChara);
+
+        const obj = {
+            name : this.getName(),
+            states : this.getStates(),
+            interactions : this.getCharaInteractions(floor, userChara, caseObjs)
+        }
+        if ( this.datas._id === userChara._id ){
+            obj['inventory'] = userChara.inventory.map( row => {
+                return METADATAS[row.name];
+            }) ;
+        }
+        return obj ;
+    }
     getCharaInteractions( floor, chara : CharaI, caseObjs? : WorldModel[] ){
 
         console.log('getInteractions', caseObjs );
@@ -263,13 +280,14 @@ export class WorldChara extends WorldModel {
         return actions ;
 
     }
-    getPassiveInfos( chara: CharaI ){
+    getStates(){
         const obj = {};
         if ( this.datas.state ){
             obj['state'] = {
                 icon : 'icon icon-shield'
             }
         };
+        console.log('getting state', obj);
         return obj ;
     }
 

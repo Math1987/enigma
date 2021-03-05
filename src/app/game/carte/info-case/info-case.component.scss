@@ -179,6 +179,39 @@
             }
 
         }
+        .inventory{
+
+
+            width : 100% ;
+            flex : 0 ;
+            display : flex ;
+            flex-flow: row nowrap ;
+            align-items: center ;
+
+            --icon-size : 1rem ;
+            padding : 0px ;
+            margin : 0px ;
+            margin-left: 1rem ;
+            
+            &-item-container{
+                position : relative ;
+                margin : 0.05rem ;
+                width : 1rem ;
+                height : 1rem ;
+                border-radius: 50%;
+                background-color: rgba(0,0,0,0.125) ;
+                border : 1px solid var(--border-color );
+            }
+            &-item{
+                cursor: pointer ;
+                position : absolute ;
+                --icon-size : 2rem ;
+                left : -0.75rem ;
+                top : -0.5rem ;
+            }
+
+        }
+
         .actions{
 
             flex : 0 ;
@@ -204,6 +237,15 @@
                 }
             }
         }
+    }
+    .states {
+        --icon-size : 3rem ;
+        position : absolute ;
+        right : 1rem ;
+        display : flex ;
+        flex-flow: column wrap ;
+        align-items: center;
+        justify-content: center;
     }
 
 }

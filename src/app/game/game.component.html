@@ -30,6 +30,8 @@
     <div class="tokens"  *ngIf="(user.subject | async) ; let user">
         <div class="resource"><div class="icon icon-dice"></div><span *ngIf="user.chara">{{user.chara.actions}}</span></div>
         <div class="resource"><div class="icon icon-chooses"></div><span *ngIf="user.chara">{{user.chara.moves}}</span></div>
+        <div class="resource"><div class="icon icon-chooses"></div><span *ngIf="user.chara">{{user.chara.searches}}</span></div>
+   
     </div>
 
     <div class="resources" *ngIf="(user.subject | async) ; let user">

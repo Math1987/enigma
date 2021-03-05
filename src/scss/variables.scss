@@ -2,6 +2,8 @@
 
     --baniere-height : calc(100vw*0.1);
 
+    --border-color : #6b6c6d ;
+
     --book-height : calc( min(96vh - var( --baniere-height), 90vw*0.6332 ));
     --book-width-vw : calc(var(--book-height) * 1.579279848 );
     --book-page-height-max : calc(var(--book-height) * 0.9)  ;

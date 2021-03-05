@@ -45,7 +45,6 @@
                 <div class="avatar">
                     <img [src]="chara.img" >
                     <div class="clan" [ngClass]="chara.clan"></div>
-                    <div *ngIf="chara.state" class="state" [ngClass]="chara.state.icon"></div>
                 </div>
                 <p class="name">{{chara.datas.name}}</p>
             </div>
@@ -58,6 +57,18 @@
                         <div class="life-bar-life" [ngStyle]="{'width.%' : chara.life/chara.lifeMax*100}"></div>
                     </div>
                 </div>
+                <div *ngIf="chara.inventory" class="inventory">
+                    <div *ngFor="let obj of chara.inventory" class="inventory-item-container">
+                        <div 
+                        #refItem
+                        *ngIf="obj" class="inventory-item icon" 
+                        [ngClass]="obj['icon']"
+                        [matTooltip]="obj.tooltip"
+                        (click)="mouseDownItem(refItem, obj)"
+                        ></div>
+                    </div>
+                   
+                </div>
                 <div class="actions">
                     <div class="action" 
                     *ngFor="let action of chara.interactions"
@@ -68,6 +79,13 @@
                     {{action.name}}
                     </div>
                 </div>
+
+                <div class="states">
+                    <div *ngFor="let state of chara.states | keyvalue"> 
+                        <div class="state" [ngClass]="state.value.icon"></div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

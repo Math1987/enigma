@@ -97,7 +97,6 @@ export async function findCharaOnPosition( pos : {x : number, y : number}, callb
 
 }
 export async function addMessageOnChara( _id : any,  message):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
-    
     const collection = database.collection('charas');
     return await collection.findOneAndUpdate({
         _id : convertId(_id)
@@ -111,9 +110,21 @@ export async function addMessageOnChara( _id : any,  message):Promise<FindAndMod
             }
         }, 
         { returnOriginal : false});
-
 }
-
+export async function addItemOnCharaInventory( _id : any,  item):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
+    const collection = database.collection('charas');
+    return await collection.findOneAndUpdate({
+        _id : convertId(_id)
+        }, {
+            $push : {
+                inventory : {
+                    $each : [item],
+                    $slice : 6
+                }
+            }
+        }, 
+        { returnOriginal : false});
+}
 
 /**
  * this function does not use mongodb directly

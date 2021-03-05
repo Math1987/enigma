@@ -47,7 +47,17 @@ export class WorldModel {
     getName(){
         return 'model' ;
     }
-    getPassiveInfos( obj : CaseI){
+
+    getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
+
+        return {
+            name : this.getName(),
+            states : this.getStates(),
+            interactions : this.getCharaInteractions(floor, userChara, caseObjs)
+        }
+    }
+
+    getStates(){
         return {} ;
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI, worldObjs? : WorldModel[] ){

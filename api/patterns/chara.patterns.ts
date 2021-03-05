@@ -14,7 +14,8 @@ import {
     updateCharaPositionDatas,
     updateCharaValuesData,
     addMessageOnChara,
-    findCharasCursor 
+    findCharasCursor,
+    addItemOnCharaInventory 
 } from "../queries/chara.queries";
 import { 
     buildInstanceFromId, 
@@ -34,6 +35,7 @@ import { BuildingPattern } from "./building.pattern";
 import { CaseI } from "api/interfaces/case.interface";
 import { BuildingI } from "api/interfaces/building.interface";
 import { MonsterI } from "api/interfaces/monster.interface";
+import { createItem } from "./items/handler.items.pattern";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -53,8 +55,11 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         
         life : 100,
         lifeMax : 100,
+
         moves : 40,
         actions : 10,
+        searches : 2,
+
         xp : 50,
         water : 10,
         waterMax : 40,
@@ -76,7 +81,8 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         state : "",
         
         kills : 0,
-        messages :[]
+        messages :[],
+        inventory : []
     });
 
 }
@@ -269,7 +275,8 @@ export class CharaPattern extends Pattern{
                         xp : this.obj.xp,
                         actions : charaModel.actions,
                         state : this.obj.state,
-                        moves : charaModel.moves
+                        moves : charaModel.moves,
+                        searches : charaModel.searches
                     });
                 }
 
@@ -295,6 +302,9 @@ export class CharaPattern extends Pattern{
             case "attack" :
                 this.attack(caseObjs, target, callback);
             break ;
+            case "search" : 
+                this.search(target, callback);
+                break ;
             case "puiser de l'eau" : 
                 this.drawWater(target, callback);
             break ;
@@ -590,6 +600,14 @@ export class CharaPattern extends Pattern{
 
     }
 
+    search(target : any, callback ){
+        console.log('fouille sur ', target) ;
+
+        const foundObj = createItem('tea') ;
+        console.log(foundObj);
+        addItemOnCharaInventory(this.obj._id, foundObj).then( charaR => {} );
+
+    }
     drawWater(target : any, callback){
 
         if ( this.obj && this.obj.actions > 0 ){

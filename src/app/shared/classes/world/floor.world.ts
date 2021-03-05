@@ -26,6 +26,14 @@ export class WorldFloor extends WorldModel{
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
         if ( chara.actions > 0 && chara.position[0] === floor.x && chara.position[1] === floor.y ){
             const datas = [];
+            if ( chara.searches > 0 ){
+                datas.push(                {
+                    name : `fouiller`,
+                    icon : "icon-dice",
+                    action : `search`,
+                    tooltip : "coût 1 point de fouille"
+                    });
+            }
             if ( chara.water < chara.waterMax ){
                 datas.push(                {
                     name : `puiser de l'eau`,

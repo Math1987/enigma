@@ -1,3 +1,4 @@
+import { ItemI } from "./item.interface";
 
 /**
  * Chara Interface:
@@ -27,6 +28,9 @@ export interface CharaI {
 
     moves? : number;
     actions? : number;
+    searches? : number ;
+
+
     xp? : number;
     water? : number;
     waterMax? : number;
@@ -45,6 +49,7 @@ export interface CharaI {
     priest? : number;
     state? : string ;
     kills? : number ;
-    messages? : string[];
 
+    inventory? : ItemI[] ;
+    messages? : string[];
 }

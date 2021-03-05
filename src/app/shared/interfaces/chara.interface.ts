@@ -18,8 +18,11 @@ export interface CharaI {
 
     life : number ;
     lifeMax : number ;
+
     moves : number ;
     actions : number ;
+    searches : number ;
+
     xp : number ;
     water : number ;
     food : number ;

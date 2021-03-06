@@ -1,5 +1,6 @@
 import { CharaI } from "api/interfaces/chara.interface";
 import * as THREE from "three" ;
+import { METADATAS } from "../../metadatas/metadatas";
 import { WorldModel } from "./model.world";
 import { WorldRes } from "./resources.world";
 
@@ -27,12 +28,7 @@ export class WorldFloor extends WorldModel{
         if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
             const datas = [];
             if ( chara.searches > 0 ){
-                datas.push(                {
-                    name : `fouiller`,
-                    icon : "icon-dice",
-                    action : `search`,
-                    tooltip : "coût 1 point de fouille"
-                    });
+                datas.push(METADATAS.search);
             }
             if ( chara.actions > 0 ){
 

@@ -36,8 +36,9 @@ import { BuildingPattern } from "./building.pattern";
 import { CaseI } from "api/interfaces/case.interface";
 import { BuildingI } from "api/interfaces/building.interface";
 import { MonsterI } from "api/interfaces/monster.interface";
-import { createItem } from "./items/handler.items.pattern";
+import { createItem, getRandomItemAdder } from "./items/handler.items.pattern";
 import { AdderI } from "api/interfaces/item.interface";
+import { newChara } from "src/app/shared/services/user.service";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -1153,8 +1154,7 @@ export class CharaPattern extends Pattern{
 
                 if ( Math.random() <= 0.33 ){
 
-                    const foundObj = createItem('tea') ;
-                    foundObj['number'] = Math.ceil(Math.random()*10);
+                    const foundObj = getRandomItemAdder('adders') ;
 
                     addMessageOnChara(this.obj._id, `objet trouvé ${foundObj.name}` ).then( chM => {
 
@@ -1236,6 +1236,23 @@ export class CharaPattern extends Pattern{
             const itemU = obj[0] as AdderI ;
             if ( this.obj[itemU.consumes] >= itemU.consumeValue ){
 
+
+                const incValueOnChara = (callback) => {
+                    let incValues = {};
+                    incValues[itemU.add] = itemU.addValue ;
+                    incValues[itemU.consumes] = -itemU.consumeValue ;
+
+                    if ( this.obj[`${itemU.add}Max`] ){
+                        incValues[itemU.add] = Math.min(itemU.addValue, this.obj[`${itemU.add}Max`] - this.obj[`${itemU.add}`]);
+                    }
+
+                    this.incrementValues( incValues, newChara => {
+                        callback(newChara);
+                    });
+                }
+
+
+
                 if ( itemU['number'] && itemU['number'] > 1 ){
                     const req = {$inc : {}}
                     req.$inc[`inventory.$[elem].number`] = -1 ;
@@ -1249,11 +1266,7 @@ export class CharaPattern extends Pattern{
                     
                     queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
                         
-                        let incValues = {}
-                        incValues[itemU.add] = itemU.addValue ;
-                        incValues[itemU.consumes] = -itemU.consumeValue ;
-
-                        this.incrementValues( incValues, newChara => {
+                        incValueOnChara( newChara => {
 
                             let finalVAlues = {}
                             finalVAlues[itemU.add] = newChara[itemU.add] ;
@@ -1268,18 +1281,14 @@ export class CharaPattern extends Pattern{
                             ]);
                             callback(true);
 
-
                         });
-
-
 
                     }).catch( err => {
                         callback(false);
                     })
 
                 }else{
-
-                    
+   
                     const req = {
                         $pull : {
                             inventory : {
@@ -1287,21 +1296,27 @@ export class CharaPattern extends Pattern{
                             }
                         }
                     };
-
                     queryCharaFindOneAndUpdateById(this.obj._id, req ).then( newCharaRes => {
                 
-                        updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                            {
-                                _id : this.obj._id,
-                                inventory : newCharaRes.value.inventory
-                            }
-                        ]);
-                        callback(true);
+                        incValueOnChara( newChara => {
+
+                            let finalVAlues = {}
+                            finalVAlues[itemU.add] = newChara[itemU.add] ;
+                            finalVAlues[itemU.consumes] = newChara[itemU.consumes] ;
+
+                            updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                                {
+                                    _id : this.obj._id,
+                                    ...finalVAlues,
+                                    inventory : newCharaRes.value.inventory
+                                }
+                            ]);
+                            callback(true);
+                        });
 
                     }).catch( err => {
                         callback(false);
-                    }) 
-
+                    }); 
                 }
             }else{
                 callback(false);

@@ -172,6 +172,9 @@ export class WorldChara extends WorldModel {
             interactions : this.getCharaInteractions(floor, userChara, caseObjs)
         }
         if ( this.datas._id === userChara._id ){
+            if ( !userChara.inventory ){
+                userChara.inventory = [] ;
+            }
             obj['inventory'] = userChara.inventory.map( row => {
                 return {...METADATAS[row.name], datas : row};
             }) ;

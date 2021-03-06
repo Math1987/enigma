@@ -86,6 +86,10 @@ export class MessageService {
         final += `<div class='icon icon-gold' ${styleIcon}></div>` ;
       }else if ( word === "tea" ){
         final += `<div class='icon icon-tea' ${styleIcon}></div>` ;
+      }else if ( word === "spice" ){
+        final += `<div class='icon icon-spice' ${styleIcon}></div>` ;
+      }else if ( word === "lifePotion" ){
+        final += `<div class='icon-potion' ${styleIcon}></div>` ;
       }else if ( (word as string).includes('clan') ){
         final += `<div class='${word} text-1' ${styleIcon}> ${words[i+1]} </div>` ;
         i ++ ;

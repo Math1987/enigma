@@ -74,6 +74,9 @@
     &-tea{
         background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * -3) ;
     }
+    &-spice{
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * -4) ;
+    }
 
     &-book{
         background-position: calc( var(--icon-size) * -2) calc( var(--icon-size) * -2) ;
@@ -93,7 +96,7 @@
 
 }
 
-.icon-potions{
+.icon-potion{
 
 
     width : var(--icon-size) ;

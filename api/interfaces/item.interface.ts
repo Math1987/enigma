@@ -15,4 +15,7 @@ export interface AdderI {
     addValue : number ;
     number : number ;
 
+    chanceGen : number ;
+    max? : number ;
+    randomNumberGen? : number ;
 }

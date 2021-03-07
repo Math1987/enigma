@@ -21,7 +21,7 @@ import { ViewverService } from '../viewver.service';
 })
 export class InfoCaseComponent implements OnInit {
 
-  targetFloor : WorldModel = null ;
+  targetFloor : any = null ;
   targetCharas : any[] = [] ;
   targetMonsters : any[] = [] ;
 
@@ -67,33 +67,56 @@ export class InfoCaseComponent implements OnInit {
 
     document.addEventListener('mousemove', event => {
 
-
-      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time > 10000 ){
+      if ( this.itemSelected ){
 
         const parent = this.itemSelected.parentNode ;
         const parentP = {
           x: parent.getBoundingClientRect().left,
           y: parent.getBoundingClientRect().top
         }
-
-
         this.itemSelected.style.zIndex = "10" ;
-
         this.itemSelected.style.left = `${event.clientX - parentP.x - this.itemSelected.offsetWidth/2}px`;
         this.itemSelected.style.top = `${event.clientY - parentP.y - this.itemSelected.offsetHeight/2}px`;
-
+        
       }
-
     });
+
     document.addEventListener('mouseup', event => {
-      console.log('ACTION ITEM');
-      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time <= 1000 ){
-        alert('Action');
+
+      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time <= 500 ){
+
+        this.itemSelected.style.zIndex = "1" ;
+        this.itemSelected.style.left = `${this.itemSelected.datas.position.x}`;
+        this.itemSelected.style.top = `${this.itemSelected.datas.position.y}`;
+        this.user.useItem(this.itemSelected.datas.datas, ()=> {
+        });
+
+      }else if ( this.itemSelected ){
+
+        const infoContainer = document.querySelector('#infos-container') as HTMLDivElement;
+        const infoFloor = document.querySelector('#infoFloor') as HTMLDivElement;
+
+        console.log(event.clientX, event.clientY, infoFloor.getBoundingClientRect() );
+
+        if ( infoFloor && 
+          event.clientX  >= infoFloor.getBoundingClientRect().left && 
+          event.clientX  <= infoFloor.getBoundingClientRect().left + infoFloor.getBoundingClientRect().width && 
+          event.clientY >= infoFloor.getBoundingClientRect().top &&
+          event.clientY <= infoFloor.getBoundingClientRect().top + infoFloor.getBoundingClientRect().height
+
+          ){
+            console.log('drop obj');
+
+            this.user.dropObject(this.itemSelected.datas.datas, this.targetFloor.datas );
+
+        }else{ 
+          this.itemSelected.style.zIndex = "1" ;
+          this.itemSelected.style.left = `${this.itemSelected.datas.position.x}`;
+          this.itemSelected.style.top = `${this.itemSelected.datas.position.y}`;
+        }
       }
       this.itemSelected = null ;
     })
-
-
   }
   initSelection(){
 
@@ -117,11 +140,8 @@ export class InfoCaseComponent implements OnInit {
   updateSelectedCase( selects : WorldModel[] ){
 
     let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
+    this.targetFloor = floors[floors.length-1].getInfos( this.user.chara, floors[floors.length-1], selects );
 
-    this.targetFloor = floors[floors.length-1] ;
-    const floorInteractions = this.user.getActionsOn(this.targetFloor, this.targetFloor);
-    this.targetFloor['name'] = this.targetFloor.getName();
-    this.targetFloor['interactions'] = floorInteractions ;
 
     this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])
     .sort( (a,b) => {
@@ -193,23 +213,26 @@ export class InfoCaseComponent implements OnInit {
   lastClick = Date.now();
   mouseDownItem(itemHtml, itemObj){
 
-    if ( Date.now() - this.lastClick >= 500 ){
-      this.user.useItem(itemObj.datas, ()=> {
+    const infoContainer = document.querySelector('#infos-container');
 
-      });
-  
-    }
     this.lastClick = Date.now();
+    itemHtml['datas'] = {
+      time : Date.now(),
+      position : {
+        x : '-0.5rem', 
+        y : '-0.5rem'
+      },
+      ...itemObj
+    };
+
+    itemHtml.style.left = "0px";
+    itemHtml.style.top = "0px";
 
 
-    // itemHtml['datas'] = {
-    //   time : Date.now(),
-    //   ...itemObj
-    // };
-    // console.log('mouseDown', itemHtml);
-    // if ( !this.itemSelected ){
-    //   this.itemSelected = itemHtml ;
-    // }
+    if ( !this.itemSelected ){
+      this.itemSelected = itemHtml ;
+    }
+
   }
 
 

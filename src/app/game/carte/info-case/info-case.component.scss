@@ -83,7 +83,12 @@
     align-items: center ;
 }
 
+#infos-container{
+    position : relative ;
+}
+
 .info{
+
 
     width: 90% ;
     margin : 0.1rem 1rem ;
@@ -181,7 +186,6 @@
         }
         .inventory{
 
-
             width : 100% ;
             flex : 0 ;
             display : flex ;
@@ -215,8 +219,8 @@
             &-item{
                 cursor: pointer ;
                 position : absolute ;
-                --icon-size : 2rem ;
-                left : -0.75rem ;
+                --icon-size : 1.5rem ;
+                left : -0.5rem ;
                 top : -0.5rem ;
             }
 
@@ -258,6 +262,11 @@
         justify-content: center;
     }
 
+}
+.item{
+    position : absolute ;
+    left : 0px ;
+    top : 0px ;
 }
 
 #lastMessage{

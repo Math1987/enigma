@@ -175,7 +175,6 @@ export const actionCharaReq = (req: Request, res : Response ):void => {
 export const userItemReq = (req:Request, res : Response) :void => {
 
     console.log('try using item', req.body)
-
     if ( 
         req.user.chara && 
         req.body && req.body['_id'] && 
@@ -215,4 +214,39 @@ export const userItemReq = (req:Request, res : Response) :void => {
     }else{
         res.status(400).send({err : 'need datas'});
     }
+}
+export const userDropItemReq = (req:Request, res : Response) : void => {
+
+    console.log("userDropItemReq", req.body);
+
+    if ( 
+        req.user.chara && 
+        req.body && req.body['target'] && 
+        req.body['item']
+        ){         
+
+            buildInstanceFromId(req.user.chara._id, charaM => {
+
+                if ( charaM && charaM instanceof CharaPattern ){
+
+                    charaM.dropItem(req.body.item, req.body.target, useRes => {
+                        
+                        res.status(200).send({itemUse : true});
+                        
+                    });
+
+                }else{
+
+                    res.status(401).send({err : 'need datas'});
+
+                }
+                    
+            });
+        
+            
+        }else{
+
+            res.status(401).send({err : 'need datas'});
+        }
+
 }

@@ -315,6 +315,8 @@ export class UserService {
   }
   makeAction(target : WorldModel, action:string){
     
+    console.log('make action', target,  action);
+
     if ( action ){
 
       const targetF = {
@@ -333,6 +335,15 @@ export class UserService {
       
     }
     //this.updateCharaValue('life', this.chara.life + 10 );
+  }
+  dropObject(object, target){
+    console.log('droping obj', target);
+    this.http.post(`${environment.urlApi}/user/chara/dropItem`, {
+      item : object,
+      target : target
+    }).subscribe(res => {
+
+    });
   }
   useItem(item, callback){
     this.http.post(`${environment.urlApi}/user/chara/useItem`, { _id : this.user._id, item : item} ).subscribe( res => {

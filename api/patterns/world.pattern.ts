@@ -5,7 +5,7 @@
  */
 
 import { CaseI } from "../interfaces/case.interface";
-import { insertOnWorld } from "../queries/world.queries";
+import { insertOnWorld, findWorld } from "../queries/world.queries";
 import { Pattern } from "./base.pattern";
 import { MonsterPattern } from "./monster.pattern";
 import { TreePattern } from "./tree.pattern";
@@ -56,14 +56,47 @@ export class WorldPattern extends Pattern{
                             return {...row, type : "neutral"};
                         }
                         return {...row, type : "desert"};
-                    
                     }));
                 }
             }).catch( err => {
-                callback(arr.map( row => {
-                    const type = WorldPattern.getFloorType(row.x,row.y);
-                    return {...row, type : type};
-                }));
+
+                const arrP = arr.map(row=> [row.x,row.y]);
+
+                const fakeRows = arr.map( row => {
+                        const type = WorldPattern.getFloorType(row.x,row.y);
+                        return {...row, type : type};
+                    })
+
+                findWorld({ position : { $in : arrP }}).then( cursor => {
+
+                    cursor.toArray().then( words => {
+
+                        const arrayFinal = words.map( rowF => {return {...rowF, x : rowF.position[0], y : rowF.position[1] };});
+                        fakeRows.forEach( rr => {
+
+                            if ( !arrayFinal.reduce( (acc, r2) => {
+                                if ( r2.x === rr.x && r2.y === rr.y ){
+                                    acc = true ;
+                                }
+                                return acc ;
+                            },false) ){
+
+                                arrayFinal.push(rr);
+
+                            }
+
+                        });
+                        console.log(arrayFinal, fakeRows);
+
+                        callback(fakeRows);
+                    });
+
+                })
+
+                // callback(arr.map( row => {
+                //     const type = WorldPattern.getFloorType(row.x,row.y);
+                //     return {...row, type : type};
+                // }));
             });
     }
     static isOnNeutral = ( x : number, y : number) => {

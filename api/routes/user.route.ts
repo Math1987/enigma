@@ -9,7 +9,7 @@
  * 
  */
 import { Response } from 'express' ;
-import { actionCharaReq, addWorldCaseOnHeader, createCharaReq, incCharaValueReq, moveCharaReq, userItemReq } from '../controlers/chara.controller';
+import { actionCharaReq, addWorldCaseOnHeader, createCharaReq, incCharaValueReq, moveCharaReq, userDropItemReq, userItemReq } from '../controlers/chara.controller';
 import { rankClan, rankKillReq, rankLevelReq } from '../controlers/rank.controller';
 import { createUserReq, readUserReq, loginUserReq } from '../controlers/user.controller';
 import { getWorldReq } from '../controlers/world.controller';
@@ -45,6 +45,7 @@ routes.use('/api/user', addWorldCaseOnHeader );
 routes.post('/api/user/chara/move', moveCharaReq );
 routes.post('/api/user/chara/action', actionCharaReq );
 routes.post('/api/user/chara/useItem', userItemReq );
+routes.post('/api/user/chara/dropItem', userDropItemReq );
 
 
 

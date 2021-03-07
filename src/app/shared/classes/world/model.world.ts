@@ -27,7 +27,13 @@ export class WorldModel {
     public set type(type:string){
        
     }
-
+    public get img(){
+        return '' ;
+    }
+    public set img(type:string){
+       
+    }
+    public datas : {} = {} ;
 
 
     constructor( matKey = "desert" ){
@@ -51,9 +57,14 @@ export class WorldModel {
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
 
         return {
+            x : this.x,
+            y : this.y,
+            img : this.img,
+            type : this.type,
             name : this.getName(),
             states : this.getStates(),
-            interactions : this.getCharaInteractions(floor, userChara, caseObjs)
+            interactions : this.getCharaInteractions(floor, userChara, caseObjs),
+            datas : this.datas
         }
     }
 

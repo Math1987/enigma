@@ -184,6 +184,16 @@ export class CharaPattern extends Pattern{
             });
         }
     }
+    static destroyItem(_id, item, callback){
+        const req = {
+            $pull : {
+                inventory : {
+                    name : item.name
+                }
+            }
+        };
+        queryCharaFindOneAndUpdateById(_id, req ).then( callback);
+    }
     static pass(){
 
         findCharasCursor().then( cursor => {
@@ -297,6 +307,8 @@ export class CharaPattern extends Pattern{
 
     }
     makeAction(caseObjs : (CaseI|CharaI|MonsterI|BuildingI)[], actionType : string, target : Pattern, callback : CallableFunction ){
+
+        console.log('make action');
 
         switch ( actionType){
             case "heal" :
@@ -1158,49 +1170,19 @@ export class CharaPattern extends Pattern{
 
                     addMessageOnChara(this.obj._id, `objet trouvé ${foundObj.name}` ).then( chM => {
 
-                        const obj = this.obj.inventory.filter( row => row.name === foundObj.name );
-                        if ( obj.length <= 0 ){
+                        this.addOnInventory(foundObj, charaR => {
 
+                            updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                                {
+                                    _id : this.obj._id,
+                                    searches : charaR.searches,
+                                    inventory : charaR.inventory,
+                                    messages : charaR.messages
+                                }
+                            ]);
 
-                            addItemOnCharaInventory(this.obj._id, foundObj).then( charaR => {
-
-                                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                                    {
-                                        _id : this.obj._id,
-                                        searches : charaR.value.searches,
-                                        inventory : charaR.value.inventory,
-                                        messages : charaR.value.messages
-                                    }
-                                ]);
-                                callback(true) ;
-
-                            } );
-
-                        }else{
-                            
-                            const req = {$inc : {}}
-                            req.$inc[`inventory.$[elem].number`] = foundObj.number ;
-                            const ops = {
-                                arrayFilters : [
-                                    {
-                                        'elem.name' : foundObj['name']
-                                    }
-                                ]
-                            };
-                            queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
-                                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                                    {
-                                        _id : this.obj._id,
-                                        searches : newCharaRes.value.searches,
-                                        inventory : newCharaRes.value.inventory,
-                                        messages : newCharaRes.value.messages
-                                    }
-                                ]);
-                                callback(true) ;
-
-                            });
-                        }
-                });
+                        });
+                    });
 
                 }else{
 
@@ -1241,11 +1223,9 @@ export class CharaPattern extends Pattern{
                     let incValues = {};
                     incValues[itemU.add] = itemU.addValue ;
                     incValues[itemU.consumes] = -itemU.consumeValue ;
-
                     if ( this.obj[`${itemU.add}Max`] ){
                         incValues[itemU.add] = Math.min(itemU.addValue, this.obj[`${itemU.add}Max`] - this.obj[`${itemU.add}`]);
                     }
-
                     this.incrementValues( incValues, newChara => {
                         callback(newChara);
                     });
@@ -1289,14 +1269,7 @@ export class CharaPattern extends Pattern{
 
                 }else{
    
-                    const req = {
-                        $pull : {
-                            inventory : {
-                                name : itemU.name
-                            }
-                        }
-                    };
-                    queryCharaFindOneAndUpdateById(this.obj._id, req ).then( newCharaRes => {
+                    CharaPattern.destroyItem(this.obj._id, itemU, newCharaRes => {
                 
                         incValueOnChara( newChara => {
 
@@ -1324,6 +1297,55 @@ export class CharaPattern extends Pattern{
 
         }else{
             callback( false );
+        }
+
+    }
+    addOnInventory( item, callback ){
+        
+        const obj = this.obj.inventory.filter( row => row.name === item.name );
+        if ( obj.length <= 0 ){
+
+            addItemOnCharaInventory(this.obj._id, item).then( charaR => {
+
+                callback(charaR.value) ;
+            });
+
+        }else{
+            
+            const req = {$inc : {}}
+            req.$inc[`inventory.$[elem].number`] = item.number ;
+            const ops = {
+                arrayFilters : [
+                    {
+                        'elem.name' : item['name']
+                    }
+                ]
+            };
+            queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
+                callback(newCharaRes.value) ;
+            });
+        }
+
+    }
+    dropItem(item, target, callback){
+
+        // const targetInstance = buildInstanceFromId(target._id);
+        console.log('dropping target', target);
+
+        const obj = this.obj.inventory.filter( row => row.name === item.name );
+        if ( obj.length > 0 ){
+
+            CharaPattern.destroyItem(this.obj._id, item, newCharaRes => {
+                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                    {
+                        _id : this.obj._id,
+                        inventory : newCharaRes.value.inventory
+                    }
+                ]);
+                callback(true);
+            });
+        }else{
+            callback(true);
         }
 
     }

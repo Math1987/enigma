@@ -6,20 +6,36 @@
     </div>
 </div>
 
-<div class="article case">
+<div id="infos-container"  class="article case">
 
     <div class="title">Informations case</div>
     <div class="case-content" >
-        <div class="info" *ngIf="targetFloor; let floor">
+        <div id="infoFloor" class="info" *ngIf="targetFloor; let floor">
             <!-- {{case.floor.img}} -->
             <div class="img-container">
                 <div class="avatar">
                     <img [src]="floor.img" >
                     <div *ngIf="floor['datas'] && floor['datas']['clan']" class="clan" [ngClass]="floor['datas']['clan']"></div>
                 </div>
-                <p>{{floor.getName()}}</p>
+                <p>{{floor.name}}</p>
             </div>
             <div class="chara-infos">
+
+                <div *ngIf="floor['inventory']" class="inventory">
+                    <div *ngFor="let obj of floor.inventory" class="inventory-item-container">
+                        <div 
+                        #refItem
+                        *ngIf="obj"
+                        [ngClass]="obj['icon']"
+                        class="inventory-item icon" 
+                        [matTooltip]="obj.tooltip"
+                        (mousedown)="mouseDownItem(refItem, obj)"
+                        >
+                            <span *ngIf="obj['datas']['number']">{{obj['datas']['number']}}</span>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="actions">
                     <div class="action" 
@@ -31,6 +47,7 @@
                         {{action.name}}
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -40,7 +57,7 @@
 
     <div class="case-content">
 
-        <div class="info" *ngFor="let chara of targetCharas">
+        <div  class="info" *ngFor="let chara of targetCharas">
             <div class="img-container">
                 <div class="avatar">
                     <img [src]="chara.img" >
@@ -61,10 +78,11 @@
                     <div *ngFor="let obj of chara.inventory" class="inventory-item-container">
                         <div 
                         #refItem
-                        *ngIf="obj" class="inventory-item icon" 
+                        *ngIf="obj"
                         [ngClass]="obj['icon']"
+                        class="icon inventory-item" 
                         [matTooltip]="obj.tooltip"
-                        (click)="mouseDownItem(refItem, obj)"
+                        (mousedown)="mouseDownItem(refItem, obj)"
                         >
                         <span *ngIf="obj['datas']['number']">{{obj['datas']['number']}}</span>
                     </div>

@@ -167,9 +167,14 @@ export class WorldChara extends WorldModel {
         console.log(userChara);
 
         const obj = {
+            x : this.x,
+            y : this.y,
+            img : this.img,
+            type : this.type,
             name : this.getName(),
             states : this.getStates(),
-            interactions : this.getCharaInteractions(floor, userChara, caseObjs)
+            interactions : this.getCharaInteractions(floor, userChara, caseObjs),
+            datas : this.datas
         }
         if ( this.datas._id === userChara._id ){
             if ( !userChara.inventory ){

@@ -21,6 +21,7 @@ import { WorldI } from "api/interfaces/world.interface";
 export const findObjDatasByID = (id:any, callback: (obj: WorldI | CharaI | MonsterI | BuildingI )=>void ) => {
 
     findBuildingFromID(id).then( building => {
+
         if ( building ){
             callback(building);
         }else{

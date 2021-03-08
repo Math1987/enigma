@@ -29,6 +29,8 @@ export const addWorldCaseOnHeader = ( req: Request, res : Response, next : NextF
 
         findObjsByPosition( req.user.chara.position[0], req.user.chara.position[1], objs => {
 
+            console.log('objs', objs);
+
             req.worldCase = objs.map( row => fixObjDatas(row)) ;
 
             next();
@@ -157,13 +159,22 @@ export const moveCharaReq = (req: Request, res : Response ):void => {
 }
 export const actionCharaReq = (req: Request, res : Response ):void => {
 
+
+
     if ( 
         req.user.chara && 
         req.body && req.body['target'] && 
         req.body['action'] 
         ){
 
-        CharaPattern.makeAction(req.worldCase, req.body['action'], req.user.chara, req.body['target'], actionRes => {
+            console.log("target", req.body['target']);
+
+        CharaPattern.makeAction(
+            req.worldCase, 
+            req.body['action'], 
+            req.user.chara, 
+            req.body['target'],
+            actionRes => {
             res.status(200).send(actionRes);
         });
 

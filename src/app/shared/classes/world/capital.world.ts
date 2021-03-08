@@ -4,6 +4,7 @@ import { WorldRes } from "./resources.world";
 import { WorldBuilding } from "./building.world";
 import { CharaI } from "api/interfaces/chara.interface";
 import { WorldChara } from "./chara.world";
+import { METADATAS } from "../../metadatas/metadatas";
 
 export class WorldCapital extends WorldBuilding {
 
@@ -71,7 +72,23 @@ export class WorldCapital extends WorldBuilding {
     getName(){
         return "capitale" ;
     }
+    getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
 
+        const obj = {...this.datas};
+        if ( obj['inventory'] ){
+            // obj['inventory'] = userChara.inventory.map( row => {
+            //     return {...METADATAS[row.name], datas : row};
+            // }) ;
+            obj['inventory'] = [null];
+        }else{
+            obj['inventory'] = [null];
+        }
+        while ( obj['inventory'].length < 6 ){
+            obj['inventory'].push(null);
+        }
+        return {...obj,...super.getInfos(userChara, floor, caseObjs)};
+        return obj ;
+    }
     getCharaInteractions(floor : WorldModel, chara : CharaI ){
 
 

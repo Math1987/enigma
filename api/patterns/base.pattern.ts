@@ -42,6 +42,8 @@ export const buildInstanceFromDatas = ( obj:{type:string}, callback : (obj:Patte
 export const buildInstanceFromId = ( _id : string, callback : (obj:Pattern|null)=>void ):void => {
     let pattern = null ;
     findObjDatasByID(_id , target => {
+
+
         if ( target && PATTERNS[target['type']]){
             pattern = PATTERNS[target['type']].build(target);
             if ( pattern ){

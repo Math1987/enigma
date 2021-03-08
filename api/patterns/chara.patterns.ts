@@ -140,7 +140,12 @@ export class CharaPattern extends Pattern{
             return false ;
 
     }
-    static makeAction = ( caseObjs : (CaseI | CharaI | BuildingI | MonsterI)[], action : string, charaFrom : Object, target : any, callback : CallableFunction  ) => {
+    static makeAction = (
+         caseObjs : (CaseI | CharaI | BuildingI | MonsterI)[], 
+         action : string, 
+         charaFrom : Object, 
+         target : any, 
+         callback : CallableFunction  ) => {
 
         if ( target['_id'] ){
             CharaPattern.makeActionOnObjec(caseObjs, charaFrom, target['_id'], action, callback);
@@ -157,6 +162,8 @@ export class CharaPattern extends Pattern{
 
         buildInstanceFromDatas( user, charaFromPattern => {
             buildInstanceFromId( targetID, targetPattern => {
+
+                console.log('instance of target:', targetPattern);
 
                 if ( charaFromPattern && targetPattern ){
                     charaFromPattern.makeAction(caseObjs, action, targetPattern, actRes => {
@@ -300,8 +307,6 @@ export class CharaPattern extends Pattern{
 
     }
     makeAction(caseObjs : (CaseI|CharaI|MonsterI|BuildingI)[], actionType : string, target : Pattern, callback : CallableFunction ){
-
-        console.log('make action');
 
         switch ( actionType){
             case "heal" :
@@ -1034,6 +1039,8 @@ export class CharaPattern extends Pattern{
 
     }
     upgreatBuilding(target: Pattern, callback ){
+
+        console.log("upgreatBuilding from chara ok", target);
 
         if ( this.obj.wood >= 10 && target instanceof CapitalPattern && target.obj.mercenariesMax < 50 ){
 

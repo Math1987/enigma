@@ -7,8 +7,7 @@
  * 
  */
 import {  
-    addMessageOnChara,
-    addItemOnCharaInventory
+    addMessageOnChara
 } from "../queries/chara.queries";
 import { 
     buildInstanceFromId, 
@@ -39,7 +38,10 @@ import {
     updateWorldPosition, 
     findWorldNear,
     findWorldInPositions,
-    findOneAndUpdateWorldById} from "../queries/world.queries";
+    findOneAndUpdateWorldById,
+    addItemOnWorldInventory,
+    destroyWorldItem
+} from "../queries/world.queries";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -184,16 +186,6 @@ export class CharaPattern extends Pattern{
                 }
             });
         }
-    }
-    static destroyItem(_id, item, callback){
-        const req = {
-            $pull : {
-                inventory : {
-                    name : item.name
-                }
-            }
-        };
-        findOneAndUpdateWorldById(_id, req ).then( callback);
     }
     static pass(){
 
@@ -1306,7 +1298,7 @@ export class CharaPattern extends Pattern{
         const obj = this.obj.inventory.filter( row => row.name === item.name );
         if ( obj.length <= 0 ){
 
-            addItemOnCharaInventory(this.obj._id, item).then( charaR => {
+            addItemOnWorldInventory(this.obj._id, item).then( charaR => {
 
                 callback(charaR.value) ;
             });
@@ -1336,7 +1328,7 @@ export class CharaPattern extends Pattern{
         const obj = this.obj.inventory.filter( row => row.name === item.name );
         if ( obj.length > 0 ){
 
-            CharaPattern.destroyItem(this.obj._id, item, newCharaRes => {
+            destroyWorldItem(this.obj._id, item, newCharaRes => {
                 updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
                     {
                         _id : this.obj._id,
@@ -1345,6 +1337,7 @@ export class CharaPattern extends Pattern{
                 ]);
                 callback(true);
             });
+
         }else{
             callback(true);
         }

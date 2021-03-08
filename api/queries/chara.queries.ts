@@ -32,20 +32,25 @@ export async function addMessageOnChara( _id : any,  message):Promise<FindAndMod
         }, 
         { returnOriginal : false});
 }
-export async function addItemOnCharaInventory( _id : any,  item):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
-    const collection = getCollection();
-    return await collection.findOneAndUpdate({
-        _id : convertId(_id)
-        }, {
-            $push : {
-                inventory : {
-                    $each : [item],
-                    $slice : 6
-                }
-            }
-        }, 
-        { returnOriginal : false});
-}
+
+
+// export async function addItemOnCharaInventory( _id : any,  item):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
+//     const collection = getCollection();
+//     return await collection.findOneAndUpdate({
+//         _id : convertId(_id)
+//         }, {
+//             $push : {
+//                 inventory : {
+//                     $each : [item],
+//                     $slice : 6
+//                 }
+//             }
+//         }, 
+//         { returnOriginal : false});
+// }
+
+
+
 // export async function queryCharaFindOneAndUpdateById( _id : any,  query : any, ops = {} ):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
 //     const collection = getCollection();
 //     return await collection.findOneAndUpdate({
@@ -131,8 +136,6 @@ export async function addItemOnCharaInventory( _id : any,  item):Promise<FindAnd
 //     const collection = getCollection();
 //     return await collection.find(query, {projection : projection});
 // }
-
-
 /**
  * this function does not use mongodb directly
  * It call a cycle of functions using mongodb

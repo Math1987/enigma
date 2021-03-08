@@ -23,8 +23,9 @@ export class WorldService {
   getCasesArr( arr : any[] , callback : CallableFunction ) {
 
     this.http.post(`${environment.urlApi}/user/world/get`, arr).subscribe( res => {
-
       
+      console.log( (res as CharaI[]).filter( row => row.type ==="chara"));
+
       callback(res);
 
     });

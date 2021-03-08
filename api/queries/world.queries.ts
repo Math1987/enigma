@@ -23,6 +23,53 @@ export async function findWorldByID( _id:any ):Promise<WorldI | CharaI>{
         _id : convertId(_id)
     });
 }
+export async function findWorldNear( query : any, x: number, y : number, rayon : number ):Promise<Cursor<CharaI>>{
+    const collection = getCollection();
+    return await collection.find({
+        ...query,
+        x : { $lte : (x+rayon), $gte : (x-rayon) },
+        y : { $lte : (y+rayon), $gte : (y-rayon) }
+    });
+}
+export async function findWorldOnPosition( query : any, x : number, y : number, callback):Promise<Cursor<CharaI>>{
+ 
+    const collection = getCollection();
+    return await collection.find({
+        position : [x,y]
+        }, callback );
+
+}
+export const findWorldInPositions = ( query : any, array : {x : number, y : number}[], callback: (charas: (CharaI|WorldI)[])=>void ) => {
+    
+
+    const charas = [] ;
+    if ( array.length > 0 ){
+
+        const arrP = array.map(row=> [row.x,row.y]);
+
+        findWorld({
+            ...query,
+            position : { $in : arrP }
+        }).then( cursor => {
+
+            cursor.toArray().then( resCharas => {
+                for ( let chara of resCharas ){
+                    charas.push(chara);
+                }
+
+                callback(charas);
+            }).catch( err => {
+                console.log(err);
+                callback([]);
+    
+            });
+            
+        }).catch( err => {
+            callback([]);
+        });
+    }
+}
+
 export const createOnWorld = function( datas, callback: (chara:CharaI | WorldI)=>void ):void{
     const ccharas = getCollection();
     ccharas.insertOne(datas, (err, res) => {
@@ -33,6 +80,7 @@ export const createOnWorld = function( datas, callback: (chara:CharaI | WorldI)=
         }
     }) ;
 }
+
 export async function incWorldValues( _id : string, datas ):Promise<FindAndModifyWriteOpResultObject<WorldI | CharaI>>{
     const ccharas = getCollection();
     const filter = {
@@ -66,6 +114,7 @@ export async function findOneAndUpdateWorldById( _id : any,  query : any, ops = 
         }, query, 
         {...ops, returnOriginal : false});
 }
+
 export async function updateWorldPosition( _id : string, x : number, y : number ):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
 
     const ccharas = getCollection();
@@ -77,51 +126,30 @@ export async function updateWorldPosition( _id : string, x : number, y : number 
     }, { returnOriginal : false }) ;
 
 }
-export async function findWorldNear( query : any, x: number, y : number, rayon : number ):Promise<Cursor<CharaI>>{
+export async function addItemOnWorldInventory( _id : any,  item):Promise<FindAndModifyWriteOpResultObject<CharaI>>{
     const collection = getCollection();
-    return await collection.find({
-        ...query,
-        x : { $lte : (x+rayon), $gte : (x-rayon) },
-        y : { $lte : (y+rayon), $gte : (y-rayon) }
-    });
-}
-export async function findWorldOnPosition( query : any, x : number, y : number, callback):Promise<Cursor<CharaI>>{
- 
-    const collection = getCollection();
-    return await collection.find({
-        position : [x,y]
-        }, callback );
-
-}
-export const findWorldInPositions = ( query : any, array : {x : number, y : number}[], callback: (charas:CharaI[])=>void ) => {
-    
-
-    const charas = [] ;
-    if ( array.length > 0 ){
-
-        const arrP = array.map(row=> [row.x,row.y]);
-
-        findWorld({
-            ...query,
-            position : { $in : arrP }
-        }).then( cursor => {
-
-            cursor.toArray().then( resCharas => {
-                for ( let chara of resCharas ){
-                    charas.push(chara);
+    return await collection.findOneAndUpdate({
+        _id : convertId(_id)
+        }, {
+            $push : {
+                inventory : {
+                    $each : [item],
+                    $slice : 6
                 }
+            }
+        }, 
+        { returnOriginal : false});
+}
 
-                callback(charas);
-            }).catch( err => {
-                console.log(err);
-                callback([]);
-    
-            });
-            
-        }).catch( err => {
-            callback([]);
-        });
-    }
+export const destroyWorldItem = (_id, item, callback) => {
+    const req = {
+        $pull : {
+            inventory : {
+                name : item.name
+            }
+        }
+    };
+    findOneAndUpdateWorldById(_id, req ).then( callback);
 }
 /**
  * FindRandomPlaceOn

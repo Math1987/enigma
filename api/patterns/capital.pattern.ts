@@ -2,8 +2,8 @@
 import { Pattern } from "./base.pattern";
 import { BuildingI, CapitalI } from "./../interfaces/building.interface";
 import { findBuildingsOnPositions, incBuildingValuesData, insertBuildingsDatas } from "./../queries/building.queries";
-import { BuildingPattern } from "./building.pattern";
 import { CharaPattern } from "./chara.patterns";
+import { BuildingPattern } from "./building.pattern";
 
 console.log('init capital PATTERN');
 

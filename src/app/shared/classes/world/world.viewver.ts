@@ -358,6 +358,8 @@ export class WorldViewer {
     
     initCases(){
 
+
+
         const arr = [] ;
         for ( let x = 0 ; x < this.rayon*2+1 ; x ++ ){
             for ( let y = 0 ; y < this.rayon*2+1 ; y ++ ){
@@ -368,6 +370,8 @@ export class WorldViewer {
             }
         }
         WorldViewer.WorldService.getCasesArr(arr, cases => {
+
+            console.log('init cases', cases );
 
             for ( let cc of cases ){
                 this.addInCase(cc.x,cc.y, cc);
@@ -383,6 +387,8 @@ export class WorldViewer {
 
         if ( localX >= 0 && localX <=  this.rayon*2 && 
             localY >= 0 && localY <= this.rayon*2 ){
+
+                console.log('add ', datas.type);
 
             this.buildObj(datas.type, x, y, datas );
 

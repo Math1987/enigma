@@ -29,11 +29,11 @@ export const getWorldReq = ( req : Request, res : Response ) => {
         WorldPattern.getCases(array, floors => {
             let search = [...array] ;
             BuildingPattern.getBuildingsOnArray(search, buildings => {
-                CharaPattern.getWorldCharasOnArray(search, charas => {
+                //CharaPattern.getWorldCharasOnArray(search, charas => {
                     MonsterPattern.getMonstersOnArray(search, monsters => {
-                        res.status(200).send([...floors, ...buildings, ...charas, ...monsters] );
+                        res.status(200).send([...floors, ...buildings, ...monsters] );
                     });
-                });
+                //});
             });            
         });
 

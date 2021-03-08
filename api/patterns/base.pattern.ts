@@ -21,6 +21,7 @@ import { findCharaDatasByUserID } from "../queries/chara.queries";
 import { BuildingI } from "../interfaces/building.interface";
 import { MonsterI } from "../interfaces/monster.interface";
 import { CaseI } from "../interfaces/case.interface";
+import { addItemOnWorldInventory, findOneAndUpdateWorldById } from "../queries/world.queries";
 
 export const PATTERNS : { [name : string]: Pattern} = {} ;
 export const SOCKETS : Socket[] = [] ;
@@ -422,8 +423,50 @@ export class Pattern {
 
     }
     
-    addOnInventory( item, callback ){
-        
+    addOnInventory(item, callback){
+
+        console.log('adding on inventory', this.obj.name );
+
+        const createItem = () => {
+            const req = {$inc : {}}
+            req.$inc[`inventory.$[elem].number`] = item.number ;
+            const ops = {
+                arrayFilters : [
+                    {
+                        'elem.name' : item['name']
+                    }
+                ]
+            };
+            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
+                callback(newCharaRes.value) ;
+            });
+        }
+
+        if ( this.obj.inventory ){
+
+            let obj = this.obj.inventory.filter( row => row.name === item.name );
+            if ( obj.length <= 0 ){
+    
+                addItemOnWorldInventory(this.obj._id, item).then( charaR => {
+    
+                    callback(charaR.value) ;
+                });
+    
+            }else{
+                createItem();
+            }
+
+        }else{
+
+            findOneAndUpdateWorldById(this.obj._id, { $set : { inventory : []}}).then( objRes => {
+                createItem();
+            }).catch( err => {
+                console.log(err);
+            });
+
+        }
+
     }
+
 
 }

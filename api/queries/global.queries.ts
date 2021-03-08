@@ -5,7 +5,9 @@ import { findMonsterByID, findMonstersOnPosition } from "./monster.queries";
 import { findBuildingFromID, findBuildingOnPosition } from "./building.queries";
 import { BuildingI } from "../interfaces/building.interface";
 import { CaseI } from "../interfaces/case.interface";
-import { findWorldByID, findWorldInPositions, findWorldOnPosition } from "./world.queries";
+import { findWorldByID, findWorldInPositions, findOneOnWorld, findWorldOnPosition } from "./world.queries";
+import { convertId } from "../data/index.data";
+import { WorldI } from "api/interfaces/world.interface";
 
 /**
  * 
@@ -16,15 +18,14 @@ import { findWorldByID, findWorldInPositions, findWorldOnPosition } from "./worl
  * @param id 
  * @param callback 
  */
-export const findObjDatasByID = (id:any, callback: (obj: CharaI | MonsterI | BuildingI )=>void ) => {
+export const findObjDatasByID = (id:any, callback: (obj: WorldI | CharaI | MonsterI | BuildingI )=>void ) => {
 
     findBuildingFromID(id).then( building => {
         if ( building ){
             callback(building);
         }else{
-            findWorldByID(id).then( chara => {
+            findOneOnWorld({_id : convertId(id) }).then( chara => {
                 if ( chara ){
-                    chara['type'] = "chara" ;
                     callback(chara);
                 }else{
                     findMonsterByID(id).then( monster => {

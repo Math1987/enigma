@@ -1262,7 +1262,7 @@ export class CharaPattern extends Pattern{
 
                 }else{
    
-                    CharaPattern.destroyItem(this.obj._id, itemU, newCharaRes => {
+                    destroyWorldItem(this.obj._id, itemU, newCharaRes => {
                 
                         incValueOnChara( newChara => {
 
@@ -1280,9 +1280,7 @@ export class CharaPattern extends Pattern{
                             callback(true);
                         });
 
-                    }).catch( err => {
-                        callback(false);
-                    }); 
+                    })
                 }
             }else{
                 callback(false);
@@ -1328,15 +1326,30 @@ export class CharaPattern extends Pattern{
         const obj = this.obj.inventory.filter( row => row.name === item.name );
         if ( obj.length > 0 ){
 
-            destroyWorldItem(this.obj._id, item, newCharaRes => {
-                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                    {
-                        _id : this.obj._id,
-                        inventory : newCharaRes.value.inventory
-                    }
-                ]);
-                callback(true);
-            });
+            //destroyWorldItem(this.obj._id, item, newCharaRes => {
+ 
+                const end = () => {
+
+                    updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                        {
+                            _id : this.obj._id,
+                            inventory : newCharaRes.value.inventory
+                        }
+                    ]);
+                    callback(true);
+
+                }
+
+                // if ( target ){
+                //     target.addOnInventory(item, itemRes => {
+                //         end();
+                //     });
+                // }else{
+                //     end();
+                // }
+
+
+            //});
 
         }else{
             callback(true);

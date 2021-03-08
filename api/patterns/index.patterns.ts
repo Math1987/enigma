@@ -30,6 +30,7 @@ export class PatternHandler {
         console.log('init patterns');
 
         PATTERNS.world = new WorldPattern();
+        PATTERNS.floor = new WorldPattern();
         PATTERNS.chara = new CharaPattern();
         PATTERNS.monster = new MonsterPattern();
         PATTERNS.capital = new CapitalPattern();

@@ -28,11 +28,19 @@ export class WorldFloor extends WorldModel{
         return this.datas['name'] ;
     }
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
-        console.log('getInfo on floor');
-        if ( !this.datas['inventory'] ){
-            this.datas['inventory'] = [null, null, null];
+        const obj = {...this.datas};
+        if ( obj['inventory'] ){
+            // obj['inventory'] = userChara.inventory.map( row => {
+            //     return {...METADATAS[row.name], datas : row};
+            // }) ;
+            obj['inventory'] = [null];
+        }else{
+            obj['inventory'] = [null];
         }
-        return {...this.datas,...super.getInfos(userChara, floor, caseObjs)};
+        while ( obj['inventory'].length < 6 ){
+            obj['inventory'].push(null);
+        }
+        return {...obj,...super.getInfos(userChara, floor, caseObjs)};
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
         if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
@@ -92,6 +100,8 @@ export class WorldFloor extends WorldModel{
         obj.y = py ;
         obj.datas = params ;
 
+
+        
         return obj ;
 
     }

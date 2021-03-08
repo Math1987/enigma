@@ -5,7 +5,7 @@
  */
 
 import { CaseI } from "../interfaces/case.interface";
-import { insertOnWorld, findWorld, findWorldInPositions } from "../queries/world.queries";
+import { insertOnWorld, findWorld, findWorldInPositions, addItemOnWorldInventory, findOneAndUpdateWorldById } from "../queries/world.queries";
 import { Pattern } from "./base.pattern";
 import { MonsterPattern } from "./monster.pattern";
 import { TreePattern } from "./tree.pattern";
@@ -48,8 +48,6 @@ export class WorldPattern extends Pattern{
                     return {...row, x : row.position[0], y : row.position[1]};
                  });
 
-                 console.log("final", finals);
-
                 callback(finals);
 
             }
@@ -67,7 +65,6 @@ export class WorldPattern extends Pattern{
                     const freeCases = newCases.ops.filter(row => row['name'] === "neutral" ? false : true) ;
 
                     TreePattern.createRandomTreesOnArray(freeCases, trees => {
-                        console.log(trees);
                         MonsterPattern.createRandomMonstersOnArray(freeCases, monsters => {
                             monsters.forEach( monster => {
                                     newCases.ops.push(monster);
@@ -203,5 +200,36 @@ export class WorldPattern extends Pattern{
         return Math.max(0,1-(Math.sqrt( Math.pow(x,2) + Math.pow(y,2))-50)/50) ;
     }
 
+
+    addOnInventory(item, callback){
+
+        console.log('adding on inventory', this.obj.name );
+
+        const obj = this.obj.inventory.filter( row => row.name === item.name );
+        if ( obj.length <= 0 ){
+
+            addItemOnWorldInventory(this.obj._id, item).then( charaR => {
+
+                callback(charaR.value) ;
+            });
+
+        }else{
+            
+            const req = {$inc : {}}
+            req.$inc[`inventory.$[elem].number`] = item.number ;
+            const ops = {
+                arrayFilters : [
+                    {
+                        'elem.name' : item['name']
+                    }
+                ]
+            };
+            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
+                callback(newCharaRes.value) ;
+            });
+        }
+
+
+    }
 
 }

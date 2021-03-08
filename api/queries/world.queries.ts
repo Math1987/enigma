@@ -17,6 +17,10 @@ export async function findWorld(query?: any):Promise<Cursor<WorldI | CharaI>>{
     const collection = database.collection('world');
     return await collection.find(query);
 }
+export async function findOneOnWorld(query?: any):Promise<Cursor<WorldI | CharaI>>{
+    const collection = database.collection('world');
+    return await collection.findOne(query);
+}
 export async function findWorldByID( _id:any ):Promise<WorldI | CharaI>{
     const collection = getCollection();
     return await collection.findOne({ 

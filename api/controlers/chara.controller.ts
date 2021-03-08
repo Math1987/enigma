@@ -218,8 +218,6 @@ export const userItemReq = (req:Request, res : Response) :void => {
 }
 export const userDropItemReq = (req:Request, res : Response) : void => {
 
-    console.log("userDropItemReq", req.body);
-
     if ( 
         req.user.chara && 
         req.body && req.body['target'] && 
@@ -227,21 +225,25 @@ export const userDropItemReq = (req:Request, res : Response) : void => {
         ){         
 
             buildInstanceFromId(req.user.chara._id, charaM => {
+                buildInstanceFromId(req.body.target._id, targetM => {
 
-                if ( charaM && charaM instanceof CharaPattern ){
+                    console.log('target', req.body.target.type, targetM);
 
-                    charaM.dropItem(req.body.item, req.body.target, useRes => {
-                        
-                        res.status(200).send({itemUse : true});
-                        
-                    });
+                    if ( charaM && charaM instanceof CharaPattern ){
 
-                }else{
+                        charaM.dropItem(req.body.item, targetM, useRes => {
+                            
+                            res.status(200).send({itemUse : true});
+                            
+                        });
+    
+                    }else{
+    
+                        res.status(401).send({err : 'need datas'});
+    
+                    }
 
-                    res.status(401).send({err : 'need datas'});
-
-                }
-                    
+                });
             });
         
             

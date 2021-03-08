@@ -5,8 +5,11 @@
  * 
  */
 
+import { CharaI } from "../interfaces/chara.interface";
 import { Request, Response } from "express";
-import { findCharasCursor, findSortedCharasCursor } from "../queries/chara.queries";
+import { findSortedCharasCursor } from "../queries/chara.queries";
+import { findWorld } from "../queries/world.queries";
+
 
 export const rankLevelReq = ( req : Request, res : Response):void => {
 
@@ -59,19 +62,25 @@ export const rankClan = ( req: Request, res : Response ):void => {
     } ;
 
 
-    findCharasCursor({}).then( cl => {
+    findWorld({}).then( cl => {
+        
         cl.forEach(element => {
-            console.log(element.kills);
+            const el = (element as CharaI) ;
 
-            clans[element.clan]['kills'] += element.kills ;
+            clans[el.clan]['kills'] += el.kills ;
 
         }).then( result => {
 
-            let final = [] ;
+            let final = [] as CharaI[] ;
             for ( let c in clans ){
                 final.push({...clans[c], clan : c, value: clans[c].kills });
             }
-            final = final.sort( ( a, b) => a.kills < b.kills );
+            final = final.sort( ( a, b) => { 
+                    if ( a.kills < b.kills ){
+                        return 1 ;
+                    }
+                    return -1 ;
+                });
 
             res.status(200).send(final)
 

@@ -18,9 +18,9 @@ import { findObjDatasByID } from "../queries/global.queries" ;
 import { CalculsI } from "../interfaces/calculs.interface";
 import { CharaI } from "../interfaces/chara.interface";
 import { findCharaDatasByUserID } from "../queries/chara.queries";
-import { BuildingI } from "api/interfaces/building.interface";
-import { MonsterI } from "api/interfaces/monster.interface";
-import { CaseI } from "api/interfaces/case.interface";
+import { BuildingI } from "../interfaces/building.interface";
+import { MonsterI } from "../interfaces/monster.interface";
+import { CaseI } from "../interfaces/case.interface";
 
 export const PATTERNS : { [name : string]: Pattern} = {} ;
 export const SOCKETS : Socket[] = [] ;
@@ -422,5 +422,8 @@ export class Pattern {
 
     }
     
+    addOnInventory( item, callback ){
+        
+    }
 
 }

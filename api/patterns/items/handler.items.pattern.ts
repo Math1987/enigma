@@ -1,4 +1,4 @@
-import { AdderI, ItemI, ItemTeaI } from "api/interfaces/item.interface"
+import { AdderI } from "../../interfaces/item.interface"
 
 const TEA : AdderI = {
     type : "adder",

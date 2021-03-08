@@ -24,6 +24,7 @@ export class WorldService {
 
     this.http.post(`${environment.urlApi}/user/world/get`, arr).subscribe( res => {
 
+      
       callback(res);
 
     });

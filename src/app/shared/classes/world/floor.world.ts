@@ -25,7 +25,7 @@ export class WorldFloor extends WorldModel{
     datas : {} = null ;
 
     getName(){
-        return this.matKey ;
+        return this.datas['name'] ;
     }
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
         console.log('getInfo on floor');
@@ -85,10 +85,8 @@ export class WorldFloor extends WorldModel{
 
     create(scene : THREE.Scene, px, py, params){
 
-        console.log('create floor', params);
-
-        const obj = new WorldFloor(this.matKey);
-        obj.mesh = new THREE.Mesh(WorldRes.FLOORGEO, WorldRes.MATS[this.matKey].clone() );
+        const obj = new WorldFloor(params.name);
+        obj.mesh = new THREE.Mesh(WorldRes.FLOORGEO, WorldRes.MATS[params.name].clone() );
         scene.add(obj.mesh);
         obj.x = px ; 
         obj.y = py ;

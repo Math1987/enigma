@@ -6,27 +6,28 @@
  * !canot be use by Patterns
  * 
  */
-import { findCharaDatasByID, findCharaDatasByUserID } from "../queries/chara.queries";
+import { findCharaDatasByUserID } from "../queries/chara.queries";
 import { PATTERNS, SOCKETS } from "./base.pattern";
 import { BuildingPattern } from "./building.pattern";
 import { CharaPattern, convertCharaForFrontend } from "./chara.patterns";
 import { MonsterPattern } from "./monster.pattern";
 import { WorldPattern } from "./world.pattern";
 import { initMongoDB } from './../data/index.data';
-import { CapitalPattern } from "./capital.pattern";
+// import { CapitalPattern } from "./capital.pattern";
 import { TreePattern } from "./tree.pattern";
+import { findWorldByID } from "../queries/world.queries";
+import { CapitalPattern } from "./capital.pattern";
 
 initMongoDB( res => {
     console.log('mongodb ok');
     PatternHandler.init();
 });
 
-
-
-
 export class PatternHandler {
 
     static init = ():void => {
+
+        console.log('init patterns');
 
         PATTERNS.world = new WorldPattern();
         PATTERNS.chara = new CharaPattern();
@@ -34,8 +35,10 @@ export class PatternHandler {
         PATTERNS.capital = new CapitalPattern();
         PATTERNS.tree = new TreePattern();
 
+        console.log('init done', PATTERNS);
 
-        BuildingPattern.init();
+
+        CapitalPattern.init();
         MonsterPattern.init();
         
     }
@@ -94,7 +97,7 @@ export class PatternHandler {
                                 !CharaPattern.isOnView(chara_, oldPosition.x, oldPosition.y, 4 ) &&
                                 CharaPattern.isOnView(chara_, newX, newY, 4 )
                                 ){
-                                findCharaDatasByID(_id).then( charaMoving => {
+                                    findWorldByID(_id).then( charaMoving => {
                                     socket.emit('addChara', convertCharaForFrontend(charaMoving) );
                                 })
                             }else{

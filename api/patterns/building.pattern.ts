@@ -22,6 +22,10 @@ export class BuildingPattern extends Pattern {
     };
 
 
+    constructor(){
+        super();
+    }
+
     plunder(attacker : CharaPattern, callback){
         callback(null);
     }

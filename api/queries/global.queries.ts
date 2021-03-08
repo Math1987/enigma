@@ -1,10 +1,11 @@
 import { CharaI } from "../interfaces/chara.interface";
 import { MonsterI } from "../interfaces/monster.interface";
-import { findCharaDatasByID, findCharasOnPositions } from "./chara.queries";
+
 import { findMonsterByID, findMonstersOnPosition } from "./monster.queries";
 import { findBuildingFromID, findBuildingOnPosition } from "./building.queries";
-import { BuildingI } from "api/interfaces/building.interface";
-import { CaseI } from "api/interfaces/case.interface";
+import { BuildingI } from "../interfaces/building.interface";
+import { CaseI } from "../interfaces/case.interface";
+import { findWorldByID, findWorldInPositions, findWorldOnPosition } from "./world.queries";
 
 /**
  * 
@@ -21,7 +22,7 @@ export const findObjDatasByID = (id:any, callback: (obj: CharaI | MonsterI | Bui
         if ( building ){
             callback(building);
         }else{
-            findCharaDatasByID(id).then( chara => {
+            findWorldByID(id).then( chara => {
                 if ( chara ){
                     chara['type'] = "chara" ;
                     callback(chara);
@@ -52,7 +53,7 @@ export const findObjsByPosition = ( x:number, y:number, callback: (objs :(CaseI 
         if ( building ){
             apps.push(building);
         }
-        findCharasOnPositions([{x:x,y:y}], charas => {
+        findWorldOnPosition({ type : "chara"},x,y, charas => {
             if ( charas ){
                 charas.forEach(row => {
                     apps.push(row) ;

@@ -21,50 +21,50 @@ export class WorldPattern extends Pattern{
      */
     static getCases = ( arr : CaseI[], callback ) => {
         insertOnWorld( arr.map( row => {
+            console.log(row);
                 return { 
                     position : [row['x'], row['y']],
-                     type : WorldPattern.getFloorType(row['x'], row['y'])}
+                    type : "floor",
+                    name : WorldPattern.getFloorName(row['x'], row['y'])}
                 })
             ).then( insertRes => {
                 if ( insertRes.ops ){
 
-                    const freeCases = insertRes.ops.filter(row => row['type'] === "neutral" ? false : true) ;
+                    const freeCases = insertRes.ops.filter(row => row['name'] === "neutral" ? false : true) ;
 
                     TreePattern.createRandomTreesOnArray(freeCases, trees => {
                         console.log(trees);
                         MonsterPattern.createRandomMonstersOnArray(freeCases, monsters => {
                             const arrF = arr.map( row => {
                                 if ( WorldPattern.isOnNeutral(row.x, row.y) ){
-                                    return {...row, type : "neutral"};
+                                    return {...row, type : "floor", name : "neutral"};
                                 }else if ( WorldPattern.isOnDesert(row.x, row.y) ) {
-                                    return {...row, type : "desert"};
+                                    return {...row, type : "floor", name : "desert"};
                                 }
-                                return {...row, type : "deepdesert"};
+                                return {...row, type : "floor", name : "deepdesert"};
                             });
                             monsters.forEach( monster => {
                                     arrF.push(monster);
                             });
                             callback(arrF);
                         });
-
                     });
 
 
                 }else{
                     callback(arr.map( row => {
                         if ( WorldPattern.isOnNeutral(row.x, row.y) ){
-                            return {...row, type : "neutral"};
+                            return {...row, type : "floor", name : "neutral"};
                         }
-                        return {...row, type : "desert"};
+                        return {...row, type : "floor", name : "desert" };
                     }));
                 }
             }).catch( err => {
 
                 const arrP = arr.map(row=> [row.x,row.y]);
-
                 const fakeRows = arr.map( row => {
-                        const type = WorldPattern.getFloorType(row.x,row.y);
-                        return {...row, type : type};
+                        const name = WorldPattern.getFloorName(row.x,row.y);
+                        return {...row, name : name, type : "floor"};
                     })
 
                 findWorld({ position : { $in : arrP }}).then( cursor => {
@@ -117,7 +117,7 @@ export class WorldPattern extends Pattern{
         }
         return false ;
     }
-    static getFloorType = (x:number, y:number) => {
+    static getFloorName = (x:number, y:number) => {
         if ( WorldPattern.isOnNeutral(x,y)){
             return 'neutral';
         }else if ( WorldPattern.isOnDesert(x,y)){

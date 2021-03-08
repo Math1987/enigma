@@ -5,7 +5,14 @@ import { findBuildingsOnPositions, incBuildingValuesData, insertBuildingsDatas }
 import { BuildingPattern } from "./building.pattern";
 import { CharaPattern } from "./chara.patterns";
 
+console.log('init capital PATTERN');
+
+
 export class CapitalPattern extends BuildingPattern {
+
+    constructor(){
+        super();
+    }
 
     static init(){
         console.log('init capital');

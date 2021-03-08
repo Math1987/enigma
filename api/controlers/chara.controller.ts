@@ -11,13 +11,14 @@
 
 import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { createCharaDatas, findCharaDatasByUserID, findCharaDatasByID, incCharaValuesData, updateCharaPositionDatas } from "../queries/chara.queries";
+import { findCharaDatasByUserID, } from "../queries/chara.queries";
 import { CharaI } from "../interfaces/chara.interface";
 import { fixObjDatas, buildInstanceFromId } from "../patterns/base.pattern";
 import { CharaPattern, convertCharaForFrontend, getCharaPattern } from "../patterns/chara.patterns";
 import { PatternHandler } from "../patterns/index.patterns";
 import { WorldPattern } from "../patterns/world.pattern";
 import { findObjsByPosition } from "../queries/global.queries";
+import { createOnWorld, incWorldValues, updateWorldPosition } from "../queries/world.queries";
 
 
 export const addWorldCaseOnHeader = ( req: Request, res : Response, next : NextFunction ):void => {
@@ -58,7 +59,7 @@ export const createCharaReq = ( req: Request, res : Response ):void => {
                 user : user['_id'],
                 messages : ['vous apparaîssez.']
             };
-            createCharaDatas(final, end => {
+            createOnWorld(final, end => {
                 if ( end ){
                     res.status(200).send(final);
                     PatternHandler.addCharaOnSockets(final);
@@ -88,7 +89,7 @@ export const incCharaValueReq = ( req: Request, res : Response ):void => {
         obj[req.body['key']] = req.body['inc'];
         obj['xp'] = - req.body['inc'];
 
-        incCharaValuesData( charaId, obj).then( result => {
+        incWorldValues( charaId, obj).then( result => {
             if ( result.ok ){
                 res.status(200).send(result.value);
             }else{
@@ -120,7 +121,7 @@ export const moveCharaReq = (req: Request, res : Response ):void => {
         ){
 
         const oldPosition = { x : chara.x, y : chara.y };
-        updateCharaPositionDatas(charaId, chara.position[0] + mover['x'], chara.position[1] + mover['y'] ).then( newChara => {
+        updateWorldPosition(charaId, chara.position[0] + mover['x'], chara.position[1] + mover['y'] ).then( newChara => {
 
             if ( newChara.ok ){
                 const charaMoved = fixObjDatas(newChara.value) ;
@@ -133,7 +134,7 @@ export const moveCharaReq = (req: Request, res : Response ):void => {
                     moveIt(charaMoved);
                 }else{
 
-                    incCharaValuesData(charaId, {
+                    incWorldValues(charaId, {
                         moves : -1
                     }).then( moveRes => {
                         if ( moveRes.ok ){

@@ -1,7 +1,7 @@
-import { BuildingI } from "api/interfaces/building.interface";
-import { CaseI } from "api/interfaces/case.interface";
-import { CharaI } from "api/interfaces/chara.interface";
-import { MonsterI } from "api/interfaces/monster.interface";
+import { BuildingI } from "../interfaces/building.interface";
+import { CaseI } from "../interfaces/case.interface";
+import { CharaI } from "../interfaces/chara.interface";
+import { MonsterI } from "../interfaces/monster.interface";
 import { UserI } from "../interfaces/user.interface";
 
 declare global {

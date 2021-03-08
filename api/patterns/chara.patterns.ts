@@ -6,17 +6,9 @@
  * Can be masculin, feminine, a human, dwarf, elf or vampire etc...
  * 
  */
-import { 
-    findCharasOnPositions, 
-    findCharasNear, 
-    incCharaValuesData,
-    findCharaDatasByID,
-    updateCharaPositionDatas,
-    updateCharaValuesData,
+import {  
     addMessageOnChara,
-    findCharasCursor,
-    addItemOnCharaInventory, 
-    queryCharaFindOneAndUpdateById
+    addItemOnCharaInventory
 } from "../queries/chara.queries";
 import { 
     buildInstanceFromId, 
@@ -30,15 +22,24 @@ import {
 } from "./base.pattern";
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
-import { findBuildingOnPosition, incBuildingValuesData, updateBuildingById } from "./../queries/building.queries";
-import { CharaI } from "api/interfaces/chara.interface";
-import { BuildingPattern } from "./building.pattern";
-import { CaseI } from "api/interfaces/case.interface";
-import { BuildingI } from "api/interfaces/building.interface";
-import { MonsterI } from "api/interfaces/monster.interface";
-import { createItem, getRandomItemAdder } from "./items/handler.items.pattern";
-import { AdderI } from "api/interfaces/item.interface";
-import { newChara } from "src/app/shared/services/user.service";
+import { findBuildingOnPosition, incBuildingValuesData } from "./../queries/building.queries";
+import { CharaI } from "../interfaces/chara.interface";
+import { CaseI } from "../interfaces/case.interface";
+import { BuildingI } from "../interfaces/building.interface";
+import { MonsterI } from "../interfaces/monster.interface";
+import { getRandomItemAdder } from "./items/handler.items.pattern";
+import { AdderI } from "../interfaces/item.interface";
+
+
+import { 
+    findWorld,
+    findWorldByID, 
+    incWorldValues, 
+    updateWorldValues,
+    updateWorldPosition, 
+    findWorldNear,
+    findWorldInPositions,
+    findOneAndUpdateWorldById} from "../queries/world.queries";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -102,7 +103,7 @@ export class CharaPattern extends Pattern{
 
     static getWorldCharasOnArray = (array : {x : number, y : number}[], callback : CallableFunction ) => {
 
-        findCharasOnPositions(array, charas => {
+        findWorldInPositions({ type: "chara"},array, charas => {
 
             const final = charas.map( row => convertCharaForFrontend(row))
 
@@ -113,7 +114,7 @@ export class CharaPattern extends Pattern{
     }
     static getWorldCharasOn = ( x: number, y : number, rayon : number, callback : CallableFunction ) => {
 
-        findCharasNear(x,y,rayon).then( cursorCharas => {
+        findWorldNear( {type : "chara"}, x,y,rayon).then( cursorCharas => {
 
             cursorCharas.toArray().then( nxt => {
 
@@ -192,11 +193,11 @@ export class CharaPattern extends Pattern{
                 }
             }
         };
-        queryCharaFindOneAndUpdateById(_id, req ).then( callback);
+        findOneAndUpdateWorldById(_id, req ).then( callback);
     }
     static pass(){
 
-        findCharasCursor().then( cursor => {
+        findWorld().then( cursor => {
     
             cursor.forEach(element => {
     
@@ -281,7 +282,7 @@ export class CharaPattern extends Pattern{
     
                     addMessageOnChara( this.obj._id, message );
     
-                    updateCharaValuesData(this.obj._id, {
+                    updateWorldValues(this.obj._id, {
                         life : this.obj.life,
                         water : this.obj.water, 
                         food : this.obj.food,
@@ -336,33 +337,33 @@ export class CharaPattern extends Pattern{
                 this.defend(target, callback);
             break ;
             case "stockWater" :
-                this.stockResource("water", target, callback);
+                this.stockResource("water", target as CapitalPattern, callback);
             break ;
             case "stockFood" :
-                this.stockResource("food", target, callback);
+                this.stockResource("food", target as CapitalPattern, callback);
             break ;
             case "stockWood" :
-                this.stockResource("wood", target, callback);
+                this.stockResource("wood", target as CapitalPattern, callback);
             break ;
             case "addMercenari" :
-                this.addMercenari(target, callback);
+                this.addMercenari(target as CapitalPattern, callback);
             break ;
             case "attackMercenari" :
-                this.attackMercenari(target, callback);
+                this.attackMercenari(target as CapitalPattern, callback);
             break ;
             case "addWood" :
                 this.upgreatBuilding(target, callback);
             break ;
             case "plunder" :
-                this.plunder(target, callback);
+                this.plunder(target as CapitalPattern, callback);
             break ;
         }
 
     }
     incrementValues(datas: any, callback : (chara:CharaI)=>void){
-        incCharaValuesData( this.obj._id, datas).then( res => {
+        incWorldValues( this.obj._id, datas).then( res => {
             if ( res.ok ){
-                callback(res.value);
+                callback((res.value as CharaI));
             }else{
                 callback(null);
             }
@@ -587,15 +588,15 @@ export class CharaPattern extends Pattern{
             (target.obj._id + '') === ('' + this.obj._id) 
             ){
             
-                updateCharaValuesData(this.obj._id, {
+                updateWorldValues(this.obj._id, {
                     state : "defense",
                     actions : this.obj.actions -1
                 }).then( charaR => {
 
                     updateSocketsValues( {x: this.obj.position[0], y : this.obj.position[1]}, [{
                         _id : this.obj._id,
-                        state : charaR.value.state,
-                        actions : charaR.value.actions
+                        state : (charaR.value as CharaI).state,
+                        actions : (charaR.value as CharaI).actions
                     }]);
 
 
@@ -1244,7 +1245,7 @@ export class CharaPattern extends Pattern{
                         ]
                     };
                     
-                    queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
+                    findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
                         
                         incValueOnChara( newChara => {
 
@@ -1321,7 +1322,7 @@ export class CharaPattern extends Pattern{
                     }
                 ]
             };
-            queryCharaFindOneAndUpdateById(this.obj._id, req, ops ).then( newCharaRes => {
+            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
                 callback(newCharaRes.value) ;
             });
         }
@@ -1384,9 +1385,9 @@ export class CharaPattern extends Pattern{
             updateValues = {...this.addLevel( 1.5/5 )};
         }
         
-        updateCharaPositionDatas(this.obj._id, newPos.x, newPos.y).then( posRes => {
+        updateWorldPosition(this.obj._id, newPos.x, newPos.y).then( posRes => {
         
-            updateCharaValuesData(this.obj._id, {
+            updateWorldValues(this.obj._id, {
                 ...updateValues,
                 life : 100,
                 gold : this.obj.gold/2,
@@ -1396,7 +1397,7 @@ export class CharaPattern extends Pattern{
     
                 super.die(dieRes => {
 
-                    findCharaDatasByID(this.obj._id).then ( charaRes => {
+                    findWorldByID(this.obj._id).then ( charaRes => {
 
                         socketsAdd(newPos, fixObjDatas(charaRes) );
                         socketsResurrection(charaRes);

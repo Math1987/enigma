@@ -6,17 +6,26 @@
  * 
  */
 
-import { Db, MongoClient, ObjectId } from "mongodb";
+import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import { Environment } from "../environment/environment";
 
 
 const client = new MongoClient('mongodb://localhost',{ useUnifiedTopology: true } );
 export let database : Db ;
+
+export let worldCollection : Collection<any> = null ;
+
+
 export const initMongoDB = (callback: (res)=>void) => {
 
     client.connect().then( co => {
 
+
         database = client.db(Environment.mongodb.name);
+
+        updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS(database);
+
+
         const cusers = database.collection('users');
         cusers.createIndex({"email":1}, {unique : true});
     
@@ -28,7 +37,14 @@ export const initMongoDB = (callback: (res)=>void) => {
          * he potentialy add new positions
          */
         const world = database.collection('world');
-        world.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+        // world.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+        // world.createIndex(
+        //     {
+        //         key : {"position.0" : 1, "position.1":1}, {
+        //         unique : true,
+        //         partialFilterExpression: { name : { $eq : ""}}   
+        //     });
+        worldCollection = world ;
     
         const buildings = database.collection('buildings');
         buildings.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
@@ -36,13 +52,58 @@ export const initMongoDB = (callback: (res)=>void) => {
         const charas = database.collection('users');
         const monsters = database.collection('monsters');
 
-        
-
         callback(true);
 
     });
 }
 
+const updateDataSystem = (database:Db) => {
+
+    console.log('update Data System');
+    const world = database.collection('world');
+
+    world.indexes().then( indexes => {
+
+        if ( indexes.reduce( 
+            (acc, row) => {
+                if (row.name === "position.0_1_position.1_1" && !row.partialFilterExpression ){
+                    acc = true ;
+                }
+                return acc ;
+            }
+            , false ) ){
+    
+        }else{
+            console.log('index world ok');
+        }
+
+    });
+
+}
+const updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS = ( database : Db) => {
+
+    const world = database.collection('world');
+    world.dropIndex("position.0_1_position.1_1").finally( ()=> {
+
+        world.createIndex(
+            {"position.0" : 1, "position.1":1}, {
+            unique : true,
+            partialFilterExpression: { type : { $eq : "floor"}}
+            }   
+        );
+    });
+
+    console.log("updating charas");
+    const chara = database.collection('charas');
+    
+    const charas = chara.find({});
+    charas.toArray().then( charaArray => {
+
+        world.insertMany( charaArray );
+
+    });
+    // world.insertMany( )
+}
 
 export const convertId = (_id:any):ObjectId => {
     let id = _id ;
@@ -51,6 +112,11 @@ export const convertId = (_id:any):ObjectId => {
     }
     return id ;
 }
+
+export const queryOnWorld = (callback : (collection : Collection)=>void) => {
+    callback(worldCollection);
+}
+
 
 // /**
 //  * this function does not use mongodb directly

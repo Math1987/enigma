@@ -40,9 +40,10 @@ export class WorldViewer {
         WorldViewer.WorldService = worldService ;
         WorldRes.init();
         WorldViewer.MODELS = {
-            "desert" : new WorldFloor(),
-            "deepdesert" : new WorldFloor('deepdesert'),
-            "neutral" : new WorldFloor('neutral'),
+            "floor" : new WorldFloor(),
+            // "desert" : new WorldFloor(),
+            // "deepdesert" : new WorldFloor('deepdesert'),
+            // "neutral" : new WorldFloor('neutral'),
             "chara" : new WorldChara(),
             "monster" : new WorldMonster(),
             "tree" : new WorldTree(),

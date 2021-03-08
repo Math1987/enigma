@@ -1,6 +1,7 @@
 export interface WorldI {
 
-    type : "desert" | "deepdesert" | "neutral" ;
+    type : "floor" ;
+    name : "desert" | "deepdesert" | "neutral" ;
     position : [number,number];
 
 }

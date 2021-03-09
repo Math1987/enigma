@@ -62,7 +62,7 @@ export const rankClan = ( req: Request, res : Response ):void => {
     } ;
 
 
-    findWorld({}).then( cl => {
+    findWorld({type:"chara"}).then( cl => {
         
         cl.forEach(element => {
             const el = (element as CharaI) ;

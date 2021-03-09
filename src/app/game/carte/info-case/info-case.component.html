@@ -9,6 +9,80 @@
 <div id="infos-container"  class="article case">
 
     <div class="title">Informations case</div>
+
+
+<!-- 
+    <div class="case-content">
+
+        <div  class="info" *ngFor="let info of infos">
+            <div class="img-container">
+                <div class="avatar">
+                    <img [src]="info.img" >
+                    <div *ngIf="info.clan" class="clan" [ngClass]="info.clan"></div>
+                </div>
+                <p class="name">{{info.datas.name}}</p>
+            </div>
+
+            <div class="chara-infos">
+
+                <div *ngIf="info.life && info.lifeMax" class="life">
+                    <div class="icon icon-life"></div>
+                    <div class="life-bar">
+                        <div class="life-bar-life" [ngStyle]="{'width.%' : info.life/info.lifeMax*100}"></div>
+                    </div>
+                </div>
+                <div *ngIf="info.inventory" class="inventory">
+                    <div *ngFor="let item of info.inventory" class="inventory-item-container">
+                        <div 
+                        #refItem
+                        *ngIf="item"
+                        [ngClass]="item['icon']"
+                        class="icon inventory-item" 
+                        [matTooltip]="item.tooltip"
+                        (mousedown)="mouseDownItem(refItem, item)"
+                        >
+                        <span *ngIf="item['datas']['number']">{{item['datas']['number']}}</span>
+                    </div>
+                    </div>
+                   
+                </div>
+                <div class="actions">
+                    <div class="action" 
+                    *ngFor="let action of info.interactions"
+                    (click)="user.makeAction(info, action.action)"
+                    [matTooltip]="action.tooltip"
+                    >
+                    <div class="icon" [ngClass]="action['icon']"></div>
+                    {{action.name}}
+                    </div>
+                </div>
+
+                <div *ngIf="info.state" class="states">
+                    <div *ngFor="let state of info.states | keyvalue"> 
+                        <div class="state" [ngClass]="state.value.icon"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="case-content" >
         <div id="infoFloor" class="info" *ngIf="targetFloor; let floor">
             <!-- {{case.floor.img}} -->

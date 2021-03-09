@@ -25,6 +25,8 @@ export class InfoCaseComponent implements OnInit {
   targetCharas : any[] = [] ;
   targetMonsters : any[] = [] ;
 
+  infos : any = [] ;
+
   @ViewChild('mapCanvas') mapCanvas ;
 
   selectSubscription = null ;
@@ -141,6 +143,11 @@ export class InfoCaseComponent implements OnInit {
 
     let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
     this.targetFloor = floors[floors.length-1].getInfos( this.user.chara, floors[floors.length-1], selects );
+
+    this.infos = selects.map( row => {
+        return {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
+    }) ;
+
 
 
     this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])

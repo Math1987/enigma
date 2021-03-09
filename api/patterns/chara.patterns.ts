@@ -1347,13 +1347,13 @@ export class CharaPattern extends Pattern{
 
                 }
 
-                // if ( target ){
-                //     target.addOnInventory(item, itemRes => {
-                //         end();
-                //     });
-                // }else{
-                //     end();
-                // }
+                if ( target ){
+                    target.addOnInventory(item, itemRes => {
+                        end();
+                    });
+                }else{
+                    end();
+                }
 
 
             //});

@@ -30,10 +30,9 @@ export class WorldFloor extends WorldModel{
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
         const obj = {...this.datas};
         if ( obj['inventory'] ){
-            // obj['inventory'] = userChara.inventory.map( row => {
-            //     return {...METADATAS[row.name], datas : row};
-            // }) ;
-            obj['inventory'] = [null];
+            obj['inventory'] = obj['inventory'].map( row => {
+                return {...METADATAS[row.name], datas : row};
+            }) ;
         }else{
             obj['inventory'] = [null];
         }
@@ -100,6 +99,9 @@ export class WorldFloor extends WorldModel{
         obj.y = py ;
         obj.datas = params ;
 
+        if ( obj.datas['inventory'] ){
+            console.log('A FLOOR GOT INVENTORY', obj.datas);
+        }
 
         
         return obj ;

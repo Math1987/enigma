@@ -199,8 +199,6 @@ export class WorldChara extends WorldModel {
             chara.state !== "defense" &&
             this.datas._id === chara._id 
             ){
-
-
                 if ( caseObjs && caseObjs.reduce( (acc,row) => {
                     console.log('caseObjs reduce', acc)
                     if ( row instanceof WorldFloor 
@@ -216,12 +214,7 @@ export class WorldChara extends WorldModel {
                         tooltip : "coûte 1 action. se met en position défensive, protégeant les membres du même clan et augmentant la défense de 5%"
                     })
                 }
-
-
-
-
             }
-
 
         if ( 
             this.datas.x === chara.x && this.datas.y === chara.y && 

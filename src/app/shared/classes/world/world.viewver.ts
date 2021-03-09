@@ -358,8 +358,6 @@ export class WorldViewer {
     
     initCases(){
 
-
-
         const arr = [] ;
         for ( let x = 0 ; x < this.rayon*2+1 ; x ++ ){
             for ( let y = 0 ; y < this.rayon*2+1 ; y ++ ){

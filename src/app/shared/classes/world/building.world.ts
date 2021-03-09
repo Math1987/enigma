@@ -3,6 +3,7 @@ import * as THREE from "three" ;
 import { WorldRes } from "./resources.world";
 import { WorldChara } from "./chara.world";
 import { CharaI } from "../../interfaces/chara.interface";
+import { CaseI } from "api/interfaces/case.interface";
 
 export class WorldBuilding extends WorldModel {
 
@@ -113,6 +114,11 @@ export class WorldBuilding extends WorldModel {
         }
         return this ;
     }
+
+    getCharaInteractions(floor : WorldModel, chara : CharaI, caseObjs : WorldModel[] ){
+        super.getCharaInteractions(floor, chara, caseObjs);
+    }
+
     updateInfoCaseFromContext( user : CharaI, charas : WorldChara[], interactions : any[] ){
 
         for ( let chara of charas ){

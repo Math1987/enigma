@@ -5,6 +5,7 @@ import { WorldBuilding } from "./building.world";
 import { CharaI } from "api/interfaces/chara.interface";
 import { WorldChara } from "./chara.world";
 import { METADATAS } from "../../metadatas/metadatas";
+import { CaseI } from "api/interfaces/case.interface";
 
 export class WorldCapital extends WorldBuilding {
 
@@ -89,8 +90,7 @@ export class WorldCapital extends WorldBuilding {
         return {...obj,...super.getInfos(userChara, floor, caseObjs)};
         return obj ;
     }
-    getCharaInteractions(floor : WorldModel, chara : CharaI ){
-
+    getCharaInteractions(floor : WorldModel, chara : CharaI, caseObjs : WorldModel[] ){
 
         const actions = [] ;
         if ( this['datas']['clan'] === chara.clan ){
@@ -150,8 +150,27 @@ export class WorldCapital extends WorldBuilding {
                 )
             }
 
-          }else{
-            if ( floor['datas']['mercenaries'] > 0 ){
+        }else{
+
+            const enemies = caseObjs.filter(row => {
+                if ( row instanceof WorldChara && row.datas.clan === this['datas']['clan']){
+                    return true ;
+                }
+                return false ;
+            })
+
+            if ( enemies.length > 0 ){
+
+                actions.push(
+                    {
+                        name : `cette ville est protégée`,
+                        icon : "icon-shield",
+                        action : "",
+                        tooltip : `vous ne pouvez pas attaquer la ville tant qu'il y a des joueurs pour la défendre`
+                    }
+                  );
+
+            }else if (  floor['datas']['mercenaries'] > 0 ){
               actions.push(
                 {
                     name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20} attaquer mercenaire`,

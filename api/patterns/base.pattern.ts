@@ -21,7 +21,7 @@ import { findCharaDatasByUserID } from "../queries/chara.queries";
 import { BuildingI } from "../interfaces/building.interface";
 import { MonsterI } from "../interfaces/monster.interface";
 import { CaseI } from "../interfaces/case.interface";
-import { addItemOnWorldInventory, findOneAndUpdateWorldById } from "../queries/world.queries";
+import { addItemOnWorldInventory, destroyWorldItem, findOneAndUpdateWorldById } from "../queries/world.queries";
 
 export const PATTERNS : { [name : string]: Pattern} = {} ;
 export const SOCKETS : Socket[] = [] ;
@@ -425,48 +425,182 @@ export class Pattern {
 
     }
     
+    // addOnInventory(item, callback){
+
+    //     console.log('adding on inventory', this.obj.name );
+
+    //     const createItem = () => {
+    //         const req = {$inc : {}}
+    //         req.$inc[`inventory.$[elem].number`] = item.number ;
+    //         const ops = {
+    //             arrayFilters : [
+    //                 {
+    //                     'elem.name' : item['name']
+    //                 }
+    //             ]
+    //         };
+    //         findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
+    //             callback(newCharaRes.value) ;
+    //         });
+    //     }
+
+    //     if ( this.obj.inventory ){
+
+    //         let obj = this.obj.inventory.filter( row => row.name === item.name );
+    //         if ( obj.length <= 0 ){
+    
+    //             addItemOnWorldInventory(this.obj._id, item).then( charaR => {
+    
+    //                 callback(charaR.value) ;
+    //             });
+    
+    //         }else{
+    //             createItem();
+    //         }
+
+    //     }else{
+
+    //         findOneAndUpdateWorldById(this.obj._id, { $set : { inventory : []}}).then( objRes => {
+    //             createItem();
+    //         }).catch( err => {
+    //             console.log(err);
+    //         });
+
+    //     }
+
+    // }
+
     addOnInventory(item, callback){
 
-        console.log('adding on inventory', this.obj.name );
 
-        const createItem = () => {
-            const req = {$inc : {}}
-            req.$inc[`inventory.$[elem].number`] = item.number ;
-            const ops = {
-                arrayFilters : [
-                    {
-                        'elem.name' : item['name']
-                    }
-                ]
-            };
-            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
-                callback(newCharaRes.value) ;
-            });
-        }
+        console.log('add inventory', this.obj['inventory']);
 
-        if ( this.obj.inventory ){
+        if ( !this.obj['inventory'] ){
 
-            let obj = this.obj.inventory.filter( row => row.name === item.name );
-            if ( obj.length <= 0 ){
-    
+            console.log('world add item but doesnt got inventory');
+
+            findOneAndUpdateWorldById(this.obj._id, {
+
+                $set : {
+                    inventory : []
+                }
+
+            }).then( (resW) => {
+
+                console.log('create inventory in world');
                 addItemOnWorldInventory(this.obj._id, item).then( charaR => {
     
                     callback(charaR.value) ;
                 });
-    
-            }else{
-                createItem();
-            }
 
-        }else{
-
-            findOneAndUpdateWorldById(this.obj._id, { $set : { inventory : []}}).then( objRes => {
-                createItem();
             }).catch( err => {
-                console.log(err);
+                console.log('fail create inventory', err);
+                callback(false) ;
+
             });
 
+
+
+        }else{
+            
+            let inventory = this.obj.inventory.filter( row => row.name === item.name );
+    
+            console.log('desert inventory', inventory );
+
+            if ( inventory.length <= 0 ){
+
+                console.log('create inventory in world');
+                addItemOnWorldInventory(this.obj._id, item).then( charaR => {
+    
+                    callback(charaR.value) ;
+                });
+
+            }else{
+
+                console.log('increment inventory in world');
+                
+                const req = {$inc : {}}
+                req.$inc[`inventory.$[elem].number`] = item.number ;
+                const ops = {
+                    arrayFilters : [
+                        {
+                            'elem.name' : item['name']
+                        }
+                    ]
+                };
+                findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
+                    callback(newCharaRes.value) ;
+                });
+                
+            }
         }
+
+
+    }
+
+
+    dropItem(item, target, callback){
+
+
+        target.addOnInventory(item, targetRes => {
+
+            if ( targetRes ){
+                destroyWorldItem(this.obj._id, item, newCharaRes => {
+
+
+                    
+                    updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                        {
+                            _id : this.obj._id,
+                            inventory : newCharaRes.value.inventory
+                        },
+                        {
+                            _id : target.obj._id,
+                            inventory : targetRes.inventory
+                        }
+                    ]);
+
+
+                    callback(true);
+                });
+            }else {
+                callback(false);
+            }
+
+        });
+
+
+        // const obj = this.obj.inventory.filter( row => row.name === item.name );
+        // if ( obj.length > 0 ){
+
+        //     destroyWorldItem(this.obj._id, item, newCharaRes => {
+ 
+        //         const end = () => {
+
+        //             updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+        //                 {
+        //                     _id : this.obj._id,
+        //                     inventory : newCharaRes.value.inventory
+        //                 }
+        //             ]);
+        //             callback(true);
+
+        //         }
+
+        //         if ( target ){
+        //             target.addOnInventory(item, itemRes => {
+        //                 end();
+        //             });
+        //         }else{
+        //             end();
+        //         }
+
+
+        //     });
+
+        // }else{
+        //     callback(true);
+        // }
 
     }
 

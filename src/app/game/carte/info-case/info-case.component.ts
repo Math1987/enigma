@@ -27,7 +27,8 @@ export class InfoCaseComponent implements OnInit {
 
   infos : any = [] ;
 
-  @ViewChild('mapCanvas') mapCanvas ;
+  itemSelected = null ;
+  lastClick = Date.now();
 
   selectSubscription = null ;
 
@@ -71,54 +72,64 @@ export class InfoCaseComponent implements OnInit {
 
       if ( this.itemSelected ){
 
-        const parent = this.itemSelected.parentNode ;
+        const parent = this.itemSelected.itemHtml.parentNode ;
         const parentP = {
           x: parent.getBoundingClientRect().left,
           y: parent.getBoundingClientRect().top
         }
-        this.itemSelected.style.zIndex = "10" ;
-        this.itemSelected.style.left = `${event.clientX - parentP.x - this.itemSelected.offsetWidth/2}px`;
-        this.itemSelected.style.top = `${event.clientY - parentP.y - this.itemSelected.offsetHeight/2}px`;
+        this.itemSelected.itemHtml.style.zIndex = "10" ;
+        this.itemSelected.itemHtml.style.left = `${event.clientX - parentP.x - this.itemSelected.itemHtml.offsetWidth/2}px`;
+        this.itemSelected.itemHtml.style.top = `${event.clientY - parentP.y - this.itemSelected.itemHtml.offsetHeight/2}px`;
         
       }
     });
 
     document.addEventListener('mouseup', event => {
 
-      if ( this.itemSelected && Date.now() - this.itemSelected.datas.time <= 500 ){
+      if ( this.itemSelected.itemHtml && Date.now() - this.itemSelected.itemHtml.datas.time <= 500 ){
 
-        this.itemSelected.style.zIndex = "1" ;
-        this.itemSelected.style.left = `${this.itemSelected.datas.position.x}`;
-        this.itemSelected.style.top = `${this.itemSelected.datas.position.y}`;
-        this.user.useItem(this.itemSelected.datas.datas, ()=> {
+        this.itemSelected.itemHtml.style.zIndex = "1" ;
+        this.itemSelected.itemHtml.style.left = `${this.itemSelected.itemHtml.datas.position.x}`;
+        this.itemSelected.itemHtml.style.top = `${this.itemSelected.itemHtml.datas.position.y}`;
+        this.user.useItem(this.itemSelected.itemHtml.datas.datas, ()=> {
         });
 
       }else if ( this.itemSelected ){
 
-        const infoContainer = document.querySelector('#infos-container') as HTMLDivElement;
-        const infoFloor = document.querySelector('#infoFloor') as HTMLDivElement;
 
-        console.log(event.clientX, event.clientY, infoFloor.getBoundingClientRect() );
+        const collection = Array.from(document.querySelector('#infos-container').children) ;
 
-        if ( infoFloor && 
-          event.clientX  >= infoFloor.getBoundingClientRect().left && 
-          event.clientX  <= infoFloor.getBoundingClientRect().left + infoFloor.getBoundingClientRect().width && 
-          event.clientY >= infoFloor.getBoundingClientRect().top &&
-          event.clientY <= infoFloor.getBoundingClientRect().top + infoFloor.getBoundingClientRect().height
+        const target = collection.reduce( ( acc, target) => {
+          if ( 
+            event.clientX  >= target.getBoundingClientRect().left && 
+            event.clientX  <= target.getBoundingClientRect().left + target.getBoundingClientRect().width && 
+            event.clientY >= target.getBoundingClientRect().top &&
+            event.clientY <= target.getBoundingClientRect().top + target.getBoundingClientRect().height
+            ){
+              acc = target ;
+            }
+            return acc ;
 
-          ){
-            console.log('drop obj');
+        }, null);
 
-            this.user.dropObject(this.itemSelected.datas.datas, this.targetFloor.datas );
+
+        if ( target && target !== this.itemSelected.from ){
+
+            this.user.dropObject(this.itemSelected.itemHtml.datas.datas, this.itemSelected.from.datas, target['datas'].datas );
 
         }else{ 
-          this.itemSelected.style.zIndex = "1" ;
-          this.itemSelected.style.left = `${this.itemSelected.datas.position.x}`;
-          this.itemSelected.style.top = `${this.itemSelected.datas.position.y}`;
+          console.log('cancel drop other');
+
+          this.itemSelected.itemHtml.style.zIndex = "1" ;
+          this.itemSelected.itemHtml.style.left = `${this.itemSelected.itemHtml.datas.position.x}`;
+          this.itemSelected.itemHtml.style.top = `${this.itemSelected.itemHtml.datas.position.y}`;
         }
       }
       this.itemSelected = null ;
     })
+
+
+
   }
   initSelection(){
 
@@ -142,54 +153,90 @@ export class InfoCaseComponent implements OnInit {
   updateSelectedCase( selects : WorldModel[] ){
 
     let floors = selects.filter( row => row instanceof WorldFloor || row instanceof WorldBuilding );
-    this.targetFloor = floors[floors.length-1].getInfos( this.user.chara, floors[floors.length-1], selects );
+    const floorW = floors[floors.length-1].getInfos( this.user.chara, floors[floors.length-1], selects ) as any ; 
 
-    this.infos = selects.map( row => {
-        return {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
-    }) ;
+    const charas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])
+      .sort( (a,b) => {
+        if ( b.datas.state === "defense" ){
+          return 1 ;
+        }else{
+          return -1 ;
+        }
+
+      }).sort( (a,b) => {
+
+        if ( b.datas._id === this.user.chara._id ){
+          return 1 ;
+        }else{
+          return -1 ;
+        }
+      }).map( row => {
+          row instanceof WorldChara ;
+          const nobj = {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
+          nobj['x'] = row.x ;
+          nobj['y'] = row.y ;
+          nobj['img'] = row.img ;
+          nobj['name'] = row.getName();      
+          return nobj ;
+      });
 
 
-
-    this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])
-    .sort( (a,b) => {
-
-      if ( b.datas.state === "defense" ){
-        return 1 ;
-      }else{
-        return -1 ;
-      }
-
-    }).sort( (a,b) => {
-
-      if ( b.datas._id === this.user.chara._id ){
-        return 1 ;
-      }else{
-        return -1 ;
-      }
-
-    }).map( row => {
-      row instanceof WorldChara ;
-      const nobj = {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
-      nobj['x'] = row.x ;
-      nobj['y'] = row.y ;
-      nobj['img'] = row.img ;
-      nobj['name'] = row.getName();      
-      return nobj ;
+    const monsters = (selects.filter(row => row instanceof WorldMonster )as WorldMonster[]).map( row => {
+        const interactions = this.user.getActionsOn(this.targetFloor,row);
+        const nobj = {...row, interactions : interactions};
+        nobj['x'] = row.x ;
+        nobj['y'] = row.y ;
+        nobj['img'] = row.img ;
+        nobj['name'] = row.getName()
+        return nobj ;
     });
 
-    this.targetMonsters = (selects.filter(row => row instanceof WorldMonster )as WorldMonster[]).map( row => {
-      const interactions = this.user.getActionsOn(this.targetFloor,row);
-      const nobj = {...row, interactions : interactions};
-      nobj['x'] = row.x ;
-      nobj['y'] = row.y ;
-      nobj['img'] = row.img ;
-      nobj['name'] = row.getName()
-      return nobj ;
-    }) ;
 
-    if ( this.targetFloor instanceof WorldBuilding ){
-      this.targetFloor.updateInfoCaseFromContext(this.user.chara, this.targetCharas, this.targetFloor['interactions']);
-    }
+    
+    console.log('update selection', floorW, charas);
+
+    this.infos = [floorW, ...charas, ...monsters] ;
+
+    // this.targetCharas = (selects.filter(row => row instanceof WorldChara ) as WorldChara[])
+    // .sort( (a,b) => {
+
+    //   if ( b.datas.state === "defense" ){
+    //     return 1 ;
+    //   }else{
+    //     return -1 ;
+    //   }
+
+    // }).sort( (a,b) => {
+
+    //   if ( b.datas._id === this.user.chara._id ){
+    //     return 1 ;
+    //   }else{
+    //     return -1 ;
+    //   }
+
+    // }).map( row => {
+    //   row instanceof WorldChara ;
+    //   const nobj = {...row, ...row.getInfos( this.user.chara, this.targetFloor, selects ) };
+    //   nobj['x'] = row.x ;
+    //   nobj['y'] = row.y ;
+    //   nobj['img'] = row.img ;
+    //   nobj['name'] = row.getName();      
+    //   return nobj ;
+    // });
+
+    // this.targetMonsters = (selects.filter(row => row instanceof WorldMonster )as WorldMonster[]).map( row => {
+    //   const interactions = this.user.getActionsOn(this.targetFloor,row);
+    //   const nobj = {...row, interactions : interactions};
+    //   nobj['x'] = row.x ;
+    //   nobj['y'] = row.y ;
+    //   nobj['img'] = row.img ;
+    //   nobj['name'] = row.getName()
+    //   return nobj ;
+    // }) ;
+
+    // if ( this.targetFloor instanceof WorldBuilding ){
+    //   this.targetFloor.updateInfoCaseFromContext(this.user.chara, this.targetCharas, this.targetFloor['interactions']);
+    // }
 
 
   }
@@ -216,11 +263,10 @@ export class InfoCaseComponent implements OnInit {
 
   }
 
-  itemSelected = null ;
-  lastClick = Date.now();
-  mouseDownItem(itemHtml, itemObj){
 
-    const infoContainer = document.querySelector('#infos-container');
+  mouseDownItem(infoRef, itemHtml, itemObj){
+
+      console.log('infoRef', infoRef );
 
     this.lastClick = Date.now();
     itemHtml['datas'] = {
@@ -237,7 +283,11 @@ export class InfoCaseComponent implements OnInit {
 
 
     if ( !this.itemSelected ){
-      this.itemSelected = itemHtml ;
+      this.itemSelected = {
+        from : infoRef,
+        itemHtml : itemHtml,
+        lastClick : Date.now()
+      }
     }
 
   }

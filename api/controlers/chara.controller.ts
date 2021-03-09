@@ -229,20 +229,23 @@ export const userItemReq = (req:Request, res : Response) :void => {
 }
 export const userDropItemReq = (req:Request, res : Response) : void => {
 
+
+
     if ( 
         req.user.chara && 
-        req.body && req.body['target'] && 
+        req.body &&
+        req.body['target'] &&
+        req.body['from'] && 
         req.body['item']
-        ){         
+        ){      
+            
 
-            buildInstanceFromId(req.user.chara._id, charaM => {
-                buildInstanceFromId(req.body.target._id, targetM => {
+            buildInstanceFromId(req.body['from'], fromM => {
+                buildInstanceFromId(req.body.target, targetM => {
 
-                    console.log('target', req.body.target.type, targetM);
+                    if ( fromM && targetM ){
 
-                    if ( charaM && charaM instanceof CharaPattern ){
-
-                        charaM.dropItem(req.body.item, targetM, useRes => {
+                        fromM.dropItem(req.body.item, targetM, useRes => {
                             
                             res.status(200).send({itemUse : true});
                             

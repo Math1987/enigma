@@ -1298,71 +1298,7 @@ export class CharaPattern extends Pattern{
         }
 
     }
-    addOnInventory( item, callback ){
-        
-        const obj = this.obj.inventory.filter( row => row.name === item.name );
-        if ( obj.length <= 0 ){
 
-            addItemOnWorldInventory(this.obj._id, item).then( charaR => {
-
-                callback(charaR.value) ;
-            });
-
-        }else{
-            
-            const req = {$inc : {}}
-            req.$inc[`inventory.$[elem].number`] = item.number ;
-            const ops = {
-                arrayFilters : [
-                    {
-                        'elem.name' : item['name']
-                    }
-                ]
-            };
-            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
-                callback(newCharaRes.value) ;
-            });
-        }
-
-    }
-    dropItem(item, target, callback){
-
-        // const targetInstance = buildInstanceFromId(target._id);
-        console.log('dropping target', target);
-
-        const obj = this.obj.inventory.filter( row => row.name === item.name );
-        if ( obj.length > 0 ){
-
-            //destroyWorldItem(this.obj._id, item, newCharaRes => {
- 
-                const end = () => {
-
-                    updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                        {
-                            _id : this.obj._id,
-                            inventory : newCharaRes.value.inventory
-                        }
-                    ]);
-                    callback(true);
-
-                }
-
-                if ( target ){
-                    target.addOnInventory(item, itemRes => {
-                        end();
-                    });
-                }else{
-                    end();
-                }
-
-
-            //});
-
-        }else{
-            callback(true);
-        }
-
-    }
 
     addLevel(number):{level : number, xp?:number }{
 

@@ -89,6 +89,11 @@ export class WorldModel {
                 this[key] = obj[key];
             }
         }
+        for ( let key of Object.keys(obj) ){
+            if ( this.datas[key] ){
+                this.datas[key] = obj[key];
+            }
+        }
         return this ;
     }
     move(x : number, y : number ){

@@ -152,6 +152,7 @@ export class UserService {
       this.resurrectionEmitter.emit(obj);
     });
     this.socketChara.on('updateDatas', ( datas )=> {
+      console.log('update datas!', datas);
       datas.forEach(element => {
           if ( element['_id'] && this.chara['_id'] === element['_id'] ){
             this.user.chara = {...this.chara, ...element};
@@ -336,12 +337,16 @@ export class UserService {
     }
     //this.updateCharaValue('life', this.chara.life + 10 );
   }
-  dropObject(object, target){
-    console.log('droping obj', target);
-    this.http.post(`${environment.urlApi}/user/chara/dropItem`, {
+  dropObject(object, from, target){
+
+    const dropReq = {
       item : object,
-      target : target
-    }).subscribe(res => {
+      from : from._id,
+      target : target._id
+    }
+    console.log('dropReq', dropReq);
+
+    this.http.post(`${environment.urlApi}/user/chara/dropItem`, dropReq).subscribe(res => {
 
     });
   }

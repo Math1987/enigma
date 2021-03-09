@@ -198,44 +198,5 @@ export class WorldPattern extends Pattern{
         return Math.max(0,1-(Math.sqrt( Math.pow(x,2) + Math.pow(y,2))-50)/50) ;
     }
 
-    addOnInventory(item, callback){
-
-        console.log('adding on inventory', this.obj.name );
-
-        let inventory = [] ;
-
-        if ( this.obj.inventory ){
-            inventory = this.obj.inventory.filter( row => row.name === item.name );
-        }
-
-        
-        if ( inventory.length <= 0 ){
-
-            addItemOnWorldInventory(this.obj._id, item).then( charaR => {
-
-                console.log('addItemOnWorldInventoryRes', charaR);
-
-                callback(charaR.value) ;
-            });
-
-        }else{
-            
-            const req = {$inc : {}}
-            req.$inc[`inventory.$[elem].number`] = item.number ;
-            const ops = {
-                arrayFilters : [
-                    {
-                        'elem.name' : item['name']
-                    }
-                ]
-            };
-            findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
-                callback(newCharaRes.value) ;
-            });
-
-        }
-
-
-    }
 
 }

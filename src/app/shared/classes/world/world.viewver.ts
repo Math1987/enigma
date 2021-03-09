@@ -340,13 +340,15 @@ export class WorldViewer {
         datas.forEach( data => {
             this.stock.forEach( obj => {
 
-                if ( obj['_id'] && data['_id'] === obj['_id'] ){
-                    
-                    console.log('update', obj);
+                datas.forEach( dat => {
+                    if ( (obj['_id'] && dat['_id'] === obj['_id']) || 
+                    (obj['datas']['_id'] === dat['_id'])
+                    ){
 
-                    obj.update(data);
-
+                    obj.update(dat);
                 }
+
+                });
     
             });
         });

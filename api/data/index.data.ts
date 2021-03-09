@@ -23,7 +23,7 @@ export const initMongoDB = (callback: (res)=>void) => {
 
         database = client.db(Environment.mongodb.name);
 
-        updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS(database);
+        //updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS(database);
 
 
         const cusers = database.collection('users');

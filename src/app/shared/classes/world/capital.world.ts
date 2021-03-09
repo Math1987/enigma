@@ -154,7 +154,7 @@ export class WorldCapital extends WorldBuilding {
             if ( floor['datas']['mercenaries'] > 0 ){
               actions.push(
                 {
-                    name : `${this['datas']['mercenaries']}/20 attaquer mercenaire`,
+                    name : `${this['datas']['mercenaries']}/${this['datas']['mercenariesMax'] || 20} attaquer mercenaire`,
                     icon : "icon-attack",
                     action : "attackMercenari",
                     tooltip : `attaquer un mercenaire, coûte le nombre de mercenaires en vie. Coûte 1 action`

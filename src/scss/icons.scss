@@ -107,7 +107,12 @@
     padding:  0px ;
 
     &-life{
-        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 0) ;
+
+        background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * (-1)) ;
+
+        &-big{
+            background-position: calc( var(--icon-size) * 0) calc( var(--icon-size) * 0) ;
+        }
     }
 
 }

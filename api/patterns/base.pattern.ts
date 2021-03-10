@@ -470,14 +470,9 @@ export class Pattern {
 
     // }
 
-    addOnInventory(item, callback){
-
-
-        console.log('add inventory', this.obj['inventory']);
+    addOnInventory(caseObjs: [], item, callback){
 
         if ( !this.obj['inventory'] ){
-
-            console.log('world add item but doesnt got inventory');
 
             findOneAndUpdateWorldById(this.obj._id, {
 
@@ -487,18 +482,14 @@ export class Pattern {
 
             }).then( (resW) => {
 
-                console.log('create inventory in world');
                 addItemOnWorldInventory(this.obj._id, item).then( charaR => {
     
                     callback(charaR.value) ;
                 });
 
             }).catch( err => {
-                console.log('fail create inventory', err);
                 callback(false) ;
-
             });
-
 
 
         }else{
@@ -507,9 +498,9 @@ export class Pattern {
     
             console.log('desert inventory', inventory );
 
-            if ( inventory.length <= 0 ){
 
-                console.log('create inventory in world');
+            if ( this.obj.type !== "chara" || this.obj.inventory.length < 6 ){
+
                 addItemOnWorldInventory(this.obj._id, item).then( charaR => {
     
                     callback(charaR.value) ;
@@ -517,22 +508,52 @@ export class Pattern {
 
             }else{
 
-                console.log('increment inventory in world');
-                
-                const req = {$inc : {}}
-                req.$inc[`inventory.$[elem].number`] = item.number ;
-                const ops = {
-                    arrayFilters : [
-                        {
-                            'elem.name' : item['name']
-                        }
-                    ]
-                };
-                findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
-                    callback(newCharaRes.value) ;
-                });
+
+                const floor = caseObjs.filter( row => row['type'] === "floor" )  ;
+
+                if ( floor.length > 0 && floor[0]['_id'] && floor[0]['_id'] !== this.obj['_id'] ){
+                    buildInstanceFromId(floor[0]['_id'], floorInstance => {
+
+                        floorInstance.addOnInventory([], item, addR => {
+
+                            callback(addR);
+
+                        });
+
+                    });
+                }else{
+                    callback(false);
+                }
                 
             }
+
+
+            // if ( inventory.length <= 0 ){
+
+            //     console.log('create inventory in world');
+            //     addItemOnWorldInventory(this.obj._id, item).then( charaR => {
+    
+            //         callback(charaR.value) ;
+            //     });
+
+            // }else{
+
+            //     console.log('increment inventory in world');
+                
+            //     const req = {$inc : {}}
+            //     req.$inc[`inventory.$[elem].number`] = item.number ;
+            //     const ops = {
+            //         arrayFilters : [
+            //             {
+            //                 'elem.name' : item['name']
+            //             }
+            //         ]
+            //     };
+            //     findOneAndUpdateWorldById(this.obj._id, req, ops ).then( newCharaRes => {
+            //         callback(newCharaRes.value) ;
+            //     });
+                
+            // }
         }
 
 
@@ -541,14 +562,11 @@ export class Pattern {
 
     dropItem(item, target, callback){
 
-
-        target.addOnInventory(item, targetRes => {
+        target.addOnInventory([],item, targetRes => {
 
             if ( targetRes ){
                 destroyWorldItem(this.obj._id, item, newCharaRes => {
 
-
-                    
                     updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
                         {
                             _id : this.obj._id,
@@ -559,7 +577,6 @@ export class Pattern {
                             inventory : targetRes.inventory
                         }
                     ]);
-
 
                     callback(true);
                 });

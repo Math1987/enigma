@@ -23,6 +23,7 @@ export interface TreeI {
     _id? : string ;
     position : [number, number];
     type : "tree";
+    name : string ;
     life : number ;
     ownerID? : string ;
 

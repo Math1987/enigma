@@ -86,7 +86,7 @@ export class InfoCaseComponent implements OnInit {
 
     document.addEventListener('mouseup', event => {
 
-      if ( this.itemSelected.itemHtml && Date.now() - this.itemSelected.itemHtml.datas.time <= 500 ){
+      if ( this.itemSelected && this.itemSelected.itemHtml && Date.now() - this.itemSelected.itemHtml.datas.time <= 500 ){
 
         this.itemSelected.itemHtml.style.zIndex = "1" ;
         this.itemSelected.itemHtml.style.left = `${this.itemSelected.itemHtml.datas.position.x}`;

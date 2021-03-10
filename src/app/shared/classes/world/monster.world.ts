@@ -106,6 +106,7 @@ export class WorldMonster extends WorldModel {
             obj.y = y ;
             obj.mesh.rotation.x = Math.PI/2 ;
             obj.mesh.rotation.y = Math.PI*0.75 ;
+            obj.datas = params ;
             scene.add(obj.mesh);
             return obj ;
     
@@ -113,7 +114,10 @@ export class WorldMonster extends WorldModel {
         return null ;
 
     }
-
+    getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
+        const obj = {...this.datas};
+        return {...obj,...super.getInfos(userChara, floor, caseObjs)};
+    }
     getCharaInteractions( floor, chara : CharaI ){
 
         if ( 

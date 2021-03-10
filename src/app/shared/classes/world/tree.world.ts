@@ -1,6 +1,7 @@
 import { CharaI } from 'api/interfaces/chara.interface';
 import { resolve } from 'dns';
 import * as THREE from 'three' ;
+import { METADATAS } from '../../metadatas/metadatas';
 import { WorldBuilding } from './building.world';
 import { WorldFloor } from './floor.world';
 import { WorldModel } from "./model.world";
@@ -63,10 +64,17 @@ export class WorldTree extends WorldBuilding {
         }
         return 'arbre' ;
     }
+    getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
+        const obj = {...this.datas};
+        return {...obj,...super.getInfos(userChara, floor, caseObjs)};
+    }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
         if ( chara.position[0] === floor.x && chara.position[1] === floor.y ){
 
             const datas = [];
+            if ( chara.searches > 0 ){
+                datas.push(METADATAS.search);
+            }
             if ( chara.water < chara.waterMax ){
                 datas.push(                {
                     name : `puiser de l'eau`,
@@ -156,6 +164,7 @@ export class WorldTree extends WorldBuilding {
             obj.y = y ;
             obj.mesh.rotation.x = Math.PI/2 ;
             obj.mesh.rotation.y = Math.PI*0.75 ;
+            obj.datas = params ;
             scene.add(obj.mesh);
             return obj ;
     

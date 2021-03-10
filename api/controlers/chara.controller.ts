@@ -238,7 +238,6 @@ export const userDropItemReq = (req:Request, res : Response) : void => {
         req.body['from'] && 
         req.body['item']
         ){      
-            
 
             buildInstanceFromId(req.body['from'], fromM => {
                 buildInstanceFromId(req.body.target, targetM => {

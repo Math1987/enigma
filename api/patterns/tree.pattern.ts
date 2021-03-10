@@ -59,7 +59,7 @@ export class TreePattern extends BuildingPattern {
         const trees = [] ;
         arr.forEach( cc => {
             
-            if (cc.type === "desert" && Math.random() <= this.TREE_RATIO.desert ){
+            if (cc.name === "desert" && Math.random() <= this.TREE_RATIO.desert ){
 
                 trees.push({
                     position : cc.position,
@@ -86,6 +86,7 @@ export class TreePattern extends BuildingPattern {
 
             position : position,
             type : "tree",
+            name : "tree",
             life : life
 
         }]

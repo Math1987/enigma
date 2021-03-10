@@ -42,6 +42,7 @@ import {
     addItemOnWorldInventory,
     destroyWorldItem
 } from "../queries/world.queries";
+import { getMetadatas } from "../medatas";
 
 export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
 
@@ -158,6 +159,8 @@ export class CharaPattern extends Pattern{
 
     }
     static makeActionOnObjec(caseObjs : (CharaI | CaseI | MonsterI | BuildingI)[], user, targetID, action, callback ){
+
+
 
 
         buildInstanceFromDatas( user, charaFromPattern => {
@@ -308,6 +311,7 @@ export class CharaPattern extends Pattern{
     }
     makeAction(caseObjs : (CaseI|CharaI|MonsterI|BuildingI)[], actionType : string, target : Pattern, callback : CallableFunction ){
 
+
         switch ( actionType){
             case "heal" :
                 this.heal(target, callback);
@@ -316,7 +320,7 @@ export class CharaPattern extends Pattern{
                 this.attack(caseObjs, target, callback);
             break ;
             case "search" : 
-                this.search(target, callback);
+                this.search(caseObjs, target, callback);
                 break ;
             case "puiser de l'eau" : 
                 this.drawWater(target, callback);
@@ -1158,52 +1162,61 @@ export class CharaPattern extends Pattern{
 
     }
 
-    search(target : any, callback ){
+    search(caseObjs : [], target : any, callback ){
+
+        console.log('search on', target);
 
         if ( this.obj.searches > 0 ){
 
-            this.incrementValues({ searches : -1}, char1 => {
+            getMetadatas( METADATAS => {
 
-                if ( Math.random() <= 0.33 ){
+                this.incrementValues({ searches : -1}, char1 => {
 
-                    const foundObj = getRandomItemAdder('adders') ;
 
-                    addMessageOnChara(this.obj._id, `objet trouvé ${foundObj.name}` ).then( chM => {
+                    if ( Math.random() <= METADATAS.search[target.obj.name].random ){
 
-                        this.addOnInventory(foundObj, charaR => {
+                        const foundObj = getRandomItemAdder( METADATAS.search[target.obj.name].items ) ;
+                        console.log('obj found:', foundObj);
 
+                        addMessageOnChara(this.obj._id, `objet trouvé ${foundObj.name}` ).then( chM => {
+
+                            this.addOnInventory(caseObjs, foundObj, charaR => {
+
+                                updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                                    {
+                                        _id : this.obj._id,
+                                        searches : charaR.searches,
+                                        inventory : charaR.inventory,
+                                        messages : charaR.messages
+                                    }
+                                ]);
+
+                            });
+                        });
+
+                    }else{
+
+
+                        addMessageOnChara(this.obj._id, 'fouille infructueuse').then( charaR2 => {
+
+                            
                             updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
                                 {
                                     _id : this.obj._id,
-                                    searches : charaR.searches,
-                                    inventory : charaR.inventory,
-                                    messages : charaR.messages
+                                    searches : char1.searches,
+                                    messages : charaR2.value.messages
                                 }
                             ]);
 
                         });
-                    });
+                            
+                        callback(false);
+                    }
 
-                }else{
-
-
-                    addMessageOnChara(this.obj._id, 'fouille infructueuse').then( charaR2 => {
-
-                        
-                        updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
-                            {
-                                _id : this.obj._id,
-                                searches : char1.searches,
-                                messages : charaR2.value.messages
-                            }
-                        ]);
-
-                    });
-                        
-                    callback(false);
-                }
+                });
 
             });
+
 
         }else{
             callback(false);

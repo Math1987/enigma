@@ -21,9 +21,15 @@ export const METADATAS = {
     },
     lifePotion : {
         name : "Potion de vie",
-        icon : 'icon-potion',
+        icon : 'icon-potion icon-potion-life',
         action : "useItem",
-        tooltip : `Potion - Rend 10PV à l'utilisateur` 
+        tooltip : `Potion de vie - Rend 10PV à l'utilisateur` 
+    },
+    bigLifePotion : {
+        name : "Grosse potion de vie",
+        icon : 'icon-potion icon-potion-life-big',
+        action : "useItem",
+        tooltip : `Grosse potion de vie - Rend 20PV à l'utilisateur` 
     }
 
 

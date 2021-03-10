@@ -51,7 +51,7 @@
                     {{action.name}}
                     </div>
                 </div>
-                <div *ngIf="info.state" class="states">
+                <div *ngIf="info.states" class="states">
                     <div *ngFor="let state of info.states | keyvalue"> 
                         <div class="state" [ngClass]="state.value.icon"></div>
                     </div>

@@ -152,13 +152,13 @@ export class UserService {
       this.resurrectionEmitter.emit(obj);
     });
     this.socketChara.on('updateDatas', ( datas )=> {
-      console.log('update datas!', datas);
       datas.forEach(element => {
           if ( element['_id'] && this.chara['_id'] === element['_id'] ){
             this.user.chara = {...this.chara, ...element};
             this.updateUser(this.user);
           }
       });
+      console.log('update datas!', datas);
       this.updatesEmitter.emit(datas);
     });
     this.socketChara.on('removeObj', ( datas )=> {

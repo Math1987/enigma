@@ -58,6 +58,7 @@ export const createUserReq = (req : Request, res : Response ):void => {
  */
 export const readUserReq = (req: Request, res : Response ) => {
 
+    console.log('readUser', req.user);
     if ( req.user ){
         res.status(200).send(req.user);
     }else{
@@ -71,8 +72,13 @@ export const readUserReq = (req: Request, res : Response ) => {
  */
 export const loginUserReq = (req : Request, res : Response ) => {
 
+    console.log('loginUser', req.body);
+
+
     if ( req && req.body && req.body.email && req.body.password ){
         findUserDatasByEmail( req.body.email ).then( datas => {
+            console.log(datas);
+
             if ( datas ){
                 bcrypt.compare(req.body.password, datas.password, (errCrypt, resultP) => {
                     if ( resultP ){

@@ -1,6 +1,6 @@
 import { TreeI } from "./../interfaces/building.interface";
-import { deleteBuildingData, findBuildingsQuery, incBuildingValuesData, insertBuildingsDatas, updateBuildingById } from "./../queries/building.queries";
-import { findRandomPlaceOn, findWorld } from "./../queries/world.queries";
+import { deleteBuildingData } from "../queries/solid.queries";
+import { deleteOnWorld, findRandomPlaceOn, findWorld, incWorldValues, insertOnWorld, updateWorldValues } from "./../queries/world.queries";
 import { updateSocketsValues } from "./base.pattern";
 import { BuildingPattern } from "./building.pattern";
 import { WorldPattern } from "./world.pattern";
@@ -15,13 +15,13 @@ export class TreePattern extends BuildingPattern {
 
         console.log('pass trees');
 
-        findBuildingsQuery({type : "tree"}).then( cursorTrees => {
+        findWorld({ solid : true, type : "tree"}).then( cursorTrees => {
 
             cursorTrees.forEach( building  => {
                 
                 let tree = building as TreeI ;
                 let datas = { life : Math.min(tree.life + 10, 100)} ;
-                updateBuildingById(tree._id, datas);
+                updateWorldValues(tree._id, datas);
 
             });
 
@@ -56,15 +56,17 @@ export class TreePattern extends BuildingPattern {
     }
     static createRandomTreesOnArray( arr, callback : (trees : TreeI[]) =>void ){
 
-        const trees = [] ;
+        const trees : TreeI[] = [] ;
         arr.forEach( cc => {
             
             if (cc.name === "desert" && Math.random() <= this.TREE_RATIO.desert ){
 
                 trees.push({
+                    solid : true,
                     position : cc.position,
                     life : 100,
-                    type : "tree"
+                    type : "tree",
+                    name : "tree"
                 });
 
             }
@@ -72,7 +74,7 @@ export class TreePattern extends BuildingPattern {
 
         });
         if ( trees.length > 0 ){
-            insertBuildingsDatas(trees).then( insertRes => {
+            insertOnWorld(trees).then( insertRes => {
                 callback(insertRes.ops);
             });
         }else{
@@ -84,6 +86,7 @@ export class TreePattern extends BuildingPattern {
 
         const trees : TreeI[] = [{
 
+            solid : true,
             position : position,
             type : "tree",
             name : "tree",
@@ -91,7 +94,7 @@ export class TreePattern extends BuildingPattern {
 
         }]
 
-        insertBuildingsDatas( trees);
+        insertOnWorld( trees);
 
         console.log('create tree', trees[0]);
 
@@ -105,7 +108,7 @@ export class TreePattern extends BuildingPattern {
     }
     incrementValues(values, callback:CallableFunction ){
 
-        incBuildingValuesData( this.obj._id, values).then( res => {
+        incWorldValues( this.obj._id, values).then( res => {
             if ( res.ok ){
                 if ( res.value['life'] <= 0 ){
                     this.die( res => {
@@ -126,7 +129,7 @@ export class TreePattern extends BuildingPattern {
 
     }
     die(callback){
-        deleteBuildingData(this.obj._id).then( () => {
+        deleteOnWorld(this.obj._id).then( () => {
             super.die(callback);
         });
 

@@ -46,6 +46,7 @@ export class WorldViewer {
             // "neutral" : new WorldFloor('neutral'),
             "chara" : new WorldChara(),
             "monster" : new WorldMonster(),
+            
             "tree" : new WorldTree(),
             "capital" : new WorldCapital()
         }
@@ -337,21 +338,22 @@ export class WorldViewer {
     }
     updatesObjs( datas : any[] ){
 
-        datas.forEach( data => {
-            this.stock.forEach( obj => {
+        console.log('updateObjs', datas);
 
-                datas.forEach( dat => {
-                    if ( (obj['_id'] && dat['_id'] === obj['_id']) || 
-                    (obj['datas']['_id'] === dat['_id'])
-                    ){
+        this.stock.forEach( obj => {
 
-                    obj.update(dat);
-                }
+            datas.forEach( dat => {
+                if ( (obj['_id'] && dat['_id'] === obj['_id']) || 
+                (obj['datas']['_id'] === dat['_id'])
+                ){
 
-                });
-    
+                obj.update(dat);
+            }
+
             });
+
         });
+
 
         this.selectByPosition(this.selectedP.x, this.selectedP.y);
 

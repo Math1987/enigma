@@ -482,8 +482,9 @@ export class Pattern {
 
             }).then( (resW) => {
 
+
                 addItemOnWorldInventory(this.obj._id, item).then( charaR => {
-    
+
                     callback(charaR.value) ;
                 });
 
@@ -564,19 +565,25 @@ export class Pattern {
 
         target.addOnInventory([],item, targetRes => {
 
+
             if ( targetRes ){
                 destroyWorldItem(this.obj._id, item, newCharaRes => {
 
-                    updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, [
+                    const updates = [
                         {
                             _id : this.obj._id,
                             inventory : newCharaRes.value.inventory
                         },
                         {
-                            _id : target.obj._id,
+                            _id : targetRes._id,
                             inventory : targetRes.inventory
                         }
-                    ]);
+                    ]
+
+                    console.log('adding on inventory:');
+                    console.log(updates);
+
+                    updateSocketsValues({x : this.obj.position[0], y: this.obj.position[1]}, updates);
 
                     callback(true);
                 });

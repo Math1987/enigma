@@ -115,9 +115,6 @@ const updateDatasSystem2_FUSION_WORLD_BUILDINGS = (database : Db) => {
     world.indexes().then( indexes => {
 
         let gotBuildingsOnWorld = indexes.reduce( (acc,row) =>  {
-
-            console.log('index', row);
-
             if ( row.name === 'position.0_1_position.1_1_solid_1' ){
                 acc = true ;
             }
@@ -125,54 +122,34 @@ const updateDatasSystem2_FUSION_WORLD_BUILDINGS = (database : Db) => {
 
         }, false);
 
-        console.log('got building index', gotBuildingsOnWorld );
-
         if ( !gotBuildingsOnWorld ){
 
+            console.log('building a new index (for solids objects in world)');
 
             world.createIndex(
                 {"position.0" : 1, "position.1":1, "solid" : 1}, {
                 unique : true,
                 partialFilterExpression: { solid : { $eq : true }}
                 }   
-            ).then( createIndexRes => {
-
-                console.log('gotBuildings ?', gotBuildingsOnWorld )            
+            ).then( createIndexRes => {         
 
                 const buildings = database.collection('buildings');
                 const newBuildings = [] ;
                 buildings.find().forEach( building => {
     
-                    let newBuilding = {...building}
-                    if ( building['type'] === "tree" ){
-                        newBuilding = {...newBuilding, name : "tree"} ;
-                    }else if ( building['type'] === "capital" ){
-                        newBuilding = {...newBuilding, name : "capital"} ;
-                    }
-                    newBuilding = {...newBuilding, type : "building", solid : true };
+                    let newBuilding = {...building};
+                    newBuilding = {...newBuilding, solid : true, name : building.type };
                     newBuildings.push(newBuilding);
-                    
     
                 }).then( endCheck => {
-    
-                    console.log('new buildings', newBuildings);
-    
+
                     world.insertMany( newBuildings, insertRes => {
-    
-                        console.log('buildings insered');
     
                     });
     
                 });
-
-
             });
-
-
         }
-
-
-
 
     });
 

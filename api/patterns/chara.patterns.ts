@@ -21,7 +21,7 @@ import {
 } from "./base.pattern";
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
-import { findBuildingOnPosition, incBuildingValuesData } from "./../queries/building.queries";
+import { findBuildingOnPosition } from "../queries/solid.queries";
 import { CharaI } from "../interfaces/chara.interface";
 import { CaseI } from "../interfaces/case.interface";
 import { BuildingI } from "../interfaces/building.interface";
@@ -40,7 +40,8 @@ import {
     findWorldInPositions,
     findOneAndUpdateWorldById,
     addItemOnWorldInventory,
-    destroyWorldItem
+    destroyWorldItem,
+    findSolidOnPosition
 } from "../queries/world.queries";
 import { getMetadatas } from "../medatas";
 
@@ -223,6 +224,7 @@ export class CharaPattern extends Pattern{
         return patt ;
     }
     pass(){
+        
         getCharaPattern( {}, charaModel => {
 
             const end = (building) => {
@@ -248,12 +250,14 @@ export class CharaPattern extends Pattern{
                     autoDammages = 0 ;
                     waterUse = 0 ;
                     foodUse = 0 ;
-                    this.obj.water = Math.min(this.obj.waterMax, this.obj.water + 10 );
-                    this.obj.food = Math.min(this.obj.foodMax, this.obj.food + 10 );
+                    // this.obj.water = Math.min(this.obj.waterMax, this.obj.water + 10 );
+                    // this.obj.food = Math.min(this.obj.foodMax, this.obj.food + 10 );
                     this.obj.life = Math.min(this.obj.lifeMax, this.obj.life + 10 );
 
-                }else{
+                    message = `pass life +${ Math.min(this.obj.lifeMax-this.obj.life, 10 )}`;
 
+
+                }else{
 
                     this.obj.water = Math.max(0, this.obj.water - 5 );
                     this.obj.food = Math.max(0, this.obj.food - 5 );
@@ -261,11 +265,18 @@ export class CharaPattern extends Pattern{
                         message += `, life -${autoDammages}`;
                         this.obj.life = Math.max(0, this.obj.life - autoDammages);
                     }
-
                 }
     
                 if ( !WorldPattern.isOnNeutral(this.obj.position[0], this.obj.position[1]) ){
-                    this.obj.xp = this.obj.xp + 1 ;
+                    
+                    let adder = this.addLevel(1/5);
+                    this.obj.level += adder ;
+                    message += ' xp +1' ;
+                    if ( adder['xp'] ){
+                        this.obj.xp += adder['xp'] ;
+                        message += ' levelUp' ;
+                    }
+
                 }else if ( WorldPattern.isOnDeepDesert(this.obj.position[0], this.obj.position[1])){
                     this.obj.life = Math.max(this.obj.life-10,0 );
                 }
@@ -274,11 +285,20 @@ export class CharaPattern extends Pattern{
         
                 if ( this.obj.life <= 0 ){
     
-                    message += `...death` ;
+                    message += ` death` ;
     
                     addMessageOnChara( this.obj._id, message);
     
-                    this.die( res => {});
+                    this.die( res => {
+
+                        updateWorldValues(this.obj._id, {
+                            actions : charaModel.actions,
+                            state : this.obj.state,
+                            moves : charaModel.moves,
+                            searches : charaModel.searches
+                        });
+
+                    });
     
                 }else{
     
@@ -294,13 +314,14 @@ export class CharaPattern extends Pattern{
                         moves : charaModel.moves,
                         searches : charaModel.searches
                     });
+                    
                 }
 
 
             }
 
 
-            findBuildingOnPosition( this.obj.position).then(building => {
+            findSolidOnPosition( this.obj.position).then(building => {
 
                 end(building);
 
@@ -916,7 +937,7 @@ export class CharaPattern extends Pattern{
 
                     addMessageOnChara( this.obj._id, message ).then( chara2 => {
 
-                        incBuildingValuesData( target.obj._id, incBuilding).then( capitalRes => {
+                        incWorldValues( target.obj._id, incBuilding).then( capitalRes => {
 
 
                             let updt = {
@@ -952,7 +973,7 @@ export class CharaPattern extends Pattern{
 
             this.incrementValues({ gold : -20}, charaRes => {
 
-                incBuildingValuesData( target.obj._id, { mercenaries : +1} ).then ( capRes => {
+                incWorldValues( target.obj._id, { mercenaries : +1} ).then ( capRes => {
 
                     updateSocketsValues({
                         x : target.obj.position[0],
@@ -980,9 +1001,9 @@ export class CharaPattern extends Pattern{
     attackMercenari( target : CapitalPattern, callback ){
 
         if ( this.obj.actions > 0 && target.obj.mercenaries > 0 ){
-            incBuildingValuesData(target.obj._id, { mercenaries : -1}).then( targetRes => {
+            incWorldValues(target.obj._id, { mercenaries : -1}).then( targetRes => {
 
-                if ( this.obj.life <= target.obj.mercenaries*3 ){
+                if ( this.obj.life <= target.obj.mercenaries ){
                     this.die( dieRes => {
                      
                         addMessageOnChara( 
@@ -1009,7 +1030,7 @@ export class CharaPattern extends Pattern{
 
                 }else{
 
-                    this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries*3 }, charaRes => {
+                    this.incrementValues({ 'actions' : -1, 'life' : - target.obj.mercenaries }, charaRes => {
 
                         addMessageOnChara( this.obj._id, `attack ${target.obj.clan} capital -1 mercenaire life -${target.obj.mercenaries+1}`).then( charaF => {
 

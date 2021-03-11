@@ -56,6 +56,7 @@ export class WorldPattern extends Pattern{
 
                 insertOnWorld(addCases.map( row => {
                     return { 
+
                         position : [row['x'], row['y']],
                         type : "floor",
                         name : WorldPattern.getFloorName(row['x'], row['y'])}

@@ -27,7 +27,6 @@ export class PatternHandler {
 
     static init = ():void => {
 
-        console.log('init patterns');
 
         PATTERNS.world = new WorldPattern();
         PATTERNS.floor = new WorldPattern();
@@ -35,9 +34,6 @@ export class PatternHandler {
         PATTERNS.monster = new MonsterPattern();
         PATTERNS.capital = new CapitalPattern();
         PATTERNS.tree = new TreePattern();
-
-        console.log('init done', PATTERNS);
-
 
         CapitalPattern.init();
         MonsterPattern.init();

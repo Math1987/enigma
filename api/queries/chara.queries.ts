@@ -10,6 +10,7 @@ const getCollection = () => {
 export async function findCharaDatasByUserID( _id:any ):Promise<CharaI>{
     const collection = getCollection();
     return await collection.findOne({ 
+        type : "chara",
         user : convertId(_id)
     }) ;
 }

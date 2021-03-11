@@ -1,8 +1,8 @@
 
 import { Pattern } from "./base.pattern";
 import { BuildingI, CapitalI } from "./../interfaces/building.interface";
-import { findBuildingsOnPositions, incBuildingValuesData, insertBuildingsDatas } from "./../queries/building.queries";
 import { CharaPattern } from "./chara.patterns";
+import { findWorldInPositions, findWorldOnPosition, incWorldValues } from "../queries/world.queries";
 
 
 export class BuildingPattern extends Pattern {
@@ -11,8 +11,8 @@ export class BuildingPattern extends Pattern {
     
     static getBuildingsOnArray( array : {x : number, y : number}[], callback : (buildings : BuildingI[])=>void ){
 
-        findBuildingsOnPositions(array, buildings => {
-            callback(buildings);
+        findWorldInPositions( {solid : true},array, buildings => {
+            callback(buildings as BuildingI[]);
         });
 
     };
@@ -23,7 +23,7 @@ export class BuildingPattern extends Pattern {
 
     incrementValues( values, callback){
 
-        incBuildingValuesData(this.obj._id, values).then( res => {
+        incWorldValues(this.obj._id, values).then( res => {
             callback(res.value);
         }).catch( err => {
             callback(null);

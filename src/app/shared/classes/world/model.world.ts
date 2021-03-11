@@ -84,6 +84,8 @@ export class WorldModel {
     }
 
     update(obj : any){
+
+
         for ( let key of Object.keys(obj) ){
             if ( this[key] ){
                 this[key] = obj[key];
@@ -94,6 +96,10 @@ export class WorldModel {
                 this.datas[key] = obj[key];
             }
         }
+        if ( !this.datas['inventory'] && obj['inventory'] ){
+            this.datas['inventory'] = obj['inventory'] ;
+        }
+        
         return this ;
     }
     move(x : number, y : number ){

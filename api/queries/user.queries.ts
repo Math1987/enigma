@@ -1,10 +1,8 @@
 import { UserI } from "../interfaces/user.interface";
 import { convertCharaForFrontend } from "../patterns/chara.patterns";
 import { findCharaDatasByUserID } from "./chara.queries";
-import { Cursor, FindAndModifyWriteOpResultObject, ObjectId } from "mongodb";
-import { CharaI } from "../interfaces/chara.interface";
 import { database, convertId } from "./../data/index.data";
-import { findBuildingQuery } from "./building.queries";
+
 
 
 export function createUserDatas( datas : UserI, callback? :  (user : UserI) => void ):void{
@@ -43,18 +41,18 @@ export const readFullUserById = (_id : string, callback : (user:UserI)=>void ):v
 
                 user['chara'] = convertCharaForFrontend(chara) ;
 
-                findBuildingQuery({type : "capital", clan : chara['clan']}).then(capital => {
+                // findWorld({ solid : true, type : "capital", clan : chara['clan']}).then(capital => {
 
-                    if ( capital ){
-                        user['chara']['capital'] = capital ;
-                    }   
+                //     if ( capital ){
+                //         user['chara']['capital'] = capital ;
+                //     }   
                     callback(user);
 
-                }).catch( err => {
+                // }).catch( err => {
 
-                    callback(user);
+                //     callback(user);
 
-                });
+                // });
 
 
             }else{

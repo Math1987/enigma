@@ -1,23 +1,37 @@
 import { CharaI } from "../interfaces/chara.interface";
 import { query } from "express";
-import { Cursor, FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
+import { Cursor, DeleteWriteOpResultObject, FindAndModifyWriteOpResultObject, InsertWriteOpResult } from "mongodb";
 import { WorldI } from "../interfaces/world.interface";
 import { database, convertId } from "./../data/index.data";
+import { BuildingI } from "api/interfaces/building.interface";
 
 const getCollection = () => {
     return database.collection('world');
 }
 
-export async function insertOnWorld( array : WorldI[]):Promise<InsertWriteOpResult<any>>{
+export async function insertOnWorld( array : (WorldI|BuildingI|CharaI)[]):Promise<InsertWriteOpResult<any>>{
     const collection = database.collection('world');
     console.log('insering world', array);
     return await collection.insertMany(array);
 }
-export async function findWorld(query?: any):Promise<Cursor<WorldI | CharaI>>{
+export const createOnWorld = function( datas, callback: (chara:CharaI | WorldI | BuildingI) => void ):void{
+    const ccharas = getCollection();
+    ccharas.insertOne(datas, (err, res) => {
+        if (err){
+            callback(null);
+        }else {
+            callback(res.ops[0]);
+        }
+    }) ;
+}
+
+
+
+export async function findWorld(query?: any):Promise<Cursor<WorldI | CharaI | BuildingI>>{
     const collection = database.collection('world');
     return await collection.find(query);
 }
-export async function findOneOnWorld(query?: any):Promise<Cursor<WorldI | CharaI>>{
+export async function findOneOnWorld(query?: any):Promise<Cursor<WorldI | CharaI | BuildingI >>{
     const collection = database.collection('world');
     return await collection.findOne(query);
 }
@@ -43,7 +57,7 @@ export async function findWorldOnPosition( query : any, x : number, y : number, 
         }, callback );
 
 }
-export const findWorldInPositions = ( query : any, array : {x : number, y : number}[], callback: (charas: (CharaI|WorldI)[])=>void ) => {
+export const findWorldInPositions = ( query : any, array : {x : number, y : number}[], callback: (charas: (CharaI|WorldI|BuildingI)[])=>void ) => {
     
 
     const charas = [] ;
@@ -73,17 +87,26 @@ export const findWorldInPositions = ( query : any, array : {x : number, y : numb
         });
     }
 }
-
-export const createOnWorld = function( datas, callback: (chara:CharaI | WorldI)=>void ):void{
-    const ccharas = getCollection();
-    ccharas.insertOne(datas, (err, res) => {
-        if (err){
-            callback(null);
-        }else {
-            callback(res.ops[0]);
-        }
-    }) ;
+export async function findSolidOnPosition( position : [number, number] ):Promise<BuildingI>{
+    const collection = getCollection();
+    return await collection.findOne( { 
+        "position" : position, 
+        solid : true
+    } );
 }
+/**
+ * FindRandomPlaceOn
+ * Give a random position of the world explored
+ * 
+ * @param query The type of boxes in which you want a position
+ * (for exemple {type: "desert"}, or {type:"deepdesert"})
+ */
+ export async function findRandomPlaceOn(query):Promise<Cursor<WorldI>>{
+    const collection = database.collection('world');
+    const number = await collection.find(query).count() ;
+    return await collection.find(query).limit(1).skip( Math.floor(Math.random()*number));
+}
+
 
 export async function incWorldValues( _id : string, datas ):Promise<FindAndModifyWriteOpResultObject<WorldI | CharaI>>{
     const ccharas = getCollection();
@@ -98,7 +121,7 @@ export async function incWorldValues( _id : string, datas ):Promise<FindAndModif
     }
     return await ccharas.findOneAndUpdate(filter, req, { returnOriginal : false} ) ;
 }
-export async function updateWorldValues(_id : string, datas ):Promise<FindAndModifyWriteOpResultObject<WorldI | CharaI>>{
+export async function updateWorldValues(_id : string, datas ):Promise<FindAndModifyWriteOpResultObject<WorldI | BuildingI | CharaI>>{
     const ccharas = getCollection();
     const filter = {
         _id : convertId(_id)
@@ -145,6 +168,8 @@ export async function addItemOnWorldInventory( _id : any,  item):Promise<FindAnd
         { returnOriginal : false});
 }
 
+
+
 export const destroyWorldItem = (_id, item, callback) => {
     const req = {
         $pull : {
@@ -155,15 +180,11 @@ export const destroyWorldItem = (_id, item, callback) => {
     };
     findOneAndUpdateWorldById(_id, req ).then( callback);
 }
-/**
- * FindRandomPlaceOn
- * Give a random position of the world explored
- * 
- * @param query The type of boxes in which you want a position
- * (for exemple {type: "desert"}, or {type:"deepdesert"})
- */
-export async function findRandomPlaceOn(query):Promise<Cursor<WorldI>>{
-    const collection = database.collection('world');
-    const number = await collection.find(query).count() ;
-    return await collection.find(query).limit(1).skip( Math.floor(Math.random()*number));
+export async function deleteOnWorld( _id : any) : Promise<DeleteWriteOpResultObject> {
+    
+    const collection = getCollection();
+    return await collection.deleteOne({ 
+        _id : convertId(_id)
+    });
+
 }

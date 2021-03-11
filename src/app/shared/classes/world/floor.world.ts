@@ -27,7 +27,15 @@ export class WorldFloor extends WorldModel{
     getName(){
         return this.datas['name'] ;
     }
+    update(obj : any){
+        console.log('update a floor', obj)
+        return super.update(obj) ;
+    }
+
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
+
+        console.log('getting infos for inventory', this.datas['inventory']);
+        
         const obj = {...this.datas};
         if ( obj['inventory'] ){
             obj['inventory'] = obj['inventory'].map( row => {

@@ -1,9 +1,9 @@
 
 import { Pattern } from "./base.pattern";
 import { BuildingI, CapitalI } from "./../interfaces/building.interface";
-import { findBuildingsOnPositions, incBuildingValuesData, insertBuildingsDatas } from "./../queries/building.queries";
 import { CharaPattern } from "./chara.patterns";
 import { BuildingPattern } from "./building.pattern";
+import { findOneOnWorld, incWorldValues, insertOnWorld } from "../queries/world.queries";
 
 console.log('init capital PATTERN');
 
@@ -11,48 +11,54 @@ console.log('init capital PATTERN');
 export class CapitalPattern extends BuildingPattern {
 
     static init(){
-        console.log('init capital');
 
         const startMercenary = 20 ;
         const merceneriesMax = 20 ;
         const dist = 20 ;
 
-        const capitales : CapitalI[] = [
-            {
-                solid : true,
-                position : [-dist,0],
-                type : "capital",
-                clan : "clan-1",
-                mercenaries : startMercenary,
-                mercenariesMax : merceneriesMax
-            },
-            {
-                solid : true,
-                position : [0,-dist],
-                type : "capital",
-                clan : "clan-2",
-                mercenaries : startMercenary,
-                mercenariesMax : merceneriesMax
-            },
-            {
-                solid : true,
-                position : [dist,0],
-                type : "capital",
-                clan : "clan-3",
-                mercenaries : startMercenary,
-                mercenariesMax : merceneriesMax
-            },
-            {
-                solid : true,
-                position : [0,dist],
-                type : "capital",
-                clan : "clan-4",
-                mercenaries : startMercenary,
-                mercenariesMax : merceneriesMax
+        const createCapitals = () => {
+            const capitales : CapitalI[] = [
+                {
+                    solid : true,
+                    position : [-dist,0],
+                    type : "capital",
+                    clan : "clan-1",
+                    mercenaries : startMercenary,
+                    mercenariesMax : merceneriesMax
+                },
+                {
+                    solid : true,
+                    position : [0,-dist],
+                    type : "capital",
+                    clan : "clan-2",
+                    mercenaries : startMercenary,
+                    mercenariesMax : merceneriesMax
+                },
+                {
+                    solid : true,
+                    position : [dist,0],
+                    type : "capital",
+                    clan : "clan-3",
+                    mercenaries : startMercenary,
+                    mercenariesMax : merceneriesMax
+                },
+                {
+                    solid : true,
+                    position : [0,dist],
+                    type : "capital",
+                    clan : "clan-4",
+                    mercenaries : startMercenary,
+                    mercenariesMax : merceneriesMax
+                }
+            ];
+    
+            insertOnWorld(capitales);
+        }
+        findOneOnWorld({solid:true,type:"capital"}).then( capitals => {
+            if ( !capitals ){
+                createCapitals();
             }
-        ];
-
-        insertBuildingsDatas(capitales);
+        });
 
     }
 
@@ -65,7 +71,7 @@ export class CapitalPattern extends BuildingPattern {
 
         const adder = Math.min(value,50 - this.obj.mercenariesMax );
 
-        incBuildingValuesData(this.obj._id,{
+        incWorldValues(this.obj._id,{
             mercenariesMax : adder
         }).then(capital => {
             callback( capital.value );
@@ -79,7 +85,7 @@ export class CapitalPattern extends BuildingPattern {
 
         let res = {} ;
         if ( this.obj.mercenariesMax > 10 ){
-            incBuildingValuesData(this.obj._id, {mercenariesMax: -1}).then( capitalRes => {
+            incWorldValues(this.obj._id, {mercenariesMax: -1}).then( capitalRes => {
                 callback({
                     gold : Math.ceil(Math.random()*9),
                     mercenariesMax : capitalRes.value['mercenariesMax']

@@ -19,6 +19,7 @@ export class CapitalPattern extends BuildingPattern {
 
         const capitales : CapitalI[] = [
             {
+                solid : true,
                 position : [-dist,0],
                 type : "capital",
                 clan : "clan-1",
@@ -26,18 +27,23 @@ export class CapitalPattern extends BuildingPattern {
                 mercenariesMax : merceneriesMax
             },
             {
+                solid : true,
                 position : [0,-dist],
                 type : "capital",
                 clan : "clan-2",
                 mercenaries : startMercenary,
                 mercenariesMax : merceneriesMax
-            },            {
+            },
+            {
+                solid : true,
                 position : [dist,0],
                 type : "capital",
                 clan : "clan-3",
                 mercenaries : startMercenary,
                 mercenariesMax : merceneriesMax
-            },            {
+            },
+            {
+                solid : true,
                 position : [0,dist],
                 type : "capital",
                 clan : "clan-4",

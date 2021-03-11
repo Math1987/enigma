@@ -23,7 +23,10 @@ export const initMongoDB = (callback: (res)=>void) => {
 
         database = client.db(Environment.mongodb.name);
 
-        //updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS(database);
+        //updateDatasSystem1_FUSION_WORLD_CHARAS(database);
+
+        updateDatasSystem2_FUSION_WORLD_BUILDINGS(database);
+
 
 
         const cusers = database.collection('users');
@@ -80,7 +83,7 @@ const updateDataSystem = (database:Db) => {
     });
 
 }
-const updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS = ( database : Db) => {
+const updateDatasSystem1_FUSION_WORLD_CHARAS = ( database : Db) => {
 
     const world = database.collection('world');
     world.dropIndex("position.0_1_position.1_1").finally( ()=> {
@@ -103,6 +106,76 @@ const updateDatasSystem1_FUSION_WORLD_CHARAS_BUILDINGS_MONSTERS = ( database : D
 
     });
     // world.insertMany( )
+}
+const updateDatasSystem2_FUSION_WORLD_BUILDINGS = (database : Db) => {
+
+
+    const world = database.collection('world');
+
+    world.indexes().then( indexes => {
+
+        let gotBuildingsOnWorld = indexes.reduce( (acc,row) =>  {
+
+            console.log('index', row);
+
+            if ( row.name === 'position.0_1_position.1_1_solid_1' ){
+                acc = true ;
+            }
+            return acc ;
+
+        }, false);
+
+        console.log('got building index', gotBuildingsOnWorld );
+
+        if ( !gotBuildingsOnWorld ){
+
+
+            world.createIndex(
+                {"position.0" : 1, "position.1":1, "solid" : 1}, {
+                unique : true,
+                partialFilterExpression: { solid : { $eq : true }}
+                }   
+            ).then( createIndexRes => {
+
+                console.log('gotBuildings ?', gotBuildingsOnWorld )            
+
+                const buildings = database.collection('buildings');
+                const newBuildings = [] ;
+                buildings.find().forEach( building => {
+    
+                    let newBuilding = {...building}
+                    if ( building['type'] === "tree" ){
+                        newBuilding = {...newBuilding, name : "tree"} ;
+                    }else if ( building['type'] === "capital" ){
+                        newBuilding = {...newBuilding, name : "capital"} ;
+                    }
+                    newBuilding = {...newBuilding, type : "building", solid : true };
+                    newBuildings.push(newBuilding);
+                    
+    
+                }).then( endCheck => {
+    
+                    console.log('new buildings', newBuildings);
+    
+                    world.insertMany( newBuildings, insertRes => {
+    
+                        console.log('buildings insered');
+    
+                    });
+    
+                });
+
+
+            });
+
+
+        }
+
+
+
+
+    });
+
 }
 
 export const convertId = (_id:any):ObjectId => {

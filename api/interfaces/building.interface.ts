@@ -1,6 +1,7 @@
 export interface BuildingI {
 
     _id? : string ;
+    solid : true ;
     position : [number, number];
     type : string;
 
@@ -9,6 +10,7 @@ export interface BuildingI {
 export interface CapitalI {
 
     _id? : string ;
+    solid : true ;
     position : [number, number];
     type : "capital";
     clan : string ;
@@ -21,6 +23,7 @@ export interface CapitalI {
 export interface TreeI {
 
     _id? : string ;
+    solid : true ;
     position : [number, number];
     type : "tree";
     name : string ;

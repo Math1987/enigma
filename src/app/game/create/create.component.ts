@@ -11,7 +11,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class CreateComponent implements OnInit {
 
   createFG : FormGroup = new FormGroup({
-    name : new FormControl('', Validators.required),
+    name : new FormControl('', [Validators.required, Validators.maxLength(32)]),
     sexe : new FormControl('masculin'),
     race : new FormControl('human'),
     religion : new FormControl('alzure'),

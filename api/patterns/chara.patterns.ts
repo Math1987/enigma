@@ -21,7 +21,6 @@ import {
 } from "./base.pattern";
 import { CapitalPattern } from "./capital.pattern";
 import { WorldPattern } from "./world.pattern";
-import { findBuildingOnPosition } from "../queries/solid.queries";
 import { CharaI } from "../interfaces/chara.interface";
 import { CaseI } from "../interfaces/case.interface";
 import { BuildingI } from "../interfaces/building.interface";
@@ -79,12 +78,12 @@ export const getCharaPattern = ( chara : any, callback : CallableFunction) => {
         faithMax : 40,
         gold : 0,
         
-        defense : 5,
-        attack : 5,
-        hunter : 5,
-        dowser : 5,
-        lumberjack : 5,
-        priest : 5,
+        defense : 10,
+        attack : 10,
+        hunter : 10,
+        dowser : 10,
+        lumberjack : 10,
+        priest : 10,
 
         state : "",
         

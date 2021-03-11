@@ -25,7 +25,7 @@ export const initMongoDB = (callback: (res)=>void) => {
 
         //updateDatasSystem1_FUSION_WORLD_CHARAS(database);
 
-        updateDatasSystem2_FUSION_WORLD_BUILDINGS(database);
+        //updateDatasSystem2_FUSION_WORLD_BUILDINGS(database);
 
 
 

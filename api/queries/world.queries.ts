@@ -49,12 +49,13 @@ export async function findWorldNear( query : any, x: number, y : number, rayon :
         y : { $lte : (y+rayon), $gte : (y-rayon) }
     });
 }
-export async function findWorldOnPosition( query : any, x : number, y : number, callback):Promise<Cursor<CharaI>>{
+export async function findWorldOnPosition( query : any, x : number, y : number):Promise<Cursor<CharaI>>{
  
     const collection = getCollection();
     return await collection.find({
+        ...query,
         position : [x,y]
-        }, callback );
+        } );
 
 }
 export const findWorldInPositions = ( query : any, array : {x : number, y : number}[], callback: (charas: (CharaI|WorldI|BuildingI)[])=>void ) => {
@@ -160,8 +161,7 @@ export async function addItemOnWorldInventory( _id : any,  item):Promise<FindAnd
         }, {
             $push : {
                 inventory : {
-                    $each : [item],
-                    $slice : 6
+                    $each : [item]
                 }
             }
         }, 
@@ -170,15 +170,27 @@ export async function addItemOnWorldInventory( _id : any,  item):Promise<FindAnd
 
 
 
-export const destroyWorldItem = (_id, item, callback) => {
-    const req = {
-        $pull : {
-            inventory : {
-                name : item.name
-            }
+export const destroyWorldItem = (obj, item, callback) => {
+
+    console.log('destroy item', item.name );
+
+    if( !obj['inventory'] ){
+        obj = {...obj, inventory : []};
+    }
+
+    const newInventory = obj['inventory']  ;
+    for ( let i = 0 ; i < newInventory.length ; i ++ ){
+        if ( newInventory[i].name === item.name ){
+            newInventory.splice(i,1);
+            break ;
         }
+    }
+    const req = {
+        $set : {
+            inventory : newInventory
+        },
     };
-    findOneAndUpdateWorldById(_id, req ).then( callback);
+    findOneAndUpdateWorldById(obj._id, req ).then( callback);
 }
 export async function deleteOnWorld( _id : any) : Promise<DeleteWriteOpResultObject> {
     

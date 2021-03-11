@@ -22,6 +22,7 @@ import { BuildingI } from "../interfaces/building.interface";
 import { MonsterI } from "../interfaces/monster.interface";
 import { CaseI } from "../interfaces/case.interface";
 import { addItemOnWorldInventory, destroyWorldItem, findOneAndUpdateWorldById } from "../queries/world.queries";
+import { WorldI } from "api/interfaces/world.interface";
 
 export const PATTERNS : { [name : string]: Pattern} = {} ;
 export const SOCKETS : Socket[] = [] ;
@@ -470,7 +471,7 @@ export class Pattern {
 
     // }
 
-    addOnInventory(caseObjs: [], item, callback){
+    addOnInventory(caseObjs: (WorldI|BuildingI|CharaI)[], item, callback){
 
         if ( !this.obj['inventory'] ){
 
@@ -514,6 +515,9 @@ export class Pattern {
 
                 if ( floor.length > 0 && floor[0]['_id'] && floor[0]['_id'] !== this.obj['_id'] ){
                     buildInstanceFromId(floor[0]['_id'], floorInstance => {
+
+                        console.log('need to drop item on floor', floorInstance );
+
 
                         floorInstance.addOnInventory([], item, addR => {
 
@@ -567,7 +571,7 @@ export class Pattern {
 
 
             if ( targetRes ){
-                destroyWorldItem(this.obj._id, item, newCharaRes => {
+                destroyWorldItem(this.obj, item, newCharaRes => {
 
                     const updates = [
                         {

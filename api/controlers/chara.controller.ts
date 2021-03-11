@@ -167,7 +167,7 @@ export const actionCharaReq = (req: Request, res : Response ):void => {
         req.body['action'] 
         ){
 
-            console.log("target", req.body['target']);
+            console.log("caseObjs", req.worldCase);
 
         CharaPattern.makeAction(
             req.worldCase, 
@@ -228,7 +228,6 @@ export const userItemReq = (req:Request, res : Response) :void => {
     }
 }
 export const userDropItemReq = (req:Request, res : Response) : void => {
-
 
 
     if ( 

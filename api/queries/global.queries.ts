@@ -49,27 +49,36 @@ export const findObjDatasByID = (id:any, callback: (obj: WorldI | CharaI | Monst
 
 export const findObjsByPosition = ( x:number, y:number, callback: (objs :(CaseI | CharaI | MonsterI | BuildingI )[])=>void ):void => {
 
-    const apps = [] ;
+    let apps = [] ;
 
     // findWorldOnPosition([x,y]).then( building => {
 
     //     if ( building ){
     //         apps.push(building);
     //     }
-        findWorldOnPosition({},x,y, charas => {
-            if ( charas ){
-                charas.forEach(row => {
-                    apps.push(row) ;
-                })
+        findWorldOnPosition({},x,y).then( charas => {
+
+            const next = () => {
+                findMonstersOnPosition(x,y, ()=>{}).then( monsters => {
+                    if ( monsters ){
+                        monsters.forEach( monster => {
+                            apps.push(monster);
+                        }) ;
+                    }
+    
+                    callback(apps);
+                });
             }
-            findMonstersOnPosition(x,y, ()=>{}).then( monsters => {
-                if ( monsters ){
-                    monsters.forEach( monster => {
-                        apps.push(monster);
-                    }) ;
-                }
-                callback(apps);
-            });
+
+            if ( charas ){
+                charas.toArray().then( charaAr => {
+                    apps = [...apps, ...charaAr];
+                    next();
+                })
+            }else{
+                next();
+            }
+
         });
     // });
 

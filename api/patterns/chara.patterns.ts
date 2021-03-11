@@ -162,12 +162,8 @@ export class CharaPattern extends Pattern{
     static makeActionOnObjec(caseObjs : (CharaI | CaseI | MonsterI | BuildingI)[], user, targetID, action, callback ){
 
 
-
-
         buildInstanceFromDatas( user, charaFromPattern => {
             buildInstanceFromId( targetID, targetPattern => {
-
-                console.log('instance of target:', targetPattern);
 
                 if ( charaFromPattern && targetPattern ){
                     charaFromPattern.makeAction(caseObjs, action, targetPattern, actRes => {
@@ -1183,9 +1179,8 @@ export class CharaPattern extends Pattern{
 
     }
 
-    search(caseObjs : [], target : any, callback ){
+    search(caseObjs : (CaseI|CharaI|MonsterI|BuildingI)[], target : any, callback ){
 
-        console.log('search on', target);
 
         if ( this.obj.searches > 0 ){
 
@@ -1303,7 +1298,7 @@ export class CharaPattern extends Pattern{
 
                 }else{
    
-                    destroyWorldItem(this.obj._id, itemU, newCharaRes => {
+                    destroyWorldItem(this.obj, itemU, newCharaRes => {
                 
                         incValueOnChara( newChara => {
 

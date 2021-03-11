@@ -2,7 +2,7 @@
 import { Pattern } from "./base.pattern";
 import { BuildingI, CapitalI } from "./../interfaces/building.interface";
 import { CharaPattern } from "./chara.patterns";
-import { findWorldInPositions, findWorldOnPosition, incWorldValues } from "../queries/world.queries";
+import { findWorldInPositions, incWorldValues } from "../queries/world.queries";
 
 
 export class BuildingPattern extends Pattern {

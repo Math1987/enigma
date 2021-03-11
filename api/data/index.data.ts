@@ -50,7 +50,7 @@ export const initMongoDB = (callback: (res)=>void) => {
         worldCollection = world ;
     
         const buildings = database.collection('buildings');
-        buildings.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
+        // buildings.createIndexes([{key : {"position.0" : 1, "position.1":1}, unique : true} ]);
     
         const charas = database.collection('users');
         const monsters = database.collection('monsters');
@@ -122,33 +122,47 @@ const updateDatasSystem2_FUSION_WORLD_BUILDINGS = (database : Db) => {
 
         }, false);
 
+        console.log('got solid index:', gotBuildingsOnWorld );
+
         if ( !gotBuildingsOnWorld ){
 
-            console.log('building a new index (for solids objects in world)');
 
-            world.createIndex(
-                {"position.0" : 1, "position.1":1, "solid" : 1}, {
-                unique : true,
-                partialFilterExpression: { solid : { $eq : true }}
-                }   
-            ).then( createIndexRes => {         
+            world.deleteMany({solid : true}).then( deletRes => {
 
-                const buildings = database.collection('buildings');
-                const newBuildings = [] ;
-                buildings.find().forEach( building => {
-    
-                    let newBuilding = {...building};
-                    newBuilding = {...newBuilding, solid : true, name : building.type };
-                    newBuildings.push(newBuilding);
-    
-                }).then( endCheck => {
 
-                    world.insertMany( newBuildings, insertRes => {
+                world.createIndex(
+                    { 'position.0' : 1, 'position.1' : 1, 'solid' : 1}, {
+                    unique : true,
+                    partialFilterExpression : { solid : { $eq : true}}
+                    }   
+                ).then( createIndexRes => {  
+                    
+                    console.log('index create res', createIndexRes);
     
+                    const buildings = database.collection('buildings');
+                    const newBuildings = [] ;
+                    buildings.find().forEach( building => {
+        
+                        let newBuilding = {...building};
+                        newBuilding = {...newBuilding, solid : true, name : building.type };
+                        newBuildings.push(newBuilding);
+                        console.log(newBuilding);
+        
+                    }).then( endCheck => {
+    
+                        world.insertMany( newBuildings, insertRes => {
+        
+                        });
+        
                     });
-    
                 });
+
+
+
             });
+
+
+
         }
 
     });

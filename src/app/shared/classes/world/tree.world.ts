@@ -66,6 +66,19 @@ export class WorldTree extends WorldBuilding {
     }
     getInfos( userChara : CharaI, floor : WorldModel, caseObjs : WorldModel[] ){
         const obj = {...this.datas};
+
+        if ( floor.datas['inventory'] ){
+            obj['inventory'] = floor.datas['inventory'].map( row => {
+                return {...METADATAS[row.name], datas : row};
+            }) ;
+        }else{
+            obj['inventory'] = [null];
+        }
+        while ( obj['inventory'].length < 6 ){
+            obj['inventory'].push(null);
+        }
+
+
         return {...obj,...super.getInfos(userChara, floor, caseObjs)};
     }
     getCharaInteractions(floor:WorldModel, chara: CharaI ){
